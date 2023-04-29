@@ -198,8 +198,3 @@ export type AuthenticationState = {
     username: string;
   } | null;
 };
-
-export type LoginActionData = {
-  isLogin: boolean;
-  token: string;
-};
