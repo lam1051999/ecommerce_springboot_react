@@ -3,8 +3,7 @@ import { AuthenticationResponse, AuthenticationState } from "../types/types";
 
 const initialState: AuthenticationState = {
   isLogin: false,
-  token: null,
-  userInfo: null,
+  token: "",
 };
 
 export const authenticationSlice = createSlice({
@@ -14,10 +13,10 @@ export const authenticationSlice = createSlice({
     onLogin: {
       reducer: (state, action: PayloadAction<AuthenticationResponse>) => {
         state.isLogin = true;
-        state.token = action.payload.data ? action.payload.data.token : null;
+        state.token = action.payload.data ? action.payload.data.token : "";
       },
-      prepare: (listPath: AuthenticationResponse) => {
-        return { payload: listPath };
+      prepare: (authenPayload: AuthenticationResponse) => {
+        return { payload: authenPayload };
       },
     },
   },

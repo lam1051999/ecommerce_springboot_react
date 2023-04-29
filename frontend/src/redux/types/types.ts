@@ -188,13 +188,5 @@ export type AuthenticateBody = {
 
 export type AuthenticationState = {
   isLogin: boolean;
-  token: string | null;
-  userInfo: {
-    name: string;
-    gender: string;
-    dob: string;
-    phone_number: string;
-    email: string;
-    username: string;
-  } | null;
+  token: string;
 };

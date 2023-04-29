@@ -1,9 +1,12 @@
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import PageContainer from "../components/common/PageContainer";
 import signinBanner from "/images/authentication/signinBanner.jpeg";
 import { Formik } from "formik";
 import { AiOutlineLoading } from "react-icons/ai";
 import { useAuthenticateMutation } from "../redux/api/authenticationApi";
+import { useAppDispatch, useAppSelector } from "../redux/hooks/hooks";
+import { onLogin } from "../redux/slices/authenticationSlice";
+import { useEffect } from "react";
 
 type SigninFormikError = {
   username?: string;
@@ -16,6 +19,15 @@ export default function Signin() {
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+  const isLogin = useAppSelector((state) => state.authentication.isLogin);
+  const token = useAppSelector((state) => state.authentication.token);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    searchParams.get("returnUrl")
+      ? navigate(`/${searchParams.get("returnUrl")}`)
+      : navigate("/");
+  }, [isLogin, token]);
 
   return (
     <PageContainer>
@@ -45,11 +57,7 @@ export default function Signin() {
                 password: values.password,
               })
                 .unwrap()
-                .then(() =>
-                  searchParams.get("returnUrl")
-                    ? navigate(`/${searchParams.get("returnUrl")}`)
-                    : navigate("/")
-                );
+                .then((fulfilled) => dispatch(onLogin(fulfilled)));
               setSubmitting(false);
             }}
           >
