@@ -3,9 +3,12 @@ import imageLogo from "/images/logo.png";
 import { BsSearch, BsCart } from "react-icons/bs";
 import { AiOutlineUser } from "react-icons/ai";
 import { useAppSelector } from "../../redux/hooks/hooks";
+import { useEffect } from "react";
 
 export default function Header() {
   const { cartItems } = useAppSelector((state) => state.shoppingCart);
+  const isLogin = useAppSelector((state) => state.authentication.isLogin);
+  const token = useAppSelector((state) => state.authentication.token);
 
   return (
     <nav className="sticky top-0 z-30 bg-[#515154] flex items-center justify-center h-16">
@@ -105,9 +108,11 @@ export default function Header() {
             </div>
           </div>
         </Link>
-        <Link to="/sign-in" className="p-2 rounded-full hover:bg-gray-500">
-          <AiOutlineUser size={22} />
-        </Link>
+        {isLogin && token ? (
+          <Link to="/sign-in" className="p-2 rounded-full hover:bg-gray-500">
+            <AiOutlineUser size={22} />
+          </Link>
+        ) : null}
       </div>
     </nav>
   );

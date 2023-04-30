@@ -22,12 +22,13 @@ export default function Signin() {
   const isLogin = useAppSelector((state) => state.authentication.isLogin);
   const token = useAppSelector((state) => state.authentication.token);
   const dispatch = useAppDispatch();
+  const isValid = isLogin && token;
 
   useEffect(() => {
     searchParams.get("returnUrl")
       ? navigate(`/${searchParams.get("returnUrl")}`)
       : navigate("/");
-  }, [isLogin, token]);
+  }, [isValid]);
 
   return (
     <PageContainer>
