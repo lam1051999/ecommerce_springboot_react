@@ -2,8 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AuthenticationResponse, AuthenticationState } from "../types/types";
 
 const initialState: AuthenticationState = {
-  isLogin: false,
-  token: "",
+  token: null,
 };
 
 export const authenticationSlice = createSlice({
@@ -12,8 +11,7 @@ export const authenticationSlice = createSlice({
   reducers: {
     onLogin: {
       reducer: (state, action: PayloadAction<AuthenticationResponse>) => {
-        state.isLogin = true;
-        state.token = action.payload.data ? action.payload.data.token : "";
+        state.token = action.payload.data ? action.payload.data.token : null;
       },
       prepare: (authenPayload: AuthenticationResponse) => {
         return { payload: authenPayload };

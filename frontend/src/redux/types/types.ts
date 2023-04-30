@@ -187,6 +187,5 @@ export type AuthenticateBody = {
 };
 
 export type AuthenticationState = {
-  isLogin: boolean;
-  token: string;
+  token: string | null;
 };
