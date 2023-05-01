@@ -18,9 +18,7 @@ export default function ProductDetail() {
   const params = useParams();
   const { productId } = params;
   if (!productId) return null;
-  const { data, error, isLoading } = useGetProductsByIdQuery(productId, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data, error, isLoading } = useGetProductsByIdQuery(productId);
   function handleAddToCart(detail: DetailProductsById) {
     const productsEntity: ProductsEntity = {
       id: detail.id,

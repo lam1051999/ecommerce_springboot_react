@@ -26,6 +26,7 @@ export const productsApi = createApi({
   baseQuery: axiosBaseQuery({
     baseUrl: `${SHOPDUNK_BACKEND_BASE_URL}/api/v1`,
   }),
+  refetchOnMountOrArgChange: true,
   tagTypes: ["ProductRatingsById"],
   endpoints: (builder) => ({
     getProducts: builder.query<ProductsDtoResponse, ProductsQueryArgs>({

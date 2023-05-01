@@ -8,6 +8,7 @@ export const userApi = createApi({
   baseQuery: axiosAuthBaseQuery({
     baseUrl: `${SHOPDUNK_BACKEND_BASE_URL}/api/v1`,
   }),
+  refetchOnMountOrArgChange: true,
   endpoints: (builder) => ({
     getCustomerInfos: builder.query<CustomerInfosResponse, void>({
       query: () => ({ url: "/customer-infos", method: "get" }),

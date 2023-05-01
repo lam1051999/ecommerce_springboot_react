@@ -16,16 +16,13 @@ export default function ProductGridWrapper() {
   );
   const sortType = useAppSelector((state) => state.choiceBar.sortType);
   const page = useAppSelector((state) => state.choiceBar.page);
-  const { data, error, isLoading } = useGetProductsQuery(
-    {
-      sort_type: sortType,
-      product_type: productType,
-      product_sub_type: productSubType,
-      page: page,
-      size: NUM_PRODUCTS_SHOWCASE,
-    },
-    { refetchOnMountOrArgChange: true }
-  );
+  const { data, error, isLoading } = useGetProductsQuery({
+    sort_type: sortType,
+    product_type: productType,
+    product_sub_type: productSubType,
+    page: page,
+    size: NUM_PRODUCTS_SHOWCASE,
+  });
 
   return (
     <div className="w-full h-full">
