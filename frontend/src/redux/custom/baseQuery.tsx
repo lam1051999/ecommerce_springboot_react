@@ -49,42 +49,64 @@ export const axiosAuthBaseQuery =
   > =>
   async ({ url, method, data, params }, { dispatch, getState }) => {
     const { token, refresh_token } = (getState() as RootState).authentication;
-    let result = await axios({
-      url: baseUrl + url,
-      method,
-      data,
-      params,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (result.status === 401) {
-      if (refresh_token) {
-        const refreshResult = await axios({
-          url: `${SHOPDUNK_BACKEND_BASE_URL}/api/v1/auth/refresh-token`,
-          method: "post",
-          data: { refresh_token: refresh_token },
-        });
-        if (refreshResult.status === 401 || refreshResult.status === 404) {
-          dispatch(onResetToken());
-          window.location.href = "/sign-in";
+    try {
+      let result = await axios({
+        url: baseUrl + url,
+        method,
+        data,
+        params,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return { data: result.data };
+    } catch (axiosError) {
+      let err = axiosError as AxiosError;
+      if (err.response?.status === 401) {
+        if (refresh_token) {
+          try {
+            const refreshResult = await axios({
+              url: `${SHOPDUNK_BACKEND_BASE_URL}/api/v1/auth/refresh-token`,
+              method: "post",
+              data: { refresh_token: refresh_token },
+            });
+            const response = refreshResult.data as AuthenticationResponse;
+            dispatch(onRenewToken(response));
+            try {
+              let resultRetry = await axios({
+                url: baseUrl + url,
+                method,
+                data,
+                params,
+                headers: {
+                  Authorization: `Bearer ${response.data.token}`,
+                },
+              });
+              return { data: resultRetry.data };
+            } catch (retryError) {
+              let reErr = retryError as AxiosError;
+              return {
+                error: {
+                  status: reErr.response?.status,
+                  data: reErr.response?.data || reErr.message,
+                },
+              };
+            }
+          } catch (refreshError) {
+            dispatch(onResetToken());
+          }
         } else {
-          const response = refreshResult.data as AuthenticationResponse;
-          dispatch(onRenewToken(response));
-          result = await axios({
-            url: baseUrl + url,
-            method,
-            data,
-            params,
-            headers: {
-              Authorization: `Bearer ${response.data.token}`,
-            },
-          });
+          dispatch(onResetToken());
         }
-      } else {
-        dispatch(onResetToken());
+      }
+      if (!window.location.href.includes("sign-in")) {
         window.location.href = "/sign-in";
       }
+      return {
+        error: {
+          status: err.response?.status,
+          data: err.response?.data || err.message,
+        },
+      };
     }
-    return result;
   };

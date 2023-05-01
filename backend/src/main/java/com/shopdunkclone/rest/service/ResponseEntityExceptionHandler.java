@@ -4,6 +4,7 @@ import com.shopdunkclone.rest.exception.InvalidRequestException;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
 import com.shopdunkclone.rest.exception.TokenExpiredException;
 import com.shopdunkclone.rest.model.ServiceResult;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -100,6 +101,14 @@ public class ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public final ResponseEntity<ServiceResult<Object>> handleAuthenticationError(AuthenticationException ex) {
+        return new ResponseEntity<>(getErrorServiceResult(
+                ServiceResult.Status.FAILED,
+                ex.getMessage()
+        ), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public final ResponseEntity<ServiceResult<Object>> handleBuiltinTokenExpired(ExpiredJwtException ex) {
         return new ResponseEntity<>(getErrorServiceResult(
                 ServiceResult.Status.FAILED,
                 ex.getMessage()
