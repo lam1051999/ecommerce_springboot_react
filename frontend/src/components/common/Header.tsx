@@ -3,9 +3,6 @@ import imageLogo from "/images/logo.png";
 import { BsSearch, BsCart } from "react-icons/bs";
 import { AiOutlineUser } from "react-icons/ai";
 import { useAppSelector } from "../../redux/hooks/hooks";
-import { useEffect } from "react";
-import { SHOPDUNK_BACKEND_BASE_URL } from "../../constants/config";
-import axios from "axios";
 
 export default function Header() {
   const { cartItems } = useAppSelector((state) => state.shoppingCart);

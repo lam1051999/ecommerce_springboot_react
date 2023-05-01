@@ -29,9 +29,17 @@ export const productImagesSlice = createSlice({
         return { payload: actionData };
       },
     },
+    onResetProductImages: (state) => {
+      state.color = initialState.color;
+      state.list_images = initialState.list_images;
+      state.showcase_image = initialState.showcase_image;
+    },
   },
 });
 
-export const { onChangeProductColor, onChangeShowcaseImage } =
-  productImagesSlice.actions;
+export const {
+  onChangeProductColor,
+  onChangeShowcaseImage,
+  onResetProductImages,
+} = productImagesSlice.actions;
 export default productImagesSlice;

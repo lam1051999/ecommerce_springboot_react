@@ -15,7 +15,10 @@ import { axiosBaseQuery } from "../custom/baseQuery";
 import { mapProductTypePathLink } from "../../constants/routes";
 import { PathLink } from "../../constants/type";
 import { onChangeListPath } from "../slices/breadcrumbSlice";
-import { onChangeProductColor } from "../slices/productImagesSlice";
+import {
+  onChangeProductColor,
+  onResetProductImages,
+} from "../slices/productImagesSlice";
 import { AxiosError } from "axios";
 
 export const productsApi = createApi({
@@ -23,7 +26,7 @@ export const productsApi = createApi({
   baseQuery: axiosBaseQuery({
     baseUrl: `${SHOPDUNK_BACKEND_BASE_URL}/api/v1`,
   }),
-  tagTypes: ["ProductsList", "ProductsById", "ProductRatingsById"],
+  tagTypes: ["ProductRatingsById"],
   endpoints: (builder) => ({
     getProducts: builder.query<ProductsDtoResponse, ProductsQueryArgs>({
       query: ({ sort_type, product_type, product_sub_type, page, size }) => {
@@ -100,6 +103,8 @@ export const productsApi = createApi({
                       fnProductImagesResponse.data[0].list_images[0],
                   })
                 );
+              } else {
+                dispatch(onResetProductImages());
               }
               return { data: resolvedData };
             }
