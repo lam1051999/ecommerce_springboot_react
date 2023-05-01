@@ -4,6 +4,7 @@ import com.shopdunkclone.rest.dto.product.ProductImagesDto;
 import com.shopdunkclone.rest.dto.product.ProductRatingsDto;
 import com.shopdunkclone.rest.dto.product.ProductRatingsRequest;
 import com.shopdunkclone.rest.dto.product.ProductsDto;
+import com.shopdunkclone.rest.exception.NotFoundRecordException;
 import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.model.product.*;
 import com.shopdunkclone.rest.repository.product.ProductImagesRepository;
@@ -64,8 +65,8 @@ public class ProductService {
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", productsDto);
     }
 
-    public ServiceResult<ProductsEntity> getProductById(String id) {
-        ProductsEntity productsEntity = productsRepository.findProductsEntityByIdAndNameNotNull(id);
+    public ServiceResult<ProductsEntity> getProductById(String id) throws NotFoundRecordException {
+        ProductsEntity productsEntity = productsRepository.findProductsEntityByIdAndNameNotNull(id).orElseThrow(() -> new NotFoundRecordException("Product not found"));
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", productsEntity);
     }
 
@@ -81,8 +82,8 @@ public class ProductService {
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", productImagesDtos);
     }
 
-    public ServiceResult<ProductInfosEntity> getProductInfos(String productId) {
-        ProductInfosEntity productInfos = productInfosRepository.findProductInfosEntityByProductId(productId);
+    public ServiceResult<ProductInfosEntity> getProductInfos(String productId) throws NotFoundRecordException {
+        ProductInfosEntity productInfos = productInfosRepository.findProductInfosEntityByProductId(productId).orElseThrow(() -> new NotFoundRecordException("Product information not found"));
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", productInfos);
     }
 

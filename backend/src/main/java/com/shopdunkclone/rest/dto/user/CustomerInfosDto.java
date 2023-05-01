@@ -3,20 +3,18 @@ package com.shopdunkclone.rest.dto.user;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.shopdunkclone.rest.model.user.Gender;
-import com.shopdunkclone.rest.model.user.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
+import java.sql.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomersDto {
-    @JsonProperty("id")
-    private String id;
-
+public class CustomerInfosDto {
     @Length(max = 1000)
     @JsonProperty("name")
     private String name;
@@ -27,7 +25,7 @@ public class CustomersDto {
 
     @JsonProperty("dob")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Ho_Chi_Minh")
-    private String dob;
+    private Date dob;
 
     @Length(max = 255)
     @JsonProperty("phone_number")
@@ -40,12 +38,4 @@ public class CustomersDto {
     @Length(max = 1000)
     @JsonProperty("username")
     private String username;
-
-    @Length(max = 1000)
-    @JsonProperty("password")
-    private String password;
-
-    @JsonProperty("role")
-    @Enumerated(EnumType.STRING)
-    private Role role;
 }

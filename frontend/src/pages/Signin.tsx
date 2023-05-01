@@ -4,8 +4,9 @@ import signinBanner from "/images/authentication/signinBanner.jpeg";
 import { Formik } from "formik";
 import { AiOutlineLoading } from "react-icons/ai";
 import { useAuthenticateMutation } from "../redux/api/authenticationApi";
-import { useAppDispatch, useAppSelector } from "../redux/hooks/hooks";
-import { onLogin } from "../redux/slices/authenticationSlice";
+import { useAppDispatch } from "../redux/hooks/hooks";
+import { onRenewToken } from "../redux/slices/authenticationSlice";
+import { useGetCustomerInfosQuery } from "../redux/api/userApi";
 import { useEffect } from "react";
 
 type SigninFormikError = {
@@ -19,16 +20,24 @@ export default function Signin() {
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const isLogin = useAppSelector((state) => state.authentication.isLogin);
-  const token = useAppSelector((state) => state.authentication.token);
   const dispatch = useAppDispatch();
-  const isValid = isLogin && token;
+  const {
+    data: customerInfos,
+    error: customerInfosError,
+    isLoading,
+  } = useGetCustomerInfosQuery();
 
-  useEffect(() => {
+  function redirectFromLogin() {
     searchParams.get("returnUrl")
       ? navigate(`/${searchParams.get("returnUrl")}`)
       : navigate("/");
-  }, [isValid]);
+  }
+
+  useEffect(() => {
+    if (customerInfos) {
+      redirectFromLogin();
+    }
+  }, [customerInfos]);
 
   return (
     <PageContainer>
@@ -58,7 +67,10 @@ export default function Signin() {
                 password: values.password,
               })
                 .unwrap()
-                .then((fulfilled) => dispatch(onLogin(fulfilled)));
+                .then((fulfilled) => {
+                  dispatch(onRenewToken(fulfilled));
+                  redirectFromLogin();
+                });
               setSubmitting(false);
             }}
           >

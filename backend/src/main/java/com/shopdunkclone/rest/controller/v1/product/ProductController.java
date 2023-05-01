@@ -4,6 +4,7 @@ import com.shopdunkclone.rest.dto.product.ProductImagesDto;
 import com.shopdunkclone.rest.dto.product.ProductRatingsDto;
 import com.shopdunkclone.rest.dto.product.ProductRatingsRequest;
 import com.shopdunkclone.rest.dto.product.ProductsDto;
+import com.shopdunkclone.rest.exception.NotFoundRecordException;
 import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.model.product.ProductInfosEntity;
 import com.shopdunkclone.rest.model.product.ProductRatingsEntity;
@@ -47,7 +48,7 @@ public class ProductController {
     @GetMapping(value = "/products/{id}")
     public ResponseEntity<ServiceResult<ProductsEntity>> getProductById(
             @Parameter(example = "eeead5b3bbcebf6d64f56a2efa6a8785", description = "id", required = true) @PathVariable(name = "id") String id
-    ) {
+    ) throws NotFoundRecordException {
         ServiceResult<ProductsEntity> result = productService.getProductById(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -65,7 +66,7 @@ public class ProductController {
     @GetMapping(value = "/product-infos")
     public ResponseEntity<ServiceResult<ProductInfosEntity>> getProductInfos(
             @Parameter(example = "a89305813493dfe82319b53dcd736b0b", description = "product_id") @RequestParam(name = "product_id") String productId
-    ) {
+    ) throws NotFoundRecordException {
         ServiceResult<ProductInfosEntity> result = productService.getProductInfos(productId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

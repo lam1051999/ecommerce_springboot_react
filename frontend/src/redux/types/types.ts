@@ -168,7 +168,8 @@ export type AuthenticationResponse = {
   message: string;
   data: {
     token: string;
-  } | null;
+    refresh_token: string;
+  };
 };
 
 export type RegisterBody = {
@@ -188,4 +189,18 @@ export type AuthenticateBody = {
 
 export type AuthenticationState = {
   token: string | null;
+  refresh_token: string | null;
+};
+
+export type CustomerInfosResponse = {
+  status: string;
+  message: string;
+  data: {
+    name: string;
+    gender: string;
+    dob: string;
+    phone_number: string;
+    email: string;
+    username: string;
+  };
 };

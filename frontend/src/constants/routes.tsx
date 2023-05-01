@@ -15,6 +15,7 @@ import ShoppingCart from "../pages/ShoppingCart";
 import Signin from "../pages/Signin";
 import Signup from "../pages/Signup";
 import SignupResult from "../pages/SignupResult";
+import CustomerInfos from "../pages/CustomerInfos";
 
 export const ordinaryRoutes: PageRoute[] = [
   {
@@ -153,6 +154,16 @@ export const ordinaryRoutes: PageRoute[] = [
     listPath: [
       {
         title: "Đăng ký",
+        goTo: null,
+      },
+    ],
+  },
+  {
+    path: "/customer-infos",
+    element: <CustomerInfos />,
+    listPath: [
+      {
+        title: "Thông tin tài khoản",
         goTo: null,
       },
     ],

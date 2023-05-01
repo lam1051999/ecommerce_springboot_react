@@ -2,10 +2,13 @@ package com.shopdunkclone.rest.service;
 
 import com.shopdunkclone.rest.exception.InvalidRequestException;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
+import com.shopdunkclone.rest.exception.TokenExpiredException;
 import com.shopdunkclone.rest.model.ServiceResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -31,7 +34,7 @@ public class ResponseEntityExceptionHandler {
         return new ResponseEntity<>(getErrorServiceResult(
                 ServiceResult.Status.FAILED,
                 ex.getMessage()
-        ), HttpStatus.OK);
+        ), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -77,6 +80,30 @@ public class ResponseEntityExceptionHandler {
                 ServiceResult.Status.FAILED,
                 "Request parameters not compatible"
         ), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public final ResponseEntity<ServiceResult<Object>> handleTokenExpired(TokenExpiredException ex) {
+        return new ResponseEntity<>(getErrorServiceResult(
+                ServiceResult.Status.FAILED,
+                ex.getMessage()
+        ), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public final ResponseEntity<ServiceResult<Object>> handleNotFoundUsername(UsernameNotFoundException ex) {
+        return new ResponseEntity<>(getErrorServiceResult(
+                ServiceResult.Status.FAILED,
+                ex.getMessage()
+        ), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public final ResponseEntity<ServiceResult<Object>> handleAuthenticationError(AuthenticationException ex) {
+        return new ResponseEntity<>(getErrorServiceResult(
+                ServiceResult.Status.FAILED,
+                ex.getMessage()
+        ), HttpStatus.UNAUTHORIZED);
     }
 
     public ServiceResult<Object> getErrorServiceResult(ServiceResult.Status status, String message) {

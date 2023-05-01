@@ -7,9 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ProductsRepository extends PagingAndSortingRepository<ProductsEntity, String> {
     Page<ProductsEntity> findAllByProductTypeAndNameNotNull(ProductType productType, Pageable paging);
     Page<ProductsEntity> findAllByProductTypeAndProductSubTypeAndNameNotNull(ProductType productType, String productSubType, Pageable paging);
-    ProductsEntity findProductsEntityByIdAndNameNotNull(String id);
+    Optional<ProductsEntity> findProductsEntityByIdAndNameNotNull(String id);
 }

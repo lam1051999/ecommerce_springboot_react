@@ -19,6 +19,7 @@ import shoppingCartSlice from "../slices/shoppingCartSlice";
 import { addressApi } from "../api/addressApi";
 import { authenticationApi } from "../api/authenticationApi";
 import authenticationSlice from "../slices/authenticationSlice";
+import { userApi } from "../api/userApi";
 
 const cartPersistConfig = {
   key: "persisted_state",
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
   [productsApi.reducerPath]: productsApi.reducer,
   [addressApi.reducerPath]: addressApi.reducer,
   [authenticationApi.reducerPath]: authenticationApi.reducer,
+  [userApi.reducerPath]: userApi.reducer,
   choiceBar: choiceBarSlice.reducer,
   breadcrumb: breadcrumbSlice.reducer,
   productImages: productImagesSlice.reducer,
@@ -49,7 +51,8 @@ export const store = configureStore({
     })
       .concat(productsApi.middleware)
       .concat(addressApi.middleware)
-      .concat(authenticationApi.middleware),
+      .concat(authenticationApi.middleware)
+      .concat(userApi.middleware),
   devTools: NODE_ENV !== "development" ? false : true,
 });
 

@@ -3,6 +3,7 @@ package com.shopdunkclone.rest.config;
 import com.google.gson.Gson;
 import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.util.JwtService;
+import com.shopdunkclone.rest.util.TokenType;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     private static final RequestMatcher requestMatchersInclude = new OrRequestMatcher(
-            new AntPathRequestMatcher("/api/v2/**")
+            new AntPathRequestMatcher("/api/v1/customer-infos")
     );
 
     @Override
@@ -44,10 +45,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
             try {
-                final String userName = jwtService.extractUsername(jwt);
+                final String userName = jwtService.extractUsername(jwt, TokenType.TOKEN);
                 if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-                    if (jwtService.isTokenValid(jwt, userDetails)) {
+                    if (jwtService.isTokenValid(jwt, userDetails, TokenType.TOKEN)) {
                         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authToken);

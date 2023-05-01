@@ -4,10 +4,11 @@ import { BsSearch, BsCart } from "react-icons/bs";
 import { AiOutlineUser } from "react-icons/ai";
 import { useAppSelector } from "../../redux/hooks/hooks";
 import { useEffect } from "react";
+import { SHOPDUNK_BACKEND_BASE_URL } from "../../constants/config";
+import axios from "axios";
 
 export default function Header() {
   const { cartItems } = useAppSelector((state) => state.shoppingCart);
-  const isLogin = useAppSelector((state) => state.authentication.isLogin);
   const token = useAppSelector((state) => state.authentication.token);
 
   return (
@@ -108,11 +109,12 @@ export default function Header() {
             </div>
           </div>
         </Link>
-        {isLogin && token ? (
-          <Link to="/sign-in" className="p-2 rounded-full hover:bg-gray-500">
-            <AiOutlineUser size={22} />
-          </Link>
-        ) : null}
+        <Link
+          to={token ? "/customer-infos" : "/sign-in"}
+          className="p-2 rounded-full hover:bg-gray-500"
+        >
+          <AiOutlineUser size={22} />
+        </Link>
       </div>
     </nav>
   );
