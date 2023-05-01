@@ -4,7 +4,7 @@ import type { AxiosRequestConfig, AxiosError } from "axios";
 import { SHOPDUNK_BACKEND_BASE_URL } from "../../constants/config";
 import { RootState } from "../store/store";
 import { onRenewToken, onResetToken } from "../slices/authenticationSlice";
-import { AuthenticationResponse } from "../types/types";
+import { AuthenticationResponse, CustomBaseQueryError } from "../types/types";
 
 export const axiosBaseQuery =
   (
@@ -29,7 +29,7 @@ export const axiosBaseQuery =
         error: {
           status: err.response?.status,
           data: err.response?.data || err.message,
-        },
+        } as CustomBaseQueryError,
       };
     }
   };
@@ -49,6 +49,9 @@ export const axiosAuthBaseQuery =
   > =>
   async ({ url, method, data, params }, { dispatch, getState }) => {
     const { token, refresh_token } = (getState() as RootState).authentication;
+    const signinRedicrectPath = window.location.pathname.includes("sign-in")
+      ? window.location.pathname
+      : `/sign-in?returnUrl=${window.location.pathname}`;
     try {
       let result = await axios({
         url: baseUrl + url,
@@ -100,7 +103,7 @@ export const axiosAuthBaseQuery =
         }
       }
       if (!window.location.href.includes("sign-in")) {
-        window.location.href = "/sign-in";
+        window.location.href = signinRedicrectPath;
       }
       return {
         error: {

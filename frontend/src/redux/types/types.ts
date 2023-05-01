@@ -204,3 +204,8 @@ export type CustomerInfosResponse = {
     username: string;
   };
 };
+
+export type CustomBaseQueryError = {
+  status: number | undefined;
+  data: {};
+};

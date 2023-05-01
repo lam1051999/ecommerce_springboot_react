@@ -5,6 +5,7 @@ import { AiOutlineDown } from "react-icons/ai";
 import { Formik } from "formik";
 import { AiOutlineLoading } from "react-icons/ai";
 import { useRegisterMutation } from "../redux/api/authenticationApi";
+import { CustomBaseQueryError } from "../redux/types/types";
 
 const DEFAULT_BOD_DATE = "Ngày";
 const DEFAULT_BOD_MONTH = "Tháng";
@@ -138,7 +139,7 @@ export default function Signup() {
                 </h1>
                 {isError ? (
                   error ? (
-                    error.status === 409 ? (
+                    (error as CustomBaseQueryError).status === 409 ? (
                       <p className="text-xs text-red-500">
                         Đăng ký không thành công, username đã tồn tại
                       </p>

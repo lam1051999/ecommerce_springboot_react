@@ -8,6 +8,7 @@ import { useAppDispatch } from "../redux/hooks/hooks";
 import { onRenewToken } from "../redux/slices/authenticationSlice";
 import { useGetCustomerInfosQuery } from "../redux/api/userApi";
 import { useEffect } from "react";
+import { CustomBaseQueryError } from "../redux/types/types";
 
 type SigninFormikError = {
   username?: string;
@@ -29,10 +30,9 @@ export default function Signin() {
 
   function redirectFromLogin() {
     searchParams.get("returnUrl")
-      ? navigate(`/${searchParams.get("returnUrl")}`)
+      ? navigate(`${searchParams.get("returnUrl")}`)
       : navigate("/");
   }
-
   useEffect(() => {
     if (customerInfos) {
       redirectFromLogin();
@@ -94,7 +94,8 @@ export default function Signin() {
                 </h1>
                 {isError ? (
                   error ? (
-                    error.status === 403 || error.status === 401 ? (
+                    (error as CustomBaseQueryError).status === 403 ||
+                    (error as CustomBaseQueryError).status === 401 ? (
                       <p className="text-xs text-red-500">
                         Thông tin đăng nhập không đúng. Vui lòng thử lại. Đăng
                         nhập không thành công

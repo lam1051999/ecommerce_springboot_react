@@ -12,11 +12,11 @@ import {
   ProductsQueryArgs,
 } from "../types/types";
 import { axiosBaseQuery } from "../custom/baseQuery";
-import { AxiosError } from "axios";
 import { mapProductTypePathLink } from "../../constants/routes";
 import { PathLink } from "../../constants/type";
 import { onChangeListPath } from "../slices/breadcrumbSlice";
 import { onChangeProductColor } from "../slices/productImagesSlice";
+import { AxiosError } from "axios";
 
 export const productsApi = createApi({
   reducerPath: "productsApi",
@@ -26,12 +26,7 @@ export const productsApi = createApi({
   tagTypes: ["ProductsList", "ProductsById", "ProductRatingsById"],
   endpoints: (builder) => ({
     getProducts: builder.query<ProductsDtoResponse, ProductsQueryArgs>({
-      queryFn: async (
-        { sort_type, product_type, product_sub_type, page, size },
-        { dispatch },
-        extraOptions,
-        baseQuery
-      ) => {
+      query: ({ sort_type, product_type, product_sub_type, page, size }) => {
         const requiredParams = {
           sort_type,
           product_type,
@@ -41,21 +36,7 @@ export const productsApi = createApi({
         const params = product_sub_type
           ? { ...requiredParams, product_sub_type }
           : requiredParams;
-        const request = await baseQuery({
-          url: "/products",
-          method: "get",
-          params: params,
-        });
-        if (request.data) {
-          const resolveData = request.data as ProductsDtoResponse;
-          return {
-            data: resolveData,
-          };
-        } else {
-          return {
-            error: request.error as AxiosError,
-          };
-        }
+        return { url: "/products", method: "get", params: params };
       },
     }),
     getProductsById: builder.query<DetailProductsById, string>({
@@ -131,35 +112,22 @@ export const productsApi = createApi({
       },
     }),
     getProductRatingsById: builder.query<ProductRatingsDtoResponse, string>({
-      queryFn: async (product_id, { dispatch }, extraOptions, baseQuery) => {
-        const params = {
-          product_id,
-        };
-        const res = await baseQuery({
-          url: `/product-ratings`,
-          method: "get",
-          params: params,
-        });
-        return res.data
-          ? { data: res.data as ProductRatingsDtoResponse }
-          : { error: res.error as AxiosError };
-      },
+      query: (product_id) => ({
+        url: "/product-ratings",
+        method: "get",
+        params: { product_id },
+      }),
       providesTags: ["ProductRatingsById"],
     }),
     createProductRating: builder.mutation<
       ProductRatingsResponse,
       ProductRatingsRequest
     >({
-      queryFn: async (productRatingRequest, {}, extraOptions, baseQuery) => {
-        const res = await baseQuery({
-          url: "/product-ratings",
-          method: "post",
-          data: productRatingRequest,
-        });
-        return res.data
-          ? { data: res.data as ProductRatingsResponse }
-          : { error: res.error as AxiosError };
-      },
+      query: (productRatingRequest) => ({
+        url: "/product-ratings",
+        method: "post",
+        data: productRatingRequest,
+      }),
       invalidatesTags: ["ProductRatingsById"],
     }),
   }),
