@@ -1,12 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import imageLogo from "/images/logo.png";
 import { BsSearch, BsCart } from "react-icons/bs";
 import { AiOutlineUser } from "react-icons/ai";
-import { useAppSelector } from "../../redux/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks/hooks";
+import { FaUserCircle } from "react-icons/fa";
+import { parseJwt } from "../../utils/helper";
+import { onResetToken } from "../../redux/slices/authenticationSlice";
 
 export default function Header() {
   const { cartItems } = useAppSelector((state) => state.shoppingCart);
   const token = useAppSelector((state) => state.authentication.token);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   return (
     <nav className="sticky top-0 z-30 bg-[#515154] flex items-center justify-center h-16">
@@ -106,12 +111,54 @@ export default function Header() {
             </div>
           </div>
         </Link>
-        <Link
-          to={token ? "/customer-infos" : "/sign-in"}
-          className="p-2 rounded-full hover:bg-gray-500"
-        >
-          <AiOutlineUser size={22} />
-        </Link>
+        <div className="group relative h-auto">
+          <div className="p-2 rounded-full hover:bg-gray-500 cursor-pointer">
+            <AiOutlineUser size={22} />
+          </div>
+          <div className="text-black absolute hidden top-9 -right-4 w-[270px] group-hover:block bg-white rounded-lg shadow-[2px_2px_10px_rgba(0,0,0,0.08)]">
+            {token ? (
+              <div className="w-full">
+                <div className="flex items-center w-full space-x-3 px-4 pt-4">
+                  <Link to="/customer-infos">
+                    <FaUserCircle color="#DDDDDD" size={40} />
+                  </Link>
+                  <p className="text-sm font-bold">{parseJwt(token).sub}</p>
+                </div>
+                <ul className="grid grid-cols-1 divide-y px-4 py-2">
+                  <li className="py-2 text-sm">
+                    <Link to="/customer-infos" className="hover:text-blue-700">
+                      Tài khoản của tôi
+                    </Link>
+                  </li>
+                  <li className="py-2 text-sm">
+                    <button
+                      onClick={() => {
+                        dispatch(onResetToken());
+                        navigate("/");
+                      }}
+                      className="hover:text-blue-700"
+                    >
+                      Đăng xuất
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            ) : (
+              <ul className="grid grid-cols-1 divide-y px-4 py-2">
+                <li className="py-2 text-sm">
+                  <Link to="/sign-up" className="hover:text-blue-700">
+                    Tạo tài khoản ngay
+                  </Link>
+                </li>
+                <li className="py-2 text-sm">
+                  <Link to="/sign-in" className="hover:text-blue-700">
+                    Đăng nhập
+                  </Link>
+                </li>
+              </ul>
+            )}
+          </div>
+        </div>
       </div>
     </nav>
   );
