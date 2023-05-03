@@ -11,3 +11,6 @@ python fill_stocks.py
 
 # crawl provinces, shopdunk shops
 python crawl_provinces.py
+
+# update init mysql tables
+python update_init_sql.py

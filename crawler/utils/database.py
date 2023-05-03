@@ -163,3 +163,21 @@ def get_products_ids(connection: MySQLConnection):
             return []
     finally:
         cursor.close()
+
+
+def get_show_create_table(connection: MySQLConnection, database: str, table: str) -> list[str]:
+    query = f"SHOW CREATE TABLE `{database}`.`{table}`;"
+    cursor = connection.cursor()
+    try:
+        cursor.execute(query)
+        rs = get_dict(cursor)
+        return rs
+    except Error as e:
+        try:
+            print(f"MySQL Error [{e.args[0]}]: {e.args[1]}")
+        except IndexError:
+            print(f"MySQL Error: {str(e)}")
+        finally:
+            return []
+    finally:
+        cursor.close()
