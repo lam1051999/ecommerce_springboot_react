@@ -39,22 +39,27 @@ public class OrdersEntity {
     private ReceiveType receiveType;
 
     @Basic
-    @Column(name = "address")
-    @JsonProperty("address")
-    private String address;
-
-    @Basic
     @Column(name = "total_price")
     @JsonProperty("total_price")
     private Long totalPrice;
 
     @Basic
-    @Column(name = "customer_id")
-    @JsonProperty("customer_id")
-    private String customerId;
+    @Column(name = "is_extract_receipt")
+    @JsonProperty("is_extract_receipt")
+    private Integer isExtractReceipt;
 
     @Basic
-    @Column(name = "province_id")
-    @JsonProperty("province_id")
-    private String provinceId;
+    @Column(name = "payment")
+    @JsonProperty("payment")
+    private String payment;
+
+    @Basic
+    @Column(name = "username")
+    @JsonProperty("username")
+    private String username;
+
+    @Basic
+    @Column(name = "ship_address_id")
+    @JsonProperty("ship_address_id")
+    private String shipAddressId;
 }

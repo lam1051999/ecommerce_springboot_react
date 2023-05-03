@@ -7,22 +7,22 @@ import { AiOutlineLoading } from "react-icons/ai";
 import { useRegisterMutation } from "../redux/api/authenticationApi";
 import { CustomBaseQueryError } from "../redux/types/types";
 
-const DEFAULT_BOD_DATE = "Ngày";
-const DEFAULT_BOD_MONTH = "Tháng";
-const DEFAULT_BOD_YEAR = "Năm";
-const DEFAULT_GENDER = "MALE";
-const DATE_ARRAY = Array.from(Array(31)).map((item, index) =>
+export const DEFAULT_BOD_DATE = "Ngày";
+export const DEFAULT_BOD_MONTH = "Tháng";
+export const DEFAULT_BOD_YEAR = "Năm";
+export const DEFAULT_GENDER = "MALE";
+export const DATE_ARRAY = Array.from(Array(31)).map((item, index) =>
   `${index + 1}`.length < 2 ? `0${index + 1}` : `${index + 1}`
 );
-const MONTH_ARRAY = Array.from(Array(12)).map((item, index) =>
+export const MONTH_ARRAY = Array.from(Array(12)).map((item, index) =>
   `${index + 1}`.length < 2 ? `0${index + 1}` : `${index + 1}`
 );
-const NUM_YEARS = 110;
-const YEAR_ARRAY = Array.from(Array(NUM_YEARS)).map(
+export const NUM_YEARS = 110;
+export const YEAR_ARRAY = Array.from(Array(NUM_YEARS)).map(
   (item, index) => `${new Date().getFullYear() - NUM_YEARS + index + 1}`
 );
 
-type SignupFormikError = {
+export type SignupFormikError = {
   name?: string;
   dobDate?: string;
   dobMonth?: string;

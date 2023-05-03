@@ -19,9 +19,9 @@ import { ProvincesAndShopsResponse } from "../redux/types/types";
 import { Link } from "react-router-dom";
 import PageContainer from "../components/common/PageContainer";
 
-const DEFAULT_PROVINCE = "Chọn tỉnh, thành phố:";
-const DEFAULT_DISTRICT = "Quận, huyện:";
-const DEFAULT_SHOP = "Mời bạn chọn địa chỉ cửa hàng";
+export const DEFAULT_PROVINCE = "Chọn tỉnh, thành phố:";
+export const DEFAULT_DISTRICT = "Quận, huyện:";
+export const DEFAULT_SHOP = "Mời bạn chọn địa chỉ cửa hàng";
 
 export default function ShoppingCart() {
   const { cartItems } = useAppSelector((state) => state.shoppingCart);
@@ -186,18 +186,18 @@ export default function ShoppingCart() {
                   onChange={(event) => setName(event.target.value)}
                   className="w-full p-3 text-gray-900 border border-gray-300 rounded-lg bg-white"
                 />
-                <div className="flex items-center justify-between my-4">
+                <div className="flex items-center space-x-4 my-4">
                   <input
                     placeholder="Số điện thoại"
                     value={phoneNumber}
                     onChange={(event) => setPhoneNumber(event.target.value)}
-                    className="w-[49%] p-3 text-gray-900 border border-gray-300 rounded-lg bg-white"
+                    className="flex-1 p-3 text-gray-900 border border-gray-300 rounded-lg bg-white"
                   />
                   <input
                     placeholder="Email"
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
-                    className="w-[49%] p-3 text-gray-900 border border-gray-300 rounded-lg bg-white"
+                    className="flex-1 p-3 text-gray-900 border border-gray-300 rounded-lg bg-white"
                   />
                 </div>
                 <p className="text-sm font-bold">Hình thức nhận hàng</p>

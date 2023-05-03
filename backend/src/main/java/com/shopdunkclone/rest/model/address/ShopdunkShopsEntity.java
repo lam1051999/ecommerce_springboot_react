@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Table(name = "shopdunk_shops", schema = "shopdunk")
-public class    ShopdunkShopsEntity {
+public class ShopdunkShopsEntity {
     @Id
     @Column(name = "id")
     @JsonProperty("id")

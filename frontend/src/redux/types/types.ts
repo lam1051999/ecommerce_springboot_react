@@ -192,20 +192,50 @@ export type AuthenticationState = {
   refresh_token: string | null;
 };
 
+export type CustomerInfosRequest = {
+  name: string;
+  gender: string;
+  dob: string;
+  phone_number: string;
+  email: string;
+};
+
+export type CustomerInfosData = CustomerInfosRequest & {
+  username: string;
+};
+
 export type CustomerInfosResponse = {
   status: string;
   message: string;
-  data: {
-    name: string;
-    gender: string;
-    dob: string;
-    phone_number: string;
-    email: string;
-    username: string;
-  };
+  data: CustomerInfosData;
+};
+
+export type MessageResponse = {
+  status: string;
+  message: string;
+  data: string;
 };
 
 export type CustomBaseQueryError = {
   status: number | undefined;
   data: {};
+};
+
+export type CustomerShipAddressesRequest = {
+  name: string;
+  phone_number: string;
+  email: string;
+  exact_address: string;
+  province_id: string;
+};
+
+export type CustomerShipAddressesEntity = CustomerShipAddressesRequest & {
+  id: string;
+  username: string;
+};
+
+export type CustomerShipAddressesResponse = {
+  status: string;
+  message: string;
+  data: CustomerShipAddressesEntity[];
 };

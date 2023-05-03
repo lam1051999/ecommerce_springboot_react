@@ -21,3 +21,10 @@ export type InfoButton = {
   key: string;
   button_id: number;
 };
+
+export type ProfileTabsItem = {
+  key: string;
+  title: string;
+  icon: React.ReactNode;
+  component: React.ReactNode;
+};

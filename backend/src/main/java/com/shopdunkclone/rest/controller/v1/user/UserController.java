@@ -1,7 +1,11 @@
 package com.shopdunkclone.rest.controller.v1.user;
 
+import com.shopdunkclone.rest.dto.auth.RefreshTokenRequest;
 import com.shopdunkclone.rest.dto.user.CustomerInfosDto;
+import com.shopdunkclone.rest.dto.user.CustomerInfosRequest;
+import com.shopdunkclone.rest.dto.user.ShipAddressesRequest;
 import com.shopdunkclone.rest.model.ServiceResult;
+import com.shopdunkclone.rest.model.user.ShipAddressesEntity;
 import com.shopdunkclone.rest.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,9 +26,39 @@ public class UserController {
 
     @Operation(summary = "Lấy thông khách hàng")
     @GetMapping(value = "/customer-infos")
-    public ResponseEntity<ServiceResult<CustomerInfosDto>> getCustomerInfos(@RequestHeader(value="Authorization") String bearerToken) {
-        String jwt = bearerToken.substring(7);
-        ServiceResult<CustomerInfosDto> result = userService.getCustomerInfos(jwt);
+    public ResponseEntity<ServiceResult<CustomerInfosDto>> getCustomerInfos(
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) {
+        ServiceResult<CustomerInfosDto> result = userService.getCustomerInfos(bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Sửa thông tin khách hàng")
+    @PostMapping("/customer-infos")
+    public ResponseEntity<ServiceResult<String>> editCustomerInfos(
+            @RequestBody CustomerInfosRequest oldInfo,
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) {
+        ServiceResult<String> result = userService.editCustomerInfos(oldInfo, bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Lấy thông tin địa chỉ nhận của khách hàng")
+    @GetMapping("/customer-infos/ship-addresses")
+    public ResponseEntity<ServiceResult<List<ShipAddressesEntity>>> getCustomerShipAddresses(
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) {
+        ServiceResult<List<ShipAddressesEntity>> result = userService.getCustomerShipAddresses(bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Tạo thông tin địa chỉ nhận của khách hàng")
+    @PostMapping("/customer-infos/ship-addresses")
+    public ResponseEntity<ServiceResult<String>> createCustomerShipAddresses(
+            @RequestBody ShipAddressesRequest request,
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) {
+        ServiceResult<String> result = userService.createCustomerShipAddresse(request, bearerToken);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

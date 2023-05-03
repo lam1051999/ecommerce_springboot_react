@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     private static final RequestMatcher requestMatchersInclude = new OrRequestMatcher(
-            new AntPathRequestMatcher("/api/v1/customer-infos")
+            new AntPathRequestMatcher("/api/v1/customer-infos/**")
     );
 
     @Override
