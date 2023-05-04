@@ -70,8 +70,10 @@ export default function Signin() {
                 .then((fulfilled) => {
                   dispatch(onRenewToken(fulfilled));
                   redirectFromLogin();
+                })
+                .finally(() => {
+                  setSubmitting(false);
                 });
-              setSubmitting(false);
             }}
           >
             {({

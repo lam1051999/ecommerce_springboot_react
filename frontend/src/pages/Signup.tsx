@@ -102,7 +102,7 @@ export default function Signup() {
               }
               return errors;
             }}
-            onSubmit={async (values, { setSubmitting }) => {
+            onSubmit={async (values, { setSubmitting, resetForm }) => {
               await register({
                 name: values.name,
                 gender: values.gender,
@@ -114,9 +114,12 @@ export default function Signup() {
               })
                 .unwrap()
                 .then(() => {
+                  resetForm();
                   navigate("/sign-up-result");
+                })
+                .finally(() => {
+                  setSubmitting(false);
                 });
-              setSubmitting(false);
             }}
           >
             {({

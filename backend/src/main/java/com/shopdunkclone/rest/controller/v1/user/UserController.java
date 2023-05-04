@@ -8,6 +8,7 @@ import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.model.user.ShipAddressesEntity;
 import com.shopdunkclone.rest.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @Operation(summary = "Sửa thông tin khách hàng")
-    @PostMapping("/customer-infos")
+    @PatchMapping("/customer-infos")
     public ResponseEntity<ServiceResult<String>> editCustomerInfos(
             @RequestBody CustomerInfosRequest oldInfo,
             @RequestHeader(value = "Authorization") String bearerToken
@@ -59,6 +60,16 @@ public class UserController {
             @RequestHeader(value = "Authorization") String bearerToken
     ) {
         ServiceResult<String> result = userService.createCustomerShipAddresse(request, bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Xoá thông tin địa chỉ nhận của khách hàng")
+    @DeleteMapping("/customer-infos/ship-addresses/{id}")
+    public ResponseEntity<ServiceResult<String>> deleteCustomerShipAddresses(
+            @PathVariable(name = "id") String id,
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) {
+        ServiceResult<String> result = userService.deleteCustomerShipAddresse(id, bearerToken);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

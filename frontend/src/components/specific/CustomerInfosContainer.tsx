@@ -35,9 +35,7 @@ export default function CustomerInfosContainer({
             ))}
           </ul>
         </div>
-        <div className="w-[60%]">
-          <div className="bg-white rounded-lg">{mainContent}</div>
-        </div>
+        <div className="w-[60%]">{mainContent}</div>
       </div>
     </PageContainer>
   );

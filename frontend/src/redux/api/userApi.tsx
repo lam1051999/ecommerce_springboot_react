@@ -27,7 +27,7 @@ export const userApi = createApi({
     >({
       query: (customerInfosData) => ({
         url: "/customer-infos",
-        method: "post",
+        method: "patch",
         data: customerInfosData,
       }),
       invalidatesTags: ["CustomerInfos"],
@@ -50,6 +50,13 @@ export const userApi = createApi({
       }),
       invalidatesTags: ["CustomerShipAddresses"],
     }),
+    deleteCustomerShipAddresses: builder.mutation<MessageResponse, string>({
+      query: (id) => ({
+        url: `/customer-infos/ship-addresses/${id}`,
+        method: "delete",
+      }),
+      invalidatesTags: ["CustomerShipAddresses"],
+    }),
   }),
 });
 
@@ -58,4 +65,5 @@ export const {
   useUpdateCustomerInfosMutation,
   useGetCustomerShipAddressesQuery,
   useCreateCustomerShipAddressesMutation,
+  useDeleteCustomerShipAddressesMutation,
 } = userApi;

@@ -61,7 +61,7 @@ public class UserService {
     public ServiceResult<String> createCustomerShipAddresse(ShipAddressesRequest request, String bearerToken) {
         String username = getUsernameFromHeader(bearerToken);
         ShipAddressesEntity shipAddressesEntity = new ShipAddressesEntity();
-        String hashId = Utils.getHashText(request.getProvinceId() + "_" + request.getExactAddress() + "_" + username);
+        String hashId = Utils.getHashText(username + "_" + System.currentTimeMillis());
         shipAddressesEntity.setId(hashId);
         shipAddressesEntity.setName(request.getName());
         shipAddressesEntity.setPhoneNumber(request.getPhoneNumber());
@@ -71,6 +71,12 @@ public class UserService {
         shipAddressesEntity.setUsername(username);
         shipAddressesRepository.save(shipAddressesEntity);
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Tạo địa chỉ lấy hàng cho khách hàng " + username + " thành công");
+    }
+
+    public ServiceResult<String> deleteCustomerShipAddresse(String id, String bearerToken) {
+        String username = getUsernameFromHeader(bearerToken);
+        long deletedRecords = shipAddressesRepository.deleteByIdAndUsername(id, username);
+        return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Xoá địa chỉ lấy hàng cho khách hàng " + username + " thành công");
     }
 
     public String getUsernameFromHeader(String bearerToken) {
