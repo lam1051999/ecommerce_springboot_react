@@ -308,7 +308,7 @@ export default function Signup() {
                     {errors.password && touched.password && errors.password}
                   </p>
                 </div>
-                <p className="text-xs bg-gray-200 p-2 rounded-lg mt-2">
+                <p className="text-xs bg-gray-200 p-3 rounded-lg mt-2">
                   Lưu ý: Mật khẩu phải có tối thiểu 8 ký tự bao gồm chữ in hoa,
                   chữ in thường, số và các ký tự đặc biệt
                 </p>

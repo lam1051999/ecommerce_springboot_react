@@ -2,7 +2,9 @@ package com.shopdunkclone.rest.service.user;
 
 import com.shopdunkclone.rest.dto.user.CustomerInfosDto;
 import com.shopdunkclone.rest.dto.user.CustomerInfosRequest;
+import com.shopdunkclone.rest.dto.user.PasswordChangeRequest;
 import com.shopdunkclone.rest.dto.user.ShipAddressesRequest;
+import com.shopdunkclone.rest.exception.InvalidRequestException;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
 import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.model.user.CustomersEntity;
@@ -14,6 +16,7 @@ import com.shopdunkclone.rest.util.TokenType;
 import com.shopdunkclone.rest.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +29,8 @@ public class UserService {
     ShipAddressesRepository shipAddressesRepository;
     @Autowired
     JwtService jwtService;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public ServiceResult<CustomerInfosDto> getCustomerInfos(String bearerToken) {
         String username = getUsernameFromHeader(bearerToken);
@@ -40,7 +45,7 @@ public class UserService {
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", customerInfosDto);
     }
 
-    public ServiceResult<String> editCustomerInfos(CustomerInfosRequest oldInfo, String bearerToken) {
+    public ServiceResult<String> updateCustomerInfos(CustomerInfosRequest oldInfo, String bearerToken) {
         String username = getUsernameFromHeader(bearerToken);
         customersRepository.updateCustomerInfos(
                 oldInfo.getName(),
@@ -90,6 +95,17 @@ public class UserService {
         String username = getUsernameFromHeader(bearerToken);
         shipAddressesRepository.updateCustomerShipAddressesById(id, request.getName(), request.getPhoneNumber(), request.getEmail(), request.getExactAddress(), request.getProvinceId(), username);
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Cập nhật địa chỉ lấy hàng cho khách hàng " + username + " thành công");
+    }
+
+    public ServiceResult<String> updateCustomerPassword(PasswordChangeRequest request, String bearerToken) throws InvalidRequestException {
+        String username = getUsernameFromHeader(bearerToken);
+        CustomersEntity customersEntity = customersRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(passwordEncoder.matches(request.getOldPassword(), customersEntity.getPassword())){
+            customersRepository.updatePassword(username, passwordEncoder.encode(request.getNewPassword()));
+        } else {
+            throw new InvalidRequestException("Password do not match");
+        }
+        return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Cập nhật mật khẩu cho khách hàng " + username + " thành công");
     }
 
     public String getUsernameFromHeader(String bearerToken) {

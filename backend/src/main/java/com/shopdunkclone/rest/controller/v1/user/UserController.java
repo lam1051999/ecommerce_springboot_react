@@ -2,7 +2,9 @@ package com.shopdunkclone.rest.controller.v1.user;
 
 import com.shopdunkclone.rest.dto.user.CustomerInfosDto;
 import com.shopdunkclone.rest.dto.user.CustomerInfosRequest;
+import com.shopdunkclone.rest.dto.user.PasswordChangeRequest;
 import com.shopdunkclone.rest.dto.user.ShipAddressesRequest;
+import com.shopdunkclone.rest.exception.InvalidRequestException;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
 import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.model.user.ShipAddressesEntity;
@@ -35,11 +37,21 @@ public class UserController {
 
     @Operation(summary = "Sửa thông tin khách hàng")
     @PatchMapping("/customer-infos/account")
-    public ResponseEntity<ServiceResult<String>> editCustomerInfos(
+    public ResponseEntity<ServiceResult<String>> updateCustomerInfos(
             @RequestBody CustomerInfosRequest oldInfo,
             @RequestHeader(value = "Authorization") String bearerToken
     ) {
-        ServiceResult<String> result = userService.editCustomerInfos(oldInfo, bearerToken);
+        ServiceResult<String> result = userService.updateCustomerInfos(oldInfo, bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Cập nhật mật khẩu mới cho tài khoản khách hàng")
+    @PatchMapping("/customer-infos/password")
+    public ResponseEntity<ServiceResult<String>> updateCustomerPassword(
+            @RequestBody PasswordChangeRequest request,
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) throws InvalidRequestException {
+        ServiceResult<String> result = userService.updateCustomerPassword(request, bearerToken);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

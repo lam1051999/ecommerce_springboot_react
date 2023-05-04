@@ -7,6 +7,7 @@ import {
   CustomerShipAddressesRequest,
   CustomerShipAddressesResponse,
   MessageResponse,
+  PasswordChangeRequest,
   SingleCustomerShipAddressesResponse,
 } from "../types/types";
 
@@ -36,6 +37,16 @@ export const userApi = createApi({
         data: customerInfosData,
       }),
       invalidatesTags: ["CustomerInfos"],
+    }),
+    updateCustomerPassword: builder.mutation<
+      MessageResponse,
+      PasswordChangeRequest
+    >({
+      query: (passwordChangeRequest) => ({
+        url: "/customer-infos/password",
+        method: "patch",
+        data: passwordChangeRequest,
+      }),
     }),
     getCustomerShipAddresses: builder.query<
       CustomerShipAddressesResponse,
@@ -94,4 +105,5 @@ export const {
   useDeleteCustomerShipAddressesMutation,
   useGetCustomerShipAddressesByIdQuery,
   useUpdateCustomerShipAddressesByIdMutation,
+  useUpdateCustomerPasswordMutation,
 } = userApi;

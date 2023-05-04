@@ -97,13 +97,16 @@ export const axiosAuthBaseQuery =
             }
           } catch (refreshError) {
             dispatch(onResetToken());
+            if (!window.location.href.includes("sign-in")) {
+              window.location.href = signinRedicrectPath;
+            }
           }
         } else {
           dispatch(onResetToken());
+          if (!window.location.href.includes("sign-in")) {
+            window.location.href = signinRedicrectPath;
+          }
         }
-      }
-      if (!window.location.href.includes("sign-in")) {
-        window.location.href = signinRedicrectPath;
       }
       return {
         error: {

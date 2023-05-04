@@ -245,3 +245,8 @@ export type SingleCustomerShipAddressesResponse = {
   message: string;
   data: CustomerShipAddressesEntity;
 };
+
+export type PasswordChangeRequest = {
+  old_password: string;
+  new_password: string;
+};
