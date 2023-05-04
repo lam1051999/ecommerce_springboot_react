@@ -1,6 +1,5 @@
 package com.shopdunkclone.rest.controller.v1.user;
 
-import com.shopdunkclone.rest.dto.auth.RefreshTokenRequest;
 import com.shopdunkclone.rest.dto.user.CustomerInfosDto;
 import com.shopdunkclone.rest.dto.user.CustomerInfosRequest;
 import com.shopdunkclone.rest.dto.user.ShipAddressesRequest;
@@ -9,7 +8,6 @@ import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.model.user.ShipAddressesEntity;
 import com.shopdunkclone.rest.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
