@@ -16,6 +16,13 @@ import Signin from "../pages/Signin";
 import Signup from "../pages/Signup";
 import SignupResult from "../pages/SignupResult";
 import CustomerInfos from "../pages/CustomerInfos";
+import ProfileAccountInfo from "../components/specific/ProfileAccountInfo";
+import ProfileAddressInfo from "../components/specific/ProfileAddressInfo";
+import ProfileOrdersInfo from "../components/specific/ProfileOrdersInfo";
+import ProfileRewardedPointsInfo from "../components/specific/ProfileRewardedPointsInfo";
+import ProfilePasswordInfo from "../components/specific/ProfilePasswordInfo";
+import ProfileAvatarInfo from "../components/specific/ProfileAvatarInfo";
+import ProfileRatingHistoryInfo from "../components/specific/ProfileRatingHistoryInfo";
 
 export const ordinaryRoutes: PageRoute[] = [
   {
@@ -160,7 +167,67 @@ export const ordinaryRoutes: PageRoute[] = [
   },
   {
     path: "/customer-infos",
-    element: <CustomerInfos />,
+    element: <ProfileAccountInfo />,
+    listPath: [
+      {
+        title: "Thông tin tài khoản",
+        goTo: null,
+      },
+    ],
+  },
+  {
+    path: "/customer-infos/ship-addresses",
+    element: <ProfileAddressInfo />,
+    listPath: [
+      {
+        title: "Thông tin tài khoản",
+        goTo: null,
+      },
+    ],
+  },
+  {
+    path: "/customer-infos/orders-history",
+    element: <ProfileOrdersInfo />,
+    listPath: [
+      {
+        title: "Thông tin tài khoản",
+        goTo: null,
+      },
+    ],
+  },
+  {
+    path: "/customer-infos/rewarded-points",
+    element: <ProfileRewardedPointsInfo />,
+    listPath: [
+      {
+        title: "Thông tin tài khoản",
+        goTo: null,
+      },
+    ],
+  },
+  {
+    path: "/customer-infos/password",
+    element: <ProfilePasswordInfo />,
+    listPath: [
+      {
+        title: "Thông tin tài khoản",
+        goTo: null,
+      },
+    ],
+  },
+  {
+    path: "/customer-infos/avatar",
+    element: <ProfileAvatarInfo />,
+    listPath: [
+      {
+        title: "Thông tin tài khoản",
+        goTo: null,
+      },
+    ],
+  },
+  {
+    path: "/customer-infos/ratings-history",
+    element: <ProfileRatingHistoryInfo />,
     listPath: [
       {
         title: "Thông tin tài khoản",

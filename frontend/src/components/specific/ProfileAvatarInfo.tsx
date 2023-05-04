@@ -1,3 +1,6 @@
+import CustomerInfosContainer from "./CustomerInfosContainer";
+
 export default function ProfileAvatarInfo() {
-  return <div>ProfileAvatarInfo</div>;
+  const mainContent = <div>ProfileAvatarInfo</div>;
+  return <CustomerInfosContainer mainContent={mainContent} />;
 }

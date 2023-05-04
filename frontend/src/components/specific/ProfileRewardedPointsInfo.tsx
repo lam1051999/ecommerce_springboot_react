@@ -1,3 +1,7 @@
+import CustomerInfosContainer from "./CustomerInfosContainer";
+
 export default function ProfileRewardedPointsInfo() {
-  return <div>ProfileRewardedPointsInfo</div>;
+  const mainContent = <div>ProfileRewardedPointsInfo</div>;
+
+  return <CustomerInfosContainer mainContent={mainContent} />;
 }

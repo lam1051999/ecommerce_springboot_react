@@ -13,6 +13,7 @@ import {
   useGetCustomerInfosQuery,
   useUpdateCustomerInfosMutation,
 } from "../../redux/api/userApi";
+import CustomerInfosContainer from "./CustomerInfosContainer";
 
 export default function ProfileAccountInfo() {
   const { data, error, isLoading } = useGetCustomerInfosQuery();
@@ -25,8 +26,7 @@ export default function ProfileAccountInfo() {
       data: updateData,
     },
   ] = useUpdateCustomerInfosMutation();
-
-  return (
+  const mainContent = (
     <div className="w-full p-4">
       {error || isLoading ? (
         <div className="animate-pulse w-full bg-gray-300 h-full" />
@@ -271,4 +271,6 @@ export default function ProfileAccountInfo() {
       )}
     </div>
   );
+
+  return <CustomerInfosContainer mainContent={mainContent} />;
 }

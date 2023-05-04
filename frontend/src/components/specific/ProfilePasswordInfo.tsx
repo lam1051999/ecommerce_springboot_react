@@ -1,3 +1,7 @@
+import CustomerInfosContainer from "./CustomerInfosContainer";
+
 export default function ProfilePasswordInfo() {
-  return <div>ProfilePasswordInfo</div>;
+  const mainContent = <div>ProfilePasswordInfo</div>;
+
+  return <CustomerInfosContainer mainContent={mainContent} />;
 }

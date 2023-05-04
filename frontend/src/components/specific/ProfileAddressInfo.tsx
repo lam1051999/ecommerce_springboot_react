@@ -6,6 +6,7 @@ import {
   useCreateCustomerShipAddressesMutation,
   useGetCustomerShipAddressesQuery,
 } from "../../redux/api/userApi";
+import CustomerInfosContainer from "./CustomerInfosContainer";
 
 type AddAddressFormikError = {
   name?: string;
@@ -34,7 +35,7 @@ export default function ProfileAddressInfo() {
     },
   ] = useCreateCustomerShipAddressesMutation();
 
-  return (
+  const mainContent = (
     <div className="w-full p-4">
       <Formik
         initialValues={{
@@ -262,4 +263,6 @@ export default function ProfileAddressInfo() {
       </Formik>
     </div>
   );
+
+  return <CustomerInfosContainer mainContent={mainContent} />;
 }

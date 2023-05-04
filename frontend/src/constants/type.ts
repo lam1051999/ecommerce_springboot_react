@@ -23,8 +23,7 @@ export type InfoButton = {
 };
 
 export type ProfileTabsItem = {
-  key: string;
+  to: string;
   title: string;
   icon: React.ReactNode;
-  component: React.ReactNode;
 };
