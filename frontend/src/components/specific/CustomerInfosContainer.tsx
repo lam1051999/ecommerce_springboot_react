@@ -22,7 +22,7 @@ export default function CustomerInfosContainer({
                 <Link to={item.to}>
                   <button
                     className={`flex items-center space-x-2 w-full py-3 px-4 rounded-lg ${
-                      location.pathname === item.to
+                      location.pathname.includes(item.to)
                         ? "bg-[#E7EFFA] text-blue-700"
                         : "text-black"
                     }`}

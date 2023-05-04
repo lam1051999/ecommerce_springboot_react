@@ -3,7 +3,7 @@ import { FaUserAlt, FaMapMarkerAlt, FaLock, FaHistory } from "react-icons/fa";
 import { BsCartFill, BsGiftFill, BsImage } from "react-icons/bs";
 export const profileTabs: ProfileTabsItem[] = [
   {
-    to: "/customer-infos",
+    to: "/customer-infos/account",
     title: "Thông tin tài khoản",
     icon: <FaUserAlt />,
   },

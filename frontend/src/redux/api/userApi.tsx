@@ -7,6 +7,7 @@ import {
   CustomerShipAddressesRequest,
   CustomerShipAddressesResponse,
   MessageResponse,
+  SingleCustomerShipAddressesResponse,
 } from "../types/types";
 
 export const userApi = createApi({
@@ -15,10 +16,14 @@ export const userApi = createApi({
     baseUrl: `${SHOPDUNK_BACKEND_BASE_URL}/api/v1`,
   }),
   refetchOnMountOrArgChange: true,
-  tagTypes: ["CustomerInfos", "CustomerShipAddresses"],
+  tagTypes: [
+    "CustomerInfos",
+    "CustomerShipAddresses",
+    "CustomerShipAddressesById",
+  ],
   endpoints: (builder) => ({
     getCustomerInfos: builder.query<CustomerInfosResponse, void>({
-      query: () => ({ url: "/customer-infos", method: "get" }),
+      query: () => ({ url: "/customer-infos/account", method: "get" }),
       providesTags: ["CustomerInfos"],
     }),
     updateCustomerInfos: builder.mutation<
@@ -26,7 +31,7 @@ export const userApi = createApi({
       CustomerInfosRequest
     >({
       query: (customerInfosData) => ({
-        url: "/customer-infos",
+        url: "/customer-infos/account",
         method: "patch",
         data: customerInfosData,
       }),
@@ -57,6 +62,27 @@ export const userApi = createApi({
       }),
       invalidatesTags: ["CustomerShipAddresses"],
     }),
+    getCustomerShipAddressesById: builder.query<
+      SingleCustomerShipAddressesResponse,
+      string
+    >({
+      query: (id) => ({
+        url: `/customer-infos/ship-addresses/${id}`,
+        method: "get",
+      }),
+      providesTags: ["CustomerShipAddressesById"],
+    }),
+    updateCustomerShipAddressesById: builder.mutation<
+      MessageResponse,
+      CustomerShipAddressesRequest & { id: string }
+    >({
+      query: (request) => ({
+        url: `/customer-infos/ship-addresses/${request.id}`,
+        method: "patch",
+        data: request,
+      }),
+      invalidatesTags: ["CustomerShipAddressesById"],
+    }),
   }),
 });
 
@@ -66,4 +92,6 @@ export const {
   useGetCustomerShipAddressesQuery,
   useCreateCustomerShipAddressesMutation,
   useDeleteCustomerShipAddressesMutation,
+  useGetCustomerShipAddressesByIdQuery,
+  useUpdateCustomerShipAddressesByIdMutation,
 } = userApi;

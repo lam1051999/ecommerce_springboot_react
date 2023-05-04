@@ -119,14 +119,17 @@ export default function Header() {
             {token ? (
               <div className="w-full">
                 <div className="flex items-center w-full space-x-3 px-4 pt-4">
-                  <Link to="/customer-infos">
+                  <Link to="/customer-infos/account">
                     <FaUserCircle color="#DDDDDD" size={40} />
                   </Link>
                   <p className="text-sm font-bold">{parseJwt(token).sub}</p>
                 </div>
                 <ul className="grid grid-cols-1 divide-y px-4 py-2">
                   <li className="py-2 text-sm">
-                    <Link to="/customer-infos" className="hover:text-blue-700">
+                    <Link
+                      to="/customer-infos/account"
+                      className="hover:text-blue-700"
+                    >
                       Tài khoản của tôi
                     </Link>
                   </li>

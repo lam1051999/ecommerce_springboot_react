@@ -239,3 +239,9 @@ export type CustomerShipAddressesResponse = {
   message: string;
   data: CustomerShipAddressesEntity[];
 };
+
+export type SingleCustomerShipAddressesResponse = {
+  status: string;
+  message: string;
+  data: CustomerShipAddressesEntity;
+};

@@ -3,6 +3,7 @@ package com.shopdunkclone.rest.service.user;
 import com.shopdunkclone.rest.dto.user.CustomerInfosDto;
 import com.shopdunkclone.rest.dto.user.CustomerInfosRequest;
 import com.shopdunkclone.rest.dto.user.ShipAddressesRequest;
+import com.shopdunkclone.rest.exception.NotFoundRecordException;
 import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.model.user.CustomersEntity;
 import com.shopdunkclone.rest.model.user.ShipAddressesEntity;
@@ -77,6 +78,18 @@ public class UserService {
         String username = getUsernameFromHeader(bearerToken);
         long deletedRecords = shipAddressesRepository.deleteByIdAndUsername(id, username);
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Xoá địa chỉ lấy hàng cho khách hàng " + username + " thành công");
+    }
+
+    public ServiceResult<ShipAddressesEntity> getCustomerShipAddressesById(String id, String bearerToken) throws NotFoundRecordException {
+        String username = getUsernameFromHeader(bearerToken);
+        ShipAddressesEntity shipAddressesEntity = shipAddressesRepository.findByIdAndUsername(id, username).orElseThrow(() -> new NotFoundRecordException("Ship address not found"));
+        return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", shipAddressesEntity);
+    }
+
+    public ServiceResult<String> updateCustomerShipAddressesById(String id, ShipAddressesRequest request, String bearerToken) {
+        String username = getUsernameFromHeader(bearerToken);
+        shipAddressesRepository.updateCustomerShipAddressesById(id, request.getName(), request.getPhoneNumber(), request.getEmail(), request.getExactAddress(), request.getProvinceId(), username);
+        return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Cập nhật địa chỉ lấy hàng cho khách hàng " + username + " thành công");
     }
 
     public String getUsernameFromHeader(String bearerToken) {

@@ -15,7 +15,6 @@ import ShoppingCart from "../pages/ShoppingCart";
 import Signin from "../pages/Signin";
 import Signup from "../pages/Signup";
 import SignupResult from "../pages/SignupResult";
-import CustomerInfos from "../pages/CustomerInfos";
 import ProfileAccountInfo from "../components/specific/ProfileAccountInfo";
 import ProfileAddressInfo from "../components/specific/ProfileAddressInfo";
 import ProfileOrdersInfo from "../components/specific/ProfileOrdersInfo";
@@ -23,6 +22,7 @@ import ProfileRewardedPointsInfo from "../components/specific/ProfileRewardedPoi
 import ProfilePasswordInfo from "../components/specific/ProfilePasswordInfo";
 import ProfileAvatarInfo from "../components/specific/ProfileAvatarInfo";
 import ProfileRatingHistoryInfo from "../components/specific/ProfileRatingHistoryInfo";
+import AddressesUpdateForm from "../components/specific/AddressesUpdateForm";
 
 export const ordinaryRoutes: PageRoute[] = [
   {
@@ -166,7 +166,7 @@ export const ordinaryRoutes: PageRoute[] = [
     ],
   },
   {
-    path: "/customer-infos",
+    path: "/customer-infos/account",
     element: <ProfileAccountInfo />,
     listPath: [
       {
@@ -178,6 +178,16 @@ export const ordinaryRoutes: PageRoute[] = [
   {
     path: "/customer-infos/ship-addresses",
     element: <ProfileAddressInfo />,
+    listPath: [
+      {
+        title: "Thông tin tài khoản",
+        goTo: null,
+      },
+    ],
+  },
+  {
+    path: "/customer-infos/ship-addresses/edit/:id",
+    element: <AddressesUpdateForm />,
     listPath: [
       {
         title: "Thông tin tài khoản",

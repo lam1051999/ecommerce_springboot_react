@@ -4,6 +4,7 @@ import com.shopdunkclone.rest.dto.auth.RefreshTokenRequest;
 import com.shopdunkclone.rest.dto.user.CustomerInfosDto;
 import com.shopdunkclone.rest.dto.user.CustomerInfosRequest;
 import com.shopdunkclone.rest.dto.user.ShipAddressesRequest;
+import com.shopdunkclone.rest.exception.NotFoundRecordException;
 import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.model.user.ShipAddressesEntity;
 import com.shopdunkclone.rest.service.user.UserService;
@@ -26,7 +27,7 @@ public class UserController {
     UserService userService;
 
     @Operation(summary = "Lấy thông khách hàng")
-    @GetMapping(value = "/customer-infos")
+    @GetMapping(value = "/customer-infos/account")
     public ResponseEntity<ServiceResult<CustomerInfosDto>> getCustomerInfos(
             @RequestHeader(value = "Authorization") String bearerToken
     ) {
@@ -35,7 +36,7 @@ public class UserController {
     }
 
     @Operation(summary = "Sửa thông tin khách hàng")
-    @PatchMapping("/customer-infos")
+    @PatchMapping("/customer-infos/account")
     public ResponseEntity<ServiceResult<String>> editCustomerInfos(
             @RequestBody CustomerInfosRequest oldInfo,
             @RequestHeader(value = "Authorization") String bearerToken
@@ -70,6 +71,27 @@ public class UserController {
             @RequestHeader(value = "Authorization") String bearerToken
     ) {
         ServiceResult<String> result = userService.deleteCustomerShipAddresse(id, bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Lấy thông tin địa chỉ nhận của khách hàng theo id")
+    @GetMapping("/customer-infos/ship-addresses/{id}")
+    public ResponseEntity<ServiceResult<ShipAddressesEntity>> getCustomerShipAddressesById(
+            @PathVariable(name = "id") String id,
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) throws NotFoundRecordException {
+        ServiceResult<ShipAddressesEntity> result = userService.getCustomerShipAddressesById(id, bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Cập nhật thông tin địa chỉ nhận của khách hàng")
+    @PatchMapping("/customer-infos/ship-addresses/{id}")
+    public ResponseEntity<ServiceResult<String>> updateCustomerShipAddressesById(
+            @PathVariable(name = "id") String id,
+            @RequestBody ShipAddressesRequest request,
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) {
+        ServiceResult<String> result = userService.updateCustomerShipAddressesById(id, request, bearerToken);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
