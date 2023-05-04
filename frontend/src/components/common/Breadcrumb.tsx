@@ -4,13 +4,13 @@ import { ordinaryRoutes } from "../../constants/routes";
 import { PathLink } from "../../constants/type";
 import { useAppSelector } from "../../redux/hooks/hooks";
 import PageContainer from "./PageContainer";
+import { getMatchedRoute } from "../../utils/helper";
 
 export default function Breadcrumb() {
   const location = useLocation();
   const { pathname } = location;
-  const isOrdinaryRoute = ordinaryRoutes
-    .map((item) => item.path)
-    .includes(pathname);
+  const matchedOrdinaryRoute = getMatchedRoute(ordinaryRoutes, pathname);
+  const isOrdinaryRoute = matchedOrdinaryRoute !== undefined;
   const isProductDetailRoute = pathname.startsWith("/products/");
   const isValidRoute = isOrdinaryRoute || isProductDetailRoute;
   let pathLinks: PathLink[] = [];
@@ -18,8 +18,7 @@ export default function Breadcrumb() {
 
   if (pathname === "/" || !isValidRoute) return null;
   if (isOrdinaryRoute) {
-    pathLinks = ordinaryRoutes.filter((item) => item.path === pathname)[0]
-      .listPath;
+    pathLinks = matchedOrdinaryRoute.listPath;
   }
   if (isProductDetailRoute) {
     pathLinks = tempPathLinks;

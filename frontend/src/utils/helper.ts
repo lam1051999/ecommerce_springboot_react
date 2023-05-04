@@ -1,5 +1,6 @@
 import { ProductCardInfo } from "../components/common/types";
 import { SHOPDUNK_BACKEND_BASE_URL } from "../constants/config";
+import { PageRoute } from "../constants/type";
 import { ProductsDto } from "../redux/types/types";
 import { MapTitleChoices, MapTitlePreviewChoice } from "./types";
 
@@ -85,4 +86,19 @@ export function parseJwt(token: string) {
   );
 
   return JSON.parse(jsonPayload);
+}
+
+// https://stackoverflow.com/questions/67407289/check-if-path-matches-dynamic-route-string
+export function getMatchedRoute(routes: PageRoute[], pathname: string) {
+  // escapeDots: abc.com -> abc\\.com
+  const escapeDots = (s: string) =>
+    Array.from(s, (c) => (c === "." ? "\\." : c)).join("");
+  return routes.find((o) =>
+    new RegExp(
+      `^${o.path
+        .split("/")
+        .map((s) => (s.startsWith(":") ? "[^/]+" : escapeDots(s)))
+        .join("/")}$`
+    ).test(pathname)
+  );
 }
