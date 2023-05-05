@@ -2,8 +2,7 @@ package com.shopdunkclone.rest.logging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -16,10 +15,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
+@Slf4j
 public class LoggableDispatcherServlet extends DispatcherServlet {
-
-    private static final Logger logger = LoggerFactory.getLogger("HttpLogger");
-
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Override
@@ -44,7 +41,7 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
             // log request
             String path = request.getRequestURI();
             if("/error".equals(path) && requestWrapper.getRequest() != null) {
-                Object pathTmp = requestWrapper.getRequest().getAttribute("javax.servlet.forward.request_uri");
+                Object pathTmp = requestWrapper.getRequest().getAttribute("jakarta.servlet.forward.request_uri");
                 path = pathTmp != null ? pathTmp.toString() : path;
             }
             rootNode.put("id", id);
@@ -74,7 +71,7 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
             // return response
             responseWrapper.copyBodyToResponse();
             rootNode.set("responseHeaders", mapper.valueToTree(getResponsetHeaders(responseWrapper)));
-            if(!requestWrapper.getRequestURI().equals("/api/ping")) logger.info(rootNode.toString());
+            if(!requestWrapper.getRequestURI().equals("/api/ping")) log.info(rootNode.toString());
         }
     }
 

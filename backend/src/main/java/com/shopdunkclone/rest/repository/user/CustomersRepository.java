@@ -43,4 +43,12 @@ public interface CustomersRepository extends JpaRepository<CustomersEntity, Stri
     @Transactional
     @Query(value = "UPDATE `customers` SET password=:password WHERE username=:username ;", nativeQuery = true)
     void updatePassword(@Param("username") String username, @Param("password") String password);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE `customers` SET avatar=:avatar WHERE username=:username ;", nativeQuery = true)
+    void updateCustomerAvatar(@Param("username") String username, @Param("avatar") String avatar);
+
+    @Query(value = "SELECT avatar FROM `customers` WHERE username=:username ;", nativeQuery = true)
+    String getCustomerAvatar(@Param("username") String username);
 }

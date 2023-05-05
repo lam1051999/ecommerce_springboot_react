@@ -1,9 +1,6 @@
 package com.shopdunkclone.rest.service.user;
 
-import com.shopdunkclone.rest.dto.user.CustomerInfosDto;
-import com.shopdunkclone.rest.dto.user.CustomerInfosRequest;
-import com.shopdunkclone.rest.dto.user.PasswordChangeRequest;
-import com.shopdunkclone.rest.dto.user.ShipAddressesRequest;
+import com.shopdunkclone.rest.dto.user.*;
 import com.shopdunkclone.rest.exception.InvalidRequestException;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
 import com.shopdunkclone.rest.model.ServiceResult;
@@ -15,11 +12,21 @@ import com.shopdunkclone.rest.util.JwtService;
 import com.shopdunkclone.rest.util.TokenType;
 import com.shopdunkclone.rest.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserService {
@@ -106,6 +113,32 @@ public class UserService {
             throw new InvalidRequestException("Password do not match");
         }
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Cập nhật mật khẩu cho khách hàng " + username + " thành công");
+    }
+
+    public ServiceResult<String> updateCustomerAvatar(MultipartFile file, String bearerToken) throws IOException {
+        String username = getUsernameFromHeader(bearerToken);
+        Path resourceFolder = Paths.get(new ClassPathResource("/").getURL().getPath());
+        Path userImagesFolder = Paths.get("static/images/customers_images/" + username);
+        if(!Files.exists(resourceFolder.resolve(userImagesFolder))) {
+            Files.createDirectories(resourceFolder.resolve(userImagesFolder));
+        }
+        Path avatar = resourceFolder.resolve(userImagesFolder).resolve(Objects.requireNonNull(file.getOriginalFilename()));
+        OutputStream os = Files.newOutputStream(avatar);
+        os.write(file.getBytes());
+        customersRepository.updateCustomerAvatar(username, "/images/customers_images/" + username + "/" + file.getOriginalFilename());
+        return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Tải lên avatar cho khách hàng " + username + " thành công");
+    }
+
+    public ServiceResult<String> deleteCustomerAvatar(String bearerToken) {
+        String username = getUsernameFromHeader(bearerToken);
+        customersRepository.updateCustomerAvatar(username, null);
+        return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Xoá avatar khách hàng " + username + " thành công");
+    }
+
+    public ServiceResult<CustomerAvatarDto> getCustomerAvatar(String bearerToken) {
+        String username = getUsernameFromHeader(bearerToken);
+        String avatar = customersRepository.getCustomerAvatar(username);
+        return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", new CustomerAvatarDto(avatar));
     }
 
     public String getUsernameFromHeader(String bearerToken) {

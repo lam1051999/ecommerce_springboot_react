@@ -1,9 +1,6 @@
 package com.shopdunkclone.rest.controller.v1.user;
 
-import com.shopdunkclone.rest.dto.user.CustomerInfosDto;
-import com.shopdunkclone.rest.dto.user.CustomerInfosRequest;
-import com.shopdunkclone.rest.dto.user.PasswordChangeRequest;
-import com.shopdunkclone.rest.dto.user.ShipAddressesRequest;
+import com.shopdunkclone.rest.dto.user.*;
 import com.shopdunkclone.rest.exception.InvalidRequestException;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
 import com.shopdunkclone.rest.model.ServiceResult;
@@ -16,7 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -102,6 +101,34 @@ public class UserController {
             @RequestHeader(value = "Authorization") String bearerToken
     ) {
         ServiceResult<String> result = userService.updateCustomerShipAddressesById(id, request, bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Tải lên avatar của khách hàng")
+    @PostMapping(value = "/customer-infos/avatar")
+    public ResponseEntity<ServiceResult<String>> updateCustomerAvatar(
+            @RequestParam(value = "avatar_file") MultipartFile file,
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) throws IOException {
+        ServiceResult<String> result = userService.updateCustomerAvatar(file, bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Xoá lên avatar của khách hàng")
+    @DeleteMapping(value = "/customer-infos/avatar")
+    public ResponseEntity<ServiceResult<String>> deleteCustomerAvatar(
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) throws IOException {
+        ServiceResult<String> result = userService.deleteCustomerAvatar(bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Lấy avatar của khách hàng")
+    @GetMapping(value = "/customer-infos/avatar")
+    public ResponseEntity<ServiceResult<CustomerAvatarDto>> getCustomerAvatar(
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) {
+        ServiceResult<CustomerAvatarDto> result = userService.getCustomerAvatar(bearerToken);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
