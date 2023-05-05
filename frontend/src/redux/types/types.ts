@@ -250,3 +250,13 @@ export type PasswordChangeRequest = {
   old_password: string;
   new_password: string;
 };
+
+export type CustomerAvatarDto = {
+  avatar: string;
+};
+
+export type CustomerAvatarResponse = {
+  status: string;
+  message: string;
+  data: CustomerAvatarDto;
+};

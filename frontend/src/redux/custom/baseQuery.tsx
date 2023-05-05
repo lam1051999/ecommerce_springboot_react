@@ -43,11 +43,16 @@ export const axiosAuthBaseQuery =
       method: AxiosRequestConfig["method"];
       data?: AxiosRequestConfig["data"];
       params?: AxiosRequestConfig["params"];
+      extraHeaders?: AxiosRequestConfig["headers"];
+      isNavigateToLogin?: boolean;
     },
     unknown,
     unknown
   > =>
-  async ({ url, method, data, params }, { dispatch, getState }) => {
+  async (
+    { url, method, data, params, extraHeaders = {}, isNavigateToLogin = true },
+    { dispatch, getState }
+  ) => {
     const { token, refresh_token } = (getState() as RootState).authentication;
     const signinRedicrectPath = window.location.pathname.includes("sign-in")
       ? window.location.pathname
@@ -60,6 +65,7 @@ export const axiosAuthBaseQuery =
         params,
         headers: {
           Authorization: `Bearer ${token}`,
+          ...extraHeaders,
         },
       });
       return { data: result.data };
@@ -83,6 +89,7 @@ export const axiosAuthBaseQuery =
                 params,
                 headers: {
                   Authorization: `Bearer ${response.data.token}`,
+                  ...extraHeaders,
                 },
               });
               return { data: resultRetry.data };
@@ -97,13 +104,16 @@ export const axiosAuthBaseQuery =
             }
           } catch (refreshError) {
             dispatch(onResetToken());
-            if (!window.location.href.includes("sign-in")) {
+            if (
+              !window.location.href.includes("sign-in") &&
+              isNavigateToLogin
+            ) {
               window.location.href = signinRedicrectPath;
             }
           }
         } else {
           dispatch(onResetToken());
-          if (!window.location.href.includes("sign-in")) {
+          if (!window.location.href.includes("sign-in") && isNavigateToLogin) {
             window.location.href = signinRedicrectPath;
           }
         }

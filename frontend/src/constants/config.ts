@@ -1,6 +1,9 @@
 export const SHOPDUNK_BACKEND_BASE_URL = import.meta.env
   .VITE_SHOPDUNK_BACKEND_BASE_URL;
 
+export const SHOPDUNK_IMAGES_BASE_URL = import.meta.env
+  .VITE_SHOPDUNK_IMAGES_BASE_URL;
+
 export const NODE_ENV = import.meta.env.VITE_NODE_ENV;
 
 export const NUM_PRODUCTS_PREVIEW = 4;

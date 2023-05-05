@@ -26,6 +26,7 @@ export default function ProfileAccountInfo() {
       data: updateData,
     },
   ] = useUpdateCustomerInfosMutation();
+
   const mainContent = (
     <div className="bg-white rounded-lg">
       <div className="w-full p-4">

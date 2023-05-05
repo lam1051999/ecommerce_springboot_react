@@ -1,5 +1,5 @@
 import { ProductCardInfo } from "../components/common/types";
-import { SHOPDUNK_BACKEND_BASE_URL } from "../constants/config";
+import { SHOPDUNK_IMAGES_BASE_URL } from "../constants/config";
 import { PageRoute } from "../constants/type";
 import { ProductsDto } from "../redux/types/types";
 import { MapTitleChoices, MapTitlePreviewChoice } from "./types";
@@ -24,7 +24,7 @@ export function getPreviewChoices(
 }
 
 export function getFullPathImage(imageUrl: string): string {
-  return `${SHOPDUNK_BACKEND_BASE_URL}${imageUrl}`;
+  return `${SHOPDUNK_IMAGES_BASE_URL}${imageUrl}`;
 }
 
 export function getProductCardInfosFromProductDto(

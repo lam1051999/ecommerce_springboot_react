@@ -4,14 +4,26 @@ import { BsSearch, BsCart } from "react-icons/bs";
 import { AiOutlineUser } from "react-icons/ai";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks/hooks";
 import { FaUserCircle } from "react-icons/fa";
-import { parseJwt } from "../../utils/helper";
+import { getFullPathImage, parseJwt } from "../../utils/helper";
 import { onResetToken } from "../../redux/slices/authenticationSlice";
+import { useGetCustomerAvatarQuery } from "../../redux/api/userApi";
+import { useEffect } from "react";
 
 export default function Header() {
   const { cartItems } = useAppSelector((state) => state.shoppingCart);
   const token = useAppSelector((state) => state.authentication.token);
+  const {
+    data: getAvatarData,
+    error: getAvatarError,
+    isLoading: getAvatarIsLoading,
+    refetch: getAvatarRefetch,
+  } = useGetCustomerAvatarQuery();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    getAvatarRefetch();
+  }, [token]);
 
   return (
     <nav className="sticky top-0 z-30 bg-[#515154] flex items-center justify-center h-16">
@@ -120,7 +132,22 @@ export default function Header() {
               <div className="w-full">
                 <div className="flex items-center w-full space-x-3 px-4 pt-4">
                   <Link to="/customer-infos/account">
-                    <FaUserCircle color="#DDDDDD" size={40} />
+                    {getAvatarError || getAvatarIsLoading ? (
+                      <FaUserCircle color="#DDDDDD" size={40} />
+                    ) : getAvatarData ? (
+                      getAvatarData.data.avatar ? (
+                        <div className="w-[40px] h-[40px] rounded-full overflow-hidden mb-3">
+                          <img
+                            src={getFullPathImage(getAvatarData.data.avatar)}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <FaUserCircle color="#DDDDDD" size={40} />
+                      )
+                    ) : (
+                      <FaUserCircle color="#DDDDDD" size={40} />
+                    )}
                   </Link>
                   <p className="text-sm font-bold">{parseJwt(token).sub}</p>
                 </div>

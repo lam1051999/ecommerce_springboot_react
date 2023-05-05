@@ -2,6 +2,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { SHOPDUNK_BACKEND_BASE_URL } from "../../constants/config";
 import { axiosAuthBaseQuery } from "../custom/baseQuery";
 import {
+  CustomerAvatarResponse,
   CustomerInfosRequest,
   CustomerInfosResponse,
   CustomerShipAddressesRequest,
@@ -21,6 +22,7 @@ export const userApi = createApi({
     "CustomerInfos",
     "CustomerShipAddresses",
     "CustomerShipAddressesById",
+    "CustomerAvatar",
   ],
   endpoints: (builder) => ({
     getCustomerInfos: builder.query<CustomerInfosResponse, void>({
@@ -94,6 +96,29 @@ export const userApi = createApi({
       }),
       invalidatesTags: ["CustomerShipAddressesById"],
     }),
+    updateCustomerAvatar: builder.mutation<MessageResponse, FormData>({
+      query: (request) => ({
+        url: "/customer-infos/avatar",
+        method: "post",
+        data: request,
+      }),
+      invalidatesTags: ["CustomerAvatar"],
+    }),
+    deleteCustomerAvatar: builder.mutation<MessageResponse, void>({
+      query: () => ({
+        url: "/customer-infos/avatar",
+        method: "delete",
+      }),
+      invalidatesTags: ["CustomerAvatar"],
+    }),
+    getCustomerAvatar: builder.query<CustomerAvatarResponse, void>({
+      query: () => ({
+        url: "/customer-infos/avatar",
+        method: "get",
+        isNavigateToLogin: false,
+      }),
+      providesTags: ["CustomerAvatar"],
+    }),
   }),
 });
 
@@ -106,4 +131,7 @@ export const {
   useGetCustomerShipAddressesByIdQuery,
   useUpdateCustomerShipAddressesByIdMutation,
   useUpdateCustomerPasswordMutation,
+  useUpdateCustomerAvatarMutation,
+  useDeleteCustomerAvatarMutation,
+  useGetCustomerAvatarQuery,
 } = userApi;
