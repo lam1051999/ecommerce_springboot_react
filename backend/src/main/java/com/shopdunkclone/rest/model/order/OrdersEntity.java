@@ -63,4 +63,15 @@ public class OrdersEntity {
     @Column(name = "ship_address_id")
     @JsonProperty("ship_address_id")
     private String shipAddressId;
+
+    @Basic
+    @Column(name = "orders_status")
+    @JsonProperty("orders_status")
+    @Enumerated(EnumType.STRING)
+    private OrdersStatus ordersStatus;
+
+    @Basic
+    @Column(name = "payment_status")
+    @JsonProperty("payment_status")
+    private PaymentStatus paymentStatus;
 }

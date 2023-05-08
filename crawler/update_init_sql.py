@@ -1,23 +1,12 @@
-from utils.database import get_show_create_table, get_mysql_connection
+from utils.database import get_show_create_table, get_mysql_connection, get_all_table_names
 import os
 
 if __name__ == "__main__":
     PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
     connection = get_mysql_connection()
     database = "shopdunk"
-    list_tables = [
-        "customers",
-        "orders",
-        "product_images",
-        "product_infos",
-        "product_orders",
-        "product_ratings",
-        "products",
-        "provinces",
-        "ship_addresses",
-        "shopdunk_shops",
-        "stocks",
-    ]
+    list_tables = get_all_table_names(connection, database)
+    list_tables = [table[f"tables_in_{database}"] for table in list_tables]
     list_text = []
     try:
         list_text.append("CREATE DATABASE IF NOT EXISTS `shopdunk`;")

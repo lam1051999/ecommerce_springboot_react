@@ -8,6 +8,8 @@ import com.shopdunkclone.rest.exception.InvalidRequestException;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
 import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.model.order.OrdersEntity;
+import com.shopdunkclone.rest.model.order.OrdersStatus;
+import com.shopdunkclone.rest.model.order.PaymentStatus;
 import com.shopdunkclone.rest.model.order.ProductOrdersEntity;
 import com.shopdunkclone.rest.model.product.StocksEntity;
 import com.shopdunkclone.rest.model.user.CustomersEntity;
@@ -192,6 +194,8 @@ public class UserService {
             ordersEntity.setPayment(request.getPayment());
             ordersEntity.setShipAddressId(request.getShipAddressId());
             ordersEntity.setUsername(username);
+            ordersEntity.setOrdersStatus(OrdersStatus.PROCESSING);
+            ordersEntity.setPaymentStatus(PaymentStatus.PROCESSING);
             ordersRepository.save(ordersEntity);
             // prepare product orders
             List<ProductOrdersEntity> productOrdersEntityList = cartStockMapItems.stream().map(item -> new ProductOrdersEntity(
