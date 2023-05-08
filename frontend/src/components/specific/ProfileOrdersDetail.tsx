@@ -183,7 +183,7 @@ export default function ProfileOrdersDetail() {
                 {ordersByIdData.data.ordered_items.map((item) => (
                   <div
                     key={item.products_entity.id}
-                    className="flex items-center jusityf-between border border-gray-300 rounded-lg mb-3 overflow-hidden p-3"
+                    className="flex items-center jusityf-between border border-gray-200 rounded-lg mb-3 overflow-hidden p-3"
                   >
                     <div className="grow flex items-center space-x-2">
                       <Link to={`/products/${item.products_entity.id}`}>
