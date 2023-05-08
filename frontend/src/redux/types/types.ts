@@ -136,7 +136,8 @@ export type ProductRatingsResponse = {
   data: ProductRatingsEntity;
 };
 
-export type ShoppingCartItem = ProductsEntity & {
+export type ShoppingCartItem = {
+  products_entity: ProductsEntity;
   quantity: number;
 };
 
@@ -274,4 +275,36 @@ export type OrdersRequest = {
   payment: string;
   ship_address_id: string;
   list_products_in_order: ShoppingCartItemNormalized[];
+};
+
+export type OrdersEntity = {
+  id: string;
+  created: string;
+  modified: string;
+  receive_type: string;
+  total_price: number;
+  is_extract_receipt: number;
+  payment: string;
+  orders_status: string;
+  payment_status: string;
+  username: string;
+  ship_address_id: string;
+};
+
+export type OrdersResponse = {
+  status: string;
+  message: string;
+  data: OrdersEntity[];
+};
+
+export type OrdersByIdDto = {
+  order_detail: OrdersEntity;
+  ship_address_detail: CustomerShipAddressesEntity;
+  ordered_items: ShoppingCartItem[];
+};
+
+export type OrdersByIdReponse = {
+  status: string;
+  message: string;
+  data: OrdersByIdDto;
 };

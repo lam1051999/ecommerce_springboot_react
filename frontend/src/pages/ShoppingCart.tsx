@@ -18,13 +18,15 @@ import { useGetProvincesAndShopsQuery } from "../redux/api/addressApi";
 import {
   CustomerShipAddressesEntity,
   ProvincesAndShopsResponse,
+  ShoppingCartItem,
+  ShoppingCartItemNormalized,
 } from "../redux/types/types";
 import { Link, useNavigate } from "react-router-dom";
 import PageContainer from "../components/common/PageContainer";
 import {
   useCreateCustomerShipAddressesMutation,
   useGetCustomerShipAddressesQuery,
-  usePlaceOrderMutation,
+  usePlaceOrdersMutation,
 } from "../redux/api/userApi";
 import { Formik } from "formik";
 import SubmitButton from "../components/common/SubmitButton";
@@ -61,14 +63,14 @@ export default function ShoppingCart() {
     isLoading: getAddressesIsLoading,
   } = useGetCustomerShipAddressesQuery();
   const [
-    placeOrder,
+    placeOrders,
     {
       isError: placeOrderIsError,
       isSuccess: placeOrderIsSuccess,
       error: placeOrderError,
       data: placeOrderData,
     },
-  ] = usePlaceOrderMutation();
+  ] = usePlaceOrdersMutation();
   const [
     createShipAddress,
     {
@@ -118,6 +120,20 @@ export default function ShoppingCart() {
     const el = event.target.children[index];
     const id = el.getAttribute("id");
     return id ? id : DEFAULT_ADDRESS;
+  }
+  function getTotalPrice(allItems: ShoppingCartItem[]) {
+    return allItems.reduce((acc, item) => {
+      return acc + item.products_entity.actual_price * item.quantity;
+    }, 0);
+  }
+  function getShoppingCartItemNormalized(
+    allItems: ShoppingCartItem[]
+  ): ShoppingCartItemNormalized[] {
+    return allItems.map((item) => ({
+      name: item.products_entity.name,
+      product_id: item.products_entity.id,
+      quantity: item.quantity,
+    }));
   }
 
   return (
@@ -194,19 +210,14 @@ export default function ShoppingCart() {
                   .unwrap()
                   .then(async (shipAddressResult) => {
                     const shipAddressId = shipAddressResult.data;
-                    await placeOrder({
+                    await placeOrders({
                       is_extract_receipt: values.isExtractReceipt ? 1 : 0,
                       payment: values.payment,
                       receive_type: values.receiveType,
                       ship_address_id: shipAddressId,
-                      total_price: cartItems.reduce((acc, item) => {
-                        return acc + item.actual_price * item.quantity;
-                      }, 0),
-                      list_products_in_order: cartItems.map((item) => ({
-                        name: item.name,
-                        product_id: item.id,
-                        quantity: item.quantity,
-                      })),
+                      total_price: getTotalPrice(cartItems),
+                      list_products_in_order:
+                        getShoppingCartItemNormalized(cartItems),
                     })
                       .unwrap()
                       .then(() => {
@@ -230,19 +241,14 @@ export default function ShoppingCart() {
                 );
               }
             } else {
-              await placeOrder({
+              await placeOrders({
                 is_extract_receipt: values.isExtractReceipt ? 1 : 0,
                 payment: values.payment,
                 receive_type: "HOME",
                 ship_address_id: addedAddressId,
-                total_price: cartItems.reduce((acc, item) => {
-                  return acc + item.actual_price * item.quantity;
-                }, 0),
-                list_products_in_order: cartItems.map((item) => ({
-                  name: item.name,
-                  product_id: item.id,
-                  quantity: item.quantity,
-                })),
+                total_price: getTotalPrice(cartItems),
+                list_products_in_order:
+                  getShoppingCartItemNormalized(cartItems),
               })
                 .unwrap()
                 .then(() => {
@@ -290,7 +296,7 @@ export default function ShoppingCart() {
                     <tbody>
                       {cartItems.map((item, index) => (
                         <tr
-                          key={item.id}
+                          key={item.products_entity.id}
                           style={{
                             borderBottom:
                               index !== cartItems.length - 1
@@ -299,72 +305,80 @@ export default function ShoppingCart() {
                           }}
                         >
                           <td className="py-6 align-top">
-                            <Link to={`/products/${item.id}`}>
+                            <Link to={`/products/${item.products_entity.id}`}>
                               <img
-                                src={getFullPathImage(item.showcase_image)}
+                                src={getFullPathImage(
+                                  item.products_entity.showcase_image
+                                )}
                                 className="object-cover w-20 h-20"
                               />
                             </Link>
                           </td>
                           <td className="py-6 align-top w-[40%]">
                             <div className="w-full">
-                              <Link to={`/products/${item.id}`}>
+                              <Link to={`/products/${item.products_entity.id}`}>
                                 <p className="font-semibold hover:text-blue-700 inline">
-                                  {item.name}
+                                  {item.products_entity.name}
                                 </p>
                               </Link>
-                              {item.extra_product_type && (
+                              {item.products_entity.extra_product_type && (
                                 <ProductsExtraCartProperty
                                   title="Loại Sản Phẩm"
-                                  value={item.extra_product_type}
+                                  value={
+                                    item.products_entity.extra_product_type
+                                  }
                                 />
                               )}
-                              {item.extra_strap_type && (
+                              {item.products_entity.extra_strap_type && (
                                 <ProductsExtraCartProperty
                                   title="Loại Dây"
-                                  value={item.extra_strap_type}
+                                  value={item.products_entity.extra_strap_type}
                                 />
                               )}
-                              {item.extra_gpu_type && (
+                              {item.products_entity.extra_gpu_type && (
                                 <ProductsExtraCartProperty
                                   title="GPU"
-                                  value={item.extra_gpu_type}
+                                  value={item.products_entity.extra_gpu_type}
                                 />
                               )}
-                              {item.extra_storage_type && (
+                              {item.products_entity.extra_storage_type && (
                                 <ProductsExtraCartProperty
                                   title="Dung Lượng"
-                                  value={item.extra_storage_type}
+                                  value={
+                                    item.products_entity.extra_storage_type
+                                  }
                                 />
                               )}
-                              {item.extra_ram_type && (
+                              {item.products_entity.extra_ram_type && (
                                 <ProductsExtraCartProperty
                                   title="RAM"
-                                  value={item.extra_ram_type}
+                                  value={item.products_entity.extra_ram_type}
                                 />
                               )}
-                              {item.extra_model_type && (
+                              {item.products_entity.extra_model_type && (
                                 <ProductsExtraCartProperty
                                   title="Model"
-                                  value={item.extra_model_type}
+                                  value={item.products_entity.extra_model_type}
                                 />
                               )}
-                              {item.extra_screen_size && (
+                              {item.products_entity.extra_screen_size && (
                                 <ProductsExtraCartProperty
                                   title="Màn hình"
-                                  value={item.extra_screen_size}
+                                  value={item.products_entity.extra_screen_size}
                                 />
                               )}
                             </div>
                           </td>
                           <td className="py-6 align-top font-semibold">
-                            {formatCurrency(item.actual_price)}
+                            {formatCurrency(item.products_entity.actual_price)}
                           </td>
                           <td className="py-6 align-top">
                             <div className="flex items-center space-x-2">
                               <button
                                 type="button"
-                                onClick={() => dispatch(decrement(item.id))}
+                                onClick={() =>
+                                  dispatch(decrement(item.products_entity.id))
+                                }
                                 className="border border-blue-700 text-blue-700 p-1 rounded"
                               >
                                 <BsDashLg size={12} />
@@ -372,7 +386,9 @@ export default function ShoppingCart() {
                               <span>{item.quantity}</span>
                               <button
                                 type="button"
-                                onClick={() => dispatch(increment(item.id))}
+                                onClick={() =>
+                                  dispatch(increment(item.products_entity.id))
+                                }
                                 className="border border-blue-700 text-blue-700 p-1 rounded"
                               >
                                 <BsPlusLg size={12} />
@@ -382,7 +398,11 @@ export default function ShoppingCart() {
                           <td className="py-6 align-top">
                             <button
                               type="button"
-                              onClick={() => dispatch(removeCartItem(item.id))}
+                              onClick={() =>
+                                dispatch(
+                                  removeCartItem(item.products_entity.id)
+                                )
+                              }
                             >
                               <RxTrash size={25} className="text-gray-600" />
                             </button>
@@ -768,21 +788,13 @@ export default function ShoppingCart() {
                     <div className="flex items-center justify-between my-4">
                       <p className="text-sm text-gray-700">Tổng phụ:</p>
                       <p className="tracking-tight text-sm font-bold">
-                        {formatCurrency(
-                          cartItems.reduce((acc, item) => {
-                            return acc + item.actual_price * item.quantity;
-                          }, 0)
-                        )}
+                        {formatCurrency(getTotalPrice(cartItems))}
                       </p>
                     </div>
                     <div className="flex items-center justify-between">
                       <p className="font-bold">Tổng cộng:</p>
                       <p className="tracking-tight font-bold text-blue-700">
-                        {formatCurrency(
-                          cartItems.reduce((acc, item) => {
-                            return acc + item.actual_price * item.quantity;
-                          }, 0)
-                        )}
+                        {formatCurrency(getTotalPrice(cartItems))}
                       </p>
                     </div>
                   </div>

@@ -102,3 +102,66 @@ export function getMatchedRoute(routes: PageRoute[], pathname: string) {
     ).test(pathname)
   );
 }
+
+export function getOrderStatusColor(status: string) {
+  switch (status) {
+    case "PROCESSING":
+      return "#FDB700";
+    case "APPROVED":
+      return "#28A745";
+    case "REJECTED":
+      return "#FF4127";
+    default:
+      return "#FDB700";
+  }
+}
+export function getOrderStatusText(status: string) {
+  switch (status) {
+    case "PROCESSING":
+      return "Đang xử lý";
+    case "APPROVED":
+      return "Thành công";
+    case "REJECTED":
+      return "Đã huỷ";
+    default:
+      return "Đang xử lý";
+  }
+}
+export function getPaymentText(payment: string) {
+  switch (payment) {
+    case "BANK":
+      return "Chuyển khoản ngân hàng";
+    case "ONEPAY":
+      return "Thanh toán OnePay";
+    case "PAYOO":
+      return "Thanh toán Payoo";
+    case "KREDIVO":
+      return "Thanh toán Kredivo";
+    default:
+      return "Chuyển khoản ngân hàng";
+  }
+}
+export function getPaymentStatusColor(status: string) {
+  switch (status) {
+    case "PROCESSING":
+      return "#FDB700";
+    case "PAID":
+      return "#28A745";
+    case "CANCELED":
+      return "#FF4127";
+    default:
+      return "#FDB700";
+  }
+}
+export function getPaymentStatusText(status: string) {
+  switch (status) {
+    case "PROCESSING":
+      return "Đang chờ xử lý";
+    case "PAID":
+      return "Đã thanh toán";
+    case "CANCELED":
+      return "Đã huỷ";
+    default:
+      return "Đang chờ xử lý";
+  }
+}

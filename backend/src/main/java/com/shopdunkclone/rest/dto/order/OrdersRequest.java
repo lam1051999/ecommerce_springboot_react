@@ -33,5 +33,5 @@ public class OrdersRequest {
     private String shipAddressId;
 
     @JsonProperty("list_products_in_order")
-    private List<ShoppingCartItem> listProductsInOrder;
+    private List<ShoppingCartItemNormalized> listProductsInOrder;
 }

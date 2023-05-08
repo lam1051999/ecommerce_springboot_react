@@ -1,8 +1,6 @@
 package com.shopdunkclone.rest.service.user;
 
-import com.shopdunkclone.rest.dto.order.CartStockMapItem;
-import com.shopdunkclone.rest.dto.order.OrdersRequest;
-import com.shopdunkclone.rest.dto.order.ShoppingCartItem;
+import com.shopdunkclone.rest.dto.order.*;
 import com.shopdunkclone.rest.dto.user.*;
 import com.shopdunkclone.rest.exception.InvalidRequestException;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
@@ -11,11 +9,13 @@ import com.shopdunkclone.rest.model.order.OrdersEntity;
 import com.shopdunkclone.rest.model.order.OrdersStatus;
 import com.shopdunkclone.rest.model.order.PaymentStatus;
 import com.shopdunkclone.rest.model.order.ProductOrdersEntity;
+import com.shopdunkclone.rest.model.product.ProductsEntity;
 import com.shopdunkclone.rest.model.product.StocksEntity;
 import com.shopdunkclone.rest.model.user.CustomersEntity;
 import com.shopdunkclone.rest.model.user.ShipAddressesEntity;
 import com.shopdunkclone.rest.repository.order.OrdersRepository;
 import com.shopdunkclone.rest.repository.order.ProductOrdersRepository;
+import com.shopdunkclone.rest.repository.product.ProductsRepository;
 import com.shopdunkclone.rest.repository.product.StocksRepository;
 import com.shopdunkclone.rest.repository.user.CustomersRepository;
 import com.shopdunkclone.rest.repository.user.ShipAddressesRepository;
@@ -36,10 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -59,6 +56,8 @@ public class UserService {
     StocksRepository stocksRepository;
     @Autowired
     ProductOrdersRepository productOrdersRepository;
+    @Autowired
+    ProductsRepository productsRepository;
     @Value("${nginx_images_path}")
     private String NGINX_IMAGES_PATH;
 
@@ -165,14 +164,14 @@ public class UserService {
     }
 
     @Transactional
-    public ServiceResult<String> placeOrder(OrdersRequest request, String bearerToken) throws InvalidRequestException {
+    public ServiceResult<String> placeOrders(OrdersRequest request, String bearerToken) throws InvalidRequestException {
         String username = getUsernameFromHeader(bearerToken);
-        List<StocksEntity> stocksEntities = stocksRepository.findByProductIdIn(request.getListProductsInOrder().stream().map(ShoppingCartItem::getProductId).toList());
-        Map<String, ShoppingCartItem> shoppingCartItemMap = request.getListProductsInOrder().stream().collect(Collectors.toMap(ShoppingCartItem::getProductId, Function.identity()));
+        List<StocksEntity> stocksEntities = stocksRepository.findByProductIdIn(request.getListProductsInOrder().stream().map(ShoppingCartItemNormalized::getProductId).toList());
+        Map<String, ShoppingCartItemNormalized> shoppingCartItemMap = request.getListProductsInOrder().stream().collect(Collectors.toMap(ShoppingCartItemNormalized::getProductId, Function.identity()));
         Map<String, StocksEntity> stocksEntityMap = stocksEntities.stream().collect(Collectors.toMap(StocksEntity::getProductId, Function.identity()));
         List<CartStockMapItem> cartStockMapItems = new ArrayList<>();
         shoppingCartItemMap.keySet().forEach(key -> {
-            ShoppingCartItem cartItem = shoppingCartItemMap.get(key);
+            ShoppingCartItemNormalized cartItem = shoppingCartItemMap.get(key);
             StocksEntity stocksItem = stocksEntityMap.get(key);
             if(stocksItem != null) {
                 cartStockMapItems.add(new CartStockMapItem(key, cartItem.getName(), cartItem.getQuantity(), stocksItem.getQuantity()));
@@ -217,6 +216,31 @@ public class UserService {
                     });
             throw new InvalidRequestException("Tạo đơn thất bại, " + String.join(", ", failedReasons));
         }
+    }
+
+    public ServiceResult<List<OrdersEntity>> getOrders(String bearerToken) {
+        String username = getUsernameFromHeader(bearerToken);
+        List<OrdersEntity> ordersEntityList = ordersRepository.findAllByUsername(username);
+        return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", ordersEntityList);
+    }
+
+    public ServiceResult<OrdersByIdDto> getOrdersById(String id, String bearerToken) throws NotFoundRecordException {
+        String username = getUsernameFromHeader(bearerToken);
+        OrdersByIdDto ordersByIdDto = new OrdersByIdDto();
+        OrdersEntity ordersEntity = ordersRepository.findByIdAndUsername(id, username).orElseThrow(() -> new NotFoundRecordException("Order not found"));
+        ShipAddressesEntity shipAddressesEntity = shipAddressesRepository.findByIdAndUsername(ordersEntity.getShipAddressId(), username).orElseThrow(() -> new NotFoundRecordException("Ship address not found"));
+        List<ProductOrdersEntity> productOrdersEntityList = productOrdersRepository.findAllByOrderId(id);
+        List<ShoppingCartItem> orderedItems = new ArrayList<>();
+        productOrdersEntityList.forEach(item -> {
+            int quantity = item.getQuantity();
+            String productId = item.getProductId();
+            Optional<ProductsEntity> productsEntity = productsRepository.findProductsEntityByIdAndNameNotNull(productId);
+            productsEntity.ifPresent(entity -> orderedItems.add(new ShoppingCartItem(entity, quantity)));
+        });
+        ordersByIdDto.setOrderDetail(ordersEntity);
+        ordersByIdDto.setShipAddressDetail(shipAddressesEntity);
+        ordersByIdDto.setOrderedItems(orderedItems);
+        return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", ordersByIdDto);
     }
 
     public String getUsernameFromHeader(String bearerToken) {

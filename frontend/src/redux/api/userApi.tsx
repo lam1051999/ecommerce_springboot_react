@@ -8,7 +8,9 @@ import {
   CustomerShipAddressesRequest,
   CustomerShipAddressesResponse,
   MessageResponse,
+  OrdersByIdReponse,
   OrdersRequest,
+  OrdersResponse,
   PasswordChangeRequest,
   SingleCustomerShipAddressesResponse,
 } from "../types/types";
@@ -24,6 +26,7 @@ export const userApi = createApi({
     "CustomerShipAddresses",
     "CustomerShipAddressesById",
     "CustomerAvatar",
+    "CustomerOrders",
   ],
   endpoints: (builder) => ({
     getCustomerInfos: builder.query<CustomerInfosResponse, void>({
@@ -120,11 +123,22 @@ export const userApi = createApi({
       }),
       providesTags: ["CustomerAvatar"],
     }),
-    placeOrder: builder.mutation<MessageResponse, OrdersRequest>({
+    placeOrders: builder.mutation<MessageResponse, OrdersRequest>({
       query: (request) => ({
         url: "/customer-infos/orders",
         method: "post",
         data: request,
+      }),
+      invalidatesTags: ["CustomerOrders"],
+    }),
+    getOrders: builder.query<OrdersResponse, void>({
+      query: () => ({ url: "/customer-infos/orders", method: "get" }),
+      providesTags: ["CustomerOrders"],
+    }),
+    getOrdersById: builder.query<OrdersByIdReponse, string>({
+      query: (id) => ({
+        url: `/customer-infos/orders/${id}`,
+        method: "get",
       }),
     }),
   }),
@@ -142,5 +156,7 @@ export const {
   useUpdateCustomerAvatarMutation,
   useDeleteCustomerAvatarMutation,
   useGetCustomerAvatarQuery,
-  usePlaceOrderMutation,
+  usePlaceOrdersMutation,
+  useGetOrdersQuery,
+  useGetOrdersByIdQuery,
 } = userApi;

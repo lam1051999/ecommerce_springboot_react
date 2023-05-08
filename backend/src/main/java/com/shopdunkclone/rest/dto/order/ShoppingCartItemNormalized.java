@@ -1,7 +1,6 @@
 package com.shopdunkclone.rest.dto.order;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.shopdunkclone.rest.model.product.ProductsEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,9 +8,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShoppingCartItem {
-    @JsonProperty("products_entity")
-    private ProductsEntity productsEntity;
+public class ShoppingCartItemNormalized {
+    @JsonProperty("product_id")
+    private String productId;
+
+    @JsonProperty("name")
+    private String name;
 
     @JsonProperty("quantity")
     private Integer quantity;

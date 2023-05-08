@@ -12,12 +12,15 @@ export const shoppingCartSlice = createSlice({
     addCartProduct: {
       reducer: (state, action: PayloadAction<ProductsEntity>) => {
         const cartIndex = state.cartItems.findIndex(
-          (item) => item.id === action.payload.id
+          (item) => item.products_entity.id === action.payload.id
         );
         if (cartIndex >= 0) {
           state.cartItems[cartIndex].quantity += 1;
         } else {
-          const tempProduct = { ...action.payload, quantity: 1 };
+          const tempProduct = {
+            products_entity: { ...action.payload },
+            quantity: 1,
+          };
           state.cartItems.push(tempProduct);
         }
       },
@@ -33,7 +36,7 @@ export const shoppingCartSlice = createSlice({
     removeCartItem: {
       reducer: (state, action: PayloadAction<string>) => {
         const index = state.cartItems.findIndex(
-          (item) => item.id === action.payload
+          (item) => item.products_entity.id === action.payload
         );
         if (index !== -1) {
           state.cartItems.splice(index, 1);
@@ -46,7 +49,7 @@ export const shoppingCartSlice = createSlice({
     increment: {
       reducer: (state, action: PayloadAction<string>) => {
         const index = state.cartItems.findIndex(
-          (item) => item.id === action.payload
+          (item) => item.products_entity.id === action.payload
         );
         state.cartItems[index].quantity += 1;
       },
@@ -57,7 +60,7 @@ export const shoppingCartSlice = createSlice({
     decrement: {
       reducer: (state, action: PayloadAction<string>) => {
         const index = state.cartItems.findIndex(
-          (item) => item.id === action.payload
+          (item) => item.products_entity.id === action.payload
         );
         if (state.cartItems[index].quantity >= 2) {
           state.cartItems[index].quantity -= 1;

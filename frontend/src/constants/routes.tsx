@@ -23,6 +23,7 @@ import ProfilePasswordInfo from "../components/specific/ProfilePasswordInfo";
 import ProfileAvatarInfo from "../components/specific/ProfileAvatarInfo";
 import ProfileRatingHistoryInfo from "../components/specific/ProfileRatingHistoryInfo";
 import AddressesUpdateForm from "../components/specific/AddressesUpdateForm";
+import ProfileOrdersDetail from "../components/specific/ProfileOrdersDetail";
 
 export const ordinaryRoutes: PageRoute[] = [
   {
@@ -198,6 +199,16 @@ export const ordinaryRoutes: PageRoute[] = [
   {
     path: "/customer-infos/orders-history",
     element: <ProfileOrdersInfo />,
+    listPath: [
+      {
+        title: "Thông tin tài khoản",
+        goTo: null,
+      },
+    ],
+  },
+  {
+    path: "/customer-infos/orders-history/:orderId",
+    element: <ProfileOrdersDetail />,
     listPath: [
       {
         title: "Thông tin tài khoản",

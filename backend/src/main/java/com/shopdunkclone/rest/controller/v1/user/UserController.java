@@ -1,10 +1,12 @@
 package com.shopdunkclone.rest.controller.v1.user;
 
+import com.shopdunkclone.rest.dto.order.OrdersByIdDto;
 import com.shopdunkclone.rest.dto.order.OrdersRequest;
 import com.shopdunkclone.rest.dto.user.*;
 import com.shopdunkclone.rest.exception.InvalidRequestException;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
 import com.shopdunkclone.rest.model.ServiceResult;
+import com.shopdunkclone.rest.model.order.OrdersEntity;
 import com.shopdunkclone.rest.model.user.ShipAddressesEntity;
 import com.shopdunkclone.rest.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -135,12 +137,31 @@ public class UserController {
 
     @Operation(summary = "Đặt đơn hàng")
     @PostMapping(value = "/customer-infos/orders")
-    public ResponseEntity<ServiceResult<String>> placeOrder(
+    public ResponseEntity<ServiceResult<String>> placeOrders(
             @RequestBody OrdersRequest request,
             @RequestHeader(value = "Authorization") String bearerToken
     ) throws InvalidRequestException {
-        ServiceResult<String> result = userService.placeOrder(request, bearerToken);
+        ServiceResult<String> result = userService.placeOrders(request, bearerToken);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Lấy thông tin đơn hàng")
+    @GetMapping(value = "/customer-infos/orders")
+    public ResponseEntity<ServiceResult<List<OrdersEntity>>> getOrders(
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) {
+        ServiceResult<List<OrdersEntity>> result = userService.getOrders(bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Lấy thông tin đơn hàng theo id")
+    @GetMapping(value = "/customer-infos/orders/{id}")
+    public ResponseEntity<ServiceResult<OrdersByIdDto>> getOrdersById(
+            @PathVariable(name = "id") String id,
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) throws NotFoundRecordException {
+        ServiceResult<OrdersByIdDto> result = userService.getOrdersById(id, bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @InitBinder
