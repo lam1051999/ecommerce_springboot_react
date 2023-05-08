@@ -73,5 +73,6 @@ public class OrdersEntity {
     @Basic
     @Column(name = "payment_status")
     @JsonProperty("payment_status")
+    @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 }
