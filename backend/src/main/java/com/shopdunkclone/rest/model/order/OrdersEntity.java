@@ -51,7 +51,8 @@ public class OrdersEntity {
     @Basic
     @Column(name = "payment")
     @JsonProperty("payment")
-    private String payment;
+    @Enumerated(EnumType.STRING)
+    private Payment payment;
 
     @Basic
     @Column(name = "username")

@@ -69,6 +69,9 @@ export const shoppingCartSlice = createSlice({
         return { payload: actionData };
       },
     },
+    resetCart: (state) => {
+      state.cartItems = initialState.cartItems;
+    },
   },
 });
 
@@ -78,5 +81,6 @@ export const {
   getCartProducts,
   increment,
   removeCartItem,
+  resetCart,
 } = shoppingCartSlice.actions;
 export default shoppingCartSlice;

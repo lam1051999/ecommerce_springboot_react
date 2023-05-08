@@ -3,6 +3,7 @@ import CustomerInfosContainer from "./CustomerInfosContainer";
 import { AiOutlineLoading } from "react-icons/ai";
 import { useUpdateCustomerPasswordMutation } from "../../redux/api/userApi";
 import { CustomBaseQueryError } from "../../redux/types/types";
+import SubmitButton from "../common/SubmitButton";
 
 type ProfilePasswordInfoFormikError = {
   oldPassword?: string;
@@ -131,19 +132,11 @@ export default function ProfilePasswordInfo() {
                   errors.repeatNewPassword}
               </p>
             </div>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className={`my-4 rounded-lg w-40 mx-auto text-sm text-white h-[40px] flex items-center justify-center ${
-                isSubmitting ? "bg-blue-500" : "bg-blue-700 hover:bg-blue-500"
-              }`}
-            >
-              {isSubmitting ? (
-                <AiOutlineLoading className="animate-spin" size={25} />
-              ) : (
-                <span>Đổi mật khẩu</span>
-              )}
-            </button>
+            <SubmitButton
+              isSubmitting={isSubmitting}
+              text="Đổi mật khẩu"
+              width="10rem"
+            />
             {updatePasswordIsLoading ? null : updatePasswordIsSuccess ? (
               <p className="text-xs text-center text-[#28a745] font-semibold">
                 Cập nhật mật khẩu thành công

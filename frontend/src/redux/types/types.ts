@@ -260,3 +260,18 @@ export type CustomerAvatarResponse = {
   message: string;
   data: CustomerAvatarDto;
 };
+
+export type ShoppingCartItemNormalized = {
+  product_id: string;
+  name: string;
+  quantity: number;
+};
+
+export type OrdersRequest = {
+  receive_type: string;
+  total_price: number;
+  is_extract_receipt: number;
+  payment: string;
+  ship_address_id: string;
+  list_products_in_order: ShoppingCartItemNormalized[];
+};

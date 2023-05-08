@@ -1,32 +1,45 @@
 package com.shopdunkclone.rest.service.user;
 
+import com.shopdunkclone.rest.dto.order.CartStockMapItem;
+import com.shopdunkclone.rest.dto.order.OrdersRequest;
+import com.shopdunkclone.rest.dto.order.ShoppingCartItem;
 import com.shopdunkclone.rest.dto.user.*;
 import com.shopdunkclone.rest.exception.InvalidRequestException;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
 import com.shopdunkclone.rest.model.ServiceResult;
+import com.shopdunkclone.rest.model.order.OrdersEntity;
+import com.shopdunkclone.rest.model.order.ProductOrdersEntity;
+import com.shopdunkclone.rest.model.product.StocksEntity;
 import com.shopdunkclone.rest.model.user.CustomersEntity;
 import com.shopdunkclone.rest.model.user.ShipAddressesEntity;
+import com.shopdunkclone.rest.repository.order.OrdersRepository;
+import com.shopdunkclone.rest.repository.order.ProductOrdersRepository;
+import com.shopdunkclone.rest.repository.product.StocksRepository;
 import com.shopdunkclone.rest.repository.user.CustomersRepository;
 import com.shopdunkclone.rest.repository.user.ShipAddressesRepository;
 import com.shopdunkclone.rest.util.JwtService;
 import com.shopdunkclone.rest.util.TokenType;
 import com.shopdunkclone.rest.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -38,6 +51,14 @@ public class UserService {
     JwtService jwtService;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    OrdersRepository ordersRepository;
+    @Autowired
+    StocksRepository stocksRepository;
+    @Autowired
+    ProductOrdersRepository productOrdersRepository;
+    @Value("${nginx_images_path}")
+    private String NGINX_IMAGES_PATH;
 
     public ServiceResult<CustomerInfosDto> getCustomerInfos(String bearerToken) {
         String username = getUsernameFromHeader(bearerToken);
@@ -71,7 +92,7 @@ public class UserService {
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", shipAddressesEntityList);
     }
 
-    public ServiceResult<String> createCustomerShipAddresse(ShipAddressesRequest request, String bearerToken) {
+    public ServiceResult<String> createCustomerShipAddresses(ShipAddressesRequest request, String bearerToken) {
         String username = getUsernameFromHeader(bearerToken);
         ShipAddressesEntity shipAddressesEntity = new ShipAddressesEntity();
         String hashId = Utils.getHashText(username + "_" + System.currentTimeMillis());
@@ -83,10 +104,10 @@ public class UserService {
         shipAddressesEntity.setProvinceId(request.getProvinceId());
         shipAddressesEntity.setUsername(username);
         shipAddressesRepository.save(shipAddressesEntity);
-        return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Tạo địa chỉ lấy hàng cho khách hàng " + username + " thành công");
+        return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", hashId);
     }
 
-    public ServiceResult<String> deleteCustomerShipAddresse(String id, String bearerToken) {
+    public ServiceResult<String> deleteCustomerShipAddresses(String id, String bearerToken) {
         String username = getUsernameFromHeader(bearerToken);
         long deletedRecords = shipAddressesRepository.deleteByIdAndUsername(id, username);
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Xoá địa chỉ lấy hàng cho khách hàng " + username + " thành công");
@@ -117,12 +138,12 @@ public class UserService {
 
     public ServiceResult<String> updateCustomerAvatar(MultipartFile file, String bearerToken) throws IOException {
         String username = getUsernameFromHeader(bearerToken);
-        Path resourceFolder = Paths.get(new ClassPathResource("/").getURL().getPath());
-        Path userImagesFolder = Paths.get("static/images/customers_images/" + username);
-        if(!Files.exists(resourceFolder.resolve(userImagesFolder))) {
-            Files.createDirectories(resourceFolder.resolve(userImagesFolder));
+        String userAvatarPathStr = NGINX_IMAGES_PATH + "/customers_images/" + username;
+        Path userAvatarPath = Paths.get(userAvatarPathStr);
+        if(!Files.exists(userAvatarPath)) {
+            Files.createDirectories(userAvatarPath);
         }
-        Path avatar = resourceFolder.resolve(userImagesFolder).resolve(Objects.requireNonNull(file.getOriginalFilename()));
+        Path avatar = userAvatarPath.resolve(Objects.requireNonNull(file.getOriginalFilename()));
         OutputStream os = Files.newOutputStream(avatar);
         os.write(file.getBytes());
         customersRepository.updateCustomerAvatar(username, "/images/customers_images/" + username + "/" + file.getOriginalFilename());
@@ -139,6 +160,59 @@ public class UserService {
         String username = getUsernameFromHeader(bearerToken);
         String avatar = customersRepository.getCustomerAvatar(username);
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", new CustomerAvatarDto(avatar));
+    }
+
+    @Transactional
+    public ServiceResult<String> placeOrder(OrdersRequest request, String bearerToken) throws InvalidRequestException {
+        String username = getUsernameFromHeader(bearerToken);
+        List<StocksEntity> stocksEntities = stocksRepository.findByProductIdIn(request.getListProductsInOrder().stream().map(ShoppingCartItem::getProductId).toList());
+        Map<String, ShoppingCartItem> shoppingCartItemMap = request.getListProductsInOrder().stream().collect(Collectors.toMap(ShoppingCartItem::getProductId, Function.identity()));
+        Map<String, StocksEntity> stocksEntityMap = stocksEntities.stream().collect(Collectors.toMap(StocksEntity::getProductId, Function.identity()));
+        List<CartStockMapItem> cartStockMapItems = new ArrayList<>();
+        shoppingCartItemMap.keySet().forEach(key -> {
+            ShoppingCartItem cartItem = shoppingCartItemMap.get(key);
+            StocksEntity stocksItem = stocksEntityMap.get(key);
+            if(stocksItem != null) {
+                cartStockMapItems.add(new CartStockMapItem(key, cartItem.getName(), cartItem.getQuantity(), stocksItem.getQuantity()));
+            } else {
+                cartStockMapItems.add(new CartStockMapItem(key, cartItem.getName(), cartItem.getQuantity(), 0));
+            }
+        });
+        if(cartStockMapItems.stream().allMatch(item -> item.getOrderQuantity() <= item.getStocksQuantity())) {
+            // prepare order
+            Timestamp placedAt = new Timestamp(System.currentTimeMillis());
+            String orderId = Utils.getHashText(username + "_" + System.currentTimeMillis());
+            OrdersEntity ordersEntity = new OrdersEntity();
+            ordersEntity.setId(orderId);
+            ordersEntity.setCreated(placedAt);
+            ordersEntity.setModified(placedAt);
+            ordersEntity.setReceiveType(request.getReceiveType());
+            ordersEntity.setTotalPrice(request.getTotalPrice());
+            ordersEntity.setIsExtractReceipt(request.getIsExtractReceipt());
+            ordersEntity.setPayment(request.getPayment());
+            ordersEntity.setShipAddressId(request.getShipAddressId());
+            ordersEntity.setUsername(username);
+            ordersRepository.save(ordersEntity);
+            // prepare product orders
+            List<ProductOrdersEntity> productOrdersEntityList = cartStockMapItems.stream().map(item -> new ProductOrdersEntity(
+                    item.getOrderQuantity(),
+                    orderId,
+                    item.getProductId()
+            )).toList();
+            productOrdersRepository.saveAll(productOrdersEntityList);
+            // update stocks
+            cartStockMapItems.forEach(item -> {
+                stocksRepository.updateStockAfterOrder(item.getOrderQuantity(), item.getProductId());
+            });
+            return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Tạo đơn cho khách hàng " + username + " thành công");
+        } else {
+            List<String> failedReasons = new ArrayList<>();
+            cartStockMapItems.stream().filter(item -> item.getOrderQuantity() > item.getStocksQuantity())
+                    .forEach(item -> {
+                        failedReasons.add(item.getName() + " chỉ còn " + item.getStocksQuantity() + " sản phẩm");
+                    });
+            throw new InvalidRequestException("Tạo đơn thất bại, " + String.join(", ", failedReasons));
+        }
     }
 
     public String getUsernameFromHeader(String bearerToken) {

@@ -1,5 +1,5 @@
 import { useGetProductsByIdQuery } from "../redux/api/productsApi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ProductDetailSkeletion from "../components/common/ProductDetailSkeletion";
 import { formatCurrency } from "../utils/helper";
 import ProductDetailColors from "../components/common/ProductDetailColors";
@@ -15,6 +15,7 @@ import PageContainer from "../components/common/PageContainer";
 
 export default function ProductDetail() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const params = useParams();
   const { productId } = params;
   if (!productId) return null;
@@ -40,6 +41,7 @@ export default function ProductDetail() {
       modified: detail.modified,
     };
     dispatch(addCartProduct(productsEntity));
+    navigate("/shopping-cart");
   }
 
   return (

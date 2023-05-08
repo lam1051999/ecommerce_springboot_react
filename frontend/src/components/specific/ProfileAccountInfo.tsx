@@ -14,6 +14,7 @@ import {
   useUpdateCustomerInfosMutation,
 } from "../../redux/api/userApi";
 import CustomerInfosContainer from "./CustomerInfosContainer";
+import SubmitButton from "../common/SubmitButton";
 
 export default function ProfileAccountInfo() {
   const { data, error, isLoading } = useGetCustomerInfosQuery();
@@ -68,6 +69,12 @@ export default function ProfileAccountInfo() {
                 }
                 if (!values.phoneNumber) {
                   errors.phoneNumber = "Trường bắt buộc.";
+                } else if (
+                  !/^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/.test(
+                    values.phoneNumber
+                  )
+                ) {
+                  errors.phoneNumber = "Số điện thoại không hợp lệ.";
                 }
                 if (!values.username) {
                   errors.username = "Trường bắt buộc.";
@@ -243,21 +250,11 @@ export default function ProfileAccountInfo() {
                     <p className="text-sm">Username:</p>
                     <span className="text-sm text-gray-500">lamtran</span>
                   </div>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className={`my-4 rounded-lg w-40 text-white h-[40px] mx-auto flex items-center justify-center ${
-                      isSubmitting
-                        ? "bg-blue-500"
-                        : "bg-blue-700 hover:bg-blue-500"
-                    }`}
-                  >
-                    {isSubmitting ? (
-                      <AiOutlineLoading className="animate-spin" size={25} />
-                    ) : (
-                      <span>Lưu lại</span>
-                    )}
-                  </button>
+                  <SubmitButton
+                    isSubmitting={isSubmitting}
+                    text="Lưu lại"
+                    width="10rem"
+                  />
                   {updateLoading ? null : isUpdateSuccess ? (
                     <p className="text-xs text-center text-[#28a745] font-semibold">
                       Cập nhật thông tin cá nhân thành công

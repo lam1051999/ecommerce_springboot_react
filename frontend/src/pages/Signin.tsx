@@ -9,6 +9,7 @@ import { onRenewToken } from "../redux/slices/authenticationSlice";
 import { useGetCustomerInfosQuery } from "../redux/api/userApi";
 import { useEffect } from "react";
 import { CustomBaseQueryError } from "../redux/types/types";
+import SubmitButton from "../components/common/SubmitButton";
 
 type SigninFormikError = {
   username?: string;
@@ -143,21 +144,11 @@ export default function Signin() {
                     Quên mật khẩu?
                   </Link>
                 </div>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`my-4 rounded-lg w-full py-3 text-white h-[50px] flex items-center justify-center ${
-                    isSubmitting
-                      ? "bg-blue-500"
-                      : "bg-blue-700 hover:bg-blue-500"
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <AiOutlineLoading className="animate-spin" size={25} />
-                  ) : (
-                    <span>Đăng nhập</span>
-                  )}
-                </button>
+                <SubmitButton
+                  isSubmitting={isSubmitting}
+                  text="Đăng nhập"
+                  width="100%"
+                />
                 <p className="text-[15px]">
                   Bạn Chưa Có Tài Khoản?&nbsp;
                   <Link className="text-blue-700" to="/sign-up">

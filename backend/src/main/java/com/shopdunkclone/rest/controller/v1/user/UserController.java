@@ -1,5 +1,6 @@
 package com.shopdunkclone.rest.controller.v1.user;
 
+import com.shopdunkclone.rest.dto.order.OrdersRequest;
 import com.shopdunkclone.rest.dto.user.*;
 import com.shopdunkclone.rest.exception.InvalidRequestException;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
@@ -69,8 +70,8 @@ public class UserController {
             @RequestBody ShipAddressesRequest request,
             @RequestHeader(value = "Authorization") String bearerToken
     ) {
-        ServiceResult<String> result = userService.createCustomerShipAddresse(request, bearerToken);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        ServiceResult<String> result = userService.createCustomerShipAddresses(request, bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Xoá thông tin địa chỉ nhận của khách hàng")
@@ -79,7 +80,7 @@ public class UserController {
             @PathVariable(name = "id") String id,
             @RequestHeader(value = "Authorization") String bearerToken
     ) {
-        ServiceResult<String> result = userService.deleteCustomerShipAddresse(id, bearerToken);
+        ServiceResult<String> result = userService.deleteCustomerShipAddresses(id, bearerToken);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -111,7 +112,7 @@ public class UserController {
             @RequestHeader(value = "Authorization") String bearerToken
     ) throws IOException {
         ServiceResult<String> result = userService.updateCustomerAvatar(file, bearerToken);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Xoá lên avatar của khách hàng")
@@ -130,6 +131,16 @@ public class UserController {
     ) {
         ServiceResult<CustomerAvatarDto> result = userService.getCustomerAvatar(bearerToken);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Đặt đơn hàng")
+    @PostMapping(value = "/customer-infos/orders")
+    public ResponseEntity<ServiceResult<String>> placeOrder(
+            @RequestBody OrdersRequest request,
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) throws InvalidRequestException {
+        ServiceResult<String> result = userService.placeOrder(request, bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     @InitBinder

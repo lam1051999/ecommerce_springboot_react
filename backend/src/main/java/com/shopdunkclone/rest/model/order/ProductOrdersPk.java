@@ -1,7 +1,8 @@
 package com.shopdunkclone.rest.model.order;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,15 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity
-@IdClass(ProductOrdersPk.class)
-@Table(name = "product_orders", schema = "shopdunk")
-public class ProductOrdersEntity {
-    @Basic
-    @Column(name = "quantity")
-    @JsonProperty("quantity")
-    private Integer quantity;
-
+public class ProductOrdersPk {
     @Id
     @Column(name = "order_id")
     @JsonProperty("order_id")

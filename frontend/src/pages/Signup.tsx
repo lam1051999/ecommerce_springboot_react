@@ -6,6 +6,7 @@ import { Formik } from "formik";
 import { AiOutlineLoading } from "react-icons/ai";
 import { useRegisterMutation } from "../redux/api/authenticationApi";
 import { CustomBaseQueryError } from "../redux/types/types";
+import SubmitButton from "../components/common/SubmitButton";
 
 export const DEFAULT_BOD_DATE = "Ngày";
 export const DEFAULT_BOD_MONTH = "Tháng";
@@ -81,6 +82,12 @@ export default function Signup() {
               }
               if (!values.phoneNumber) {
                 errors.phoneNumber = "Trường bắt buộc.";
+              } else if (
+                !/^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/.test(
+                  values.phoneNumber
+                )
+              ) {
+                errors.phoneNumber = "Số điện thoại không hợp lệ.";
               }
               if (!values.username) {
                 errors.username = "Trường bắt buộc.";
@@ -328,21 +335,11 @@ export default function Signup() {
                       errors.repeatPassword}
                   </p>
                 </div>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`my-4 rounded-lg w-full py-3 text-white h-[50px] flex items-center justify-center ${
-                    isSubmitting
-                      ? "bg-blue-500"
-                      : "bg-blue-700 hover:bg-blue-500"
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <AiOutlineLoading className="animate-spin" size={25} />
-                  ) : (
-                    <span>Đăng ký</span>
-                  )}
-                </button>
+                <SubmitButton
+                  isSubmitting={isSubmitting}
+                  text="Đăng ký"
+                  width="100%"
+                />
                 <p className="text-[15px]">
                   Bạn Đã Có Tài Khoản?&nbsp;
                   <Link className="text-blue-700" to="/sign-in">

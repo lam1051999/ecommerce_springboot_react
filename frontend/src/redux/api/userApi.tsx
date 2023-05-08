@@ -8,6 +8,7 @@ import {
   CustomerShipAddressesRequest,
   CustomerShipAddressesResponse,
   MessageResponse,
+  OrdersRequest,
   PasswordChangeRequest,
   SingleCustomerShipAddressesResponse,
 } from "../types/types";
@@ -119,6 +120,13 @@ export const userApi = createApi({
       }),
       providesTags: ["CustomerAvatar"],
     }),
+    placeOrder: builder.mutation<MessageResponse, OrdersRequest>({
+      query: (request) => ({
+        url: "/customer-infos/orders",
+        method: "post",
+        data: request,
+      }),
+    }),
   }),
 });
 
@@ -134,4 +142,5 @@ export const {
   useUpdateCustomerAvatarMutation,
   useDeleteCustomerAvatarMutation,
   useGetCustomerAvatarQuery,
+  usePlaceOrderMutation,
 } = userApi;
