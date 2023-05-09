@@ -113,54 +113,63 @@ export default function ProductDetailRating({
               className="w-[70%] pl-4"
               style={{ borderTop: "1px solid #d1d5db" }}
             >
-              <div
-                className="overflow-hidden"
-                style={{ height: isExpan ? "100%" : "55vh" }}
-              >
-                {data.data.list_reviews.map((item, index) => (
+              {data.data.list_reviews.length === 0 ? (
+                <p className="text-sm text-gray-500 mt-4">
+                  Hiện chưa có đánh giá nào về sản phẩm này !!!
+                </p>
+              ) : (
+                <>
                   <div
-                    className="pb-8 mt-4"
-                    key={item.id}
-                    style={{
-                      borderBottom:
-                        index === totalReviews - 1 ? "" : "1px solid #d1d5db",
-                    }}
+                    className="overflow-hidden"
+                    style={{ height: isExpan ? "100%" : "55vh" }}
                   >
-                    <div className="flex items-center space-x-2">
-                      <FaUserCircle color="#DDDDDD" size={30} />
-                      <span className="font-semibold leading-none">
-                        {item.person_name}
-                      </span>
-                      <p className="text-xs text-gray-500 leading-none">
-                        - {changeFormatData(item.created)}
-                      </p>
-                    </div>
-                    <div className="my-3 inline-block">
-                      <RatingStarsDisplay
-                        size={15}
-                        overlayWidth={((5 - item.num_stars) / 5) * 100}
-                      />
-                    </div>
-                    <p className="text-sm">{item.review}</p>
+                    {data.data.list_reviews.map((item, index) => (
+                      <div
+                        className="pb-8 mt-4"
+                        key={item.id}
+                        style={{
+                          borderBottom:
+                            index === totalReviews - 1
+                              ? ""
+                              : "1px solid #d1d5db",
+                        }}
+                      >
+                        <div className="flex items-center space-x-2">
+                          <FaUserCircle color="#DDDDDD" size={30} />
+                          <span className="font-semibold leading-none">
+                            {item.person_name}
+                          </span>
+                          <p className="text-xs text-gray-500 leading-none">
+                            - {changeFormatData(item.created)}
+                          </p>
+                        </div>
+                        <div className="my-3 inline-block">
+                          <RatingStarsDisplay
+                            size={15}
+                            overlayWidth={((5 - item.num_stars) / 5) * 100}
+                          />
+                        </div>
+                        <p className="text-sm">{item.review}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-
-              <div className="flex items-center justify-center py-2">
-                <button
-                  className="py-2 px-4 flex items-center justify-center text-blue-700"
-                  onClick={() => setIsExpan((prevState) => !prevState)}
-                >
-                  <span style={{ fontSize: "0.8rem" }}>
-                    {isExpan ? "Thu gọn" : "Xem thêm"}
-                  </span>
-                  {isExpan ? (
-                    <AiOutlineUp size={15} className="ml-1" />
-                  ) : (
-                    <AiOutlineDown size={15} className="ml-1" />
-                  )}
-                </button>
-              </div>
+                  <div className="flex items-center justify-center py-2">
+                    <button
+                      className="py-2 px-4 flex items-center justify-center text-blue-700"
+                      onClick={() => setIsExpan((prevState) => !prevState)}
+                    >
+                      <span style={{ fontSize: "0.8rem" }}>
+                        {isExpan ? "Thu gọn" : "Xem thêm"}
+                      </span>
+                      {isExpan ? (
+                        <AiOutlineUp size={15} className="ml-1" />
+                      ) : (
+                        <AiOutlineDown size={15} className="ml-1" />
+                      )}
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ProductRatingsRepository extends JpaRepository<ProductRatingsEntity, String> {
     List<ProductRatingsEntity> findAllByProductId(String productId);
+    List<ProductRatingsEntity> findAllByUsername(String username);
 }

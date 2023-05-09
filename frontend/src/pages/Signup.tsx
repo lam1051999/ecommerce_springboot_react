@@ -3,10 +3,11 @@ import PageContainer from "../components/common/PageContainer";
 import signupBanner from "/images/authentication/signupBanner.jpeg";
 import { AiOutlineDown } from "react-icons/ai";
 import { Formik } from "formik";
-import { AiOutlineLoading } from "react-icons/ai";
 import { useRegisterMutation } from "../redux/api/authenticationApi";
 import { CustomBaseQueryError } from "../redux/types/types";
 import SubmitButton from "../components/common/SubmitButton";
+import { useDispatch } from "react-redux";
+import { onRenewToken } from "../redux/slices/authenticationSlice";
 
 export const DEFAULT_BOD_DATE = "Ngày";
 export const DEFAULT_BOD_MONTH = "Tháng";
@@ -38,6 +39,7 @@ export type SignupFormikError = {
 export default function Signup() {
   const [register, { isError, isSuccess, error, data }] = useRegisterMutation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   return (
     <PageContainer>
@@ -120,8 +122,9 @@ export default function Signup() {
                 password: values.password,
               })
                 .unwrap()
-                .then(() => {
+                .then((res) => {
                   resetForm();
+                  dispatch(onRenewToken(res));
                   navigate("/sign-up-result");
                 })
                 .finally(() => {

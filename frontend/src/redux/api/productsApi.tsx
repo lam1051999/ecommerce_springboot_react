@@ -5,8 +5,6 @@ import {
   ProductImagesDtoResponse,
   ProductInfosEntityResponse,
   ProductRatingsDtoResponse,
-  ProductRatingsRequest,
-  ProductRatingsResponse,
   ProductsDtoResponse,
   ProductsEntityResponse,
   ProductsQueryArgs,
@@ -19,7 +17,6 @@ import {
   onChangeProductColor,
   onResetProductImages,
 } from "../slices/productImagesSlice";
-import { AxiosError } from "axios";
 
 export const productsApi = createApi({
   reducerPath: "productsApi",
@@ -112,7 +109,7 @@ export const productsApi = createApi({
           )
           .catch((err) => {
             return {
-              error: err as AxiosError,
+              error: err,
             };
           });
       },
@@ -125,23 +122,11 @@ export const productsApi = createApi({
       }),
       providesTags: ["ProductRatingsById"],
     }),
-    createProductRating: builder.mutation<
-      ProductRatingsResponse,
-      ProductRatingsRequest
-    >({
-      query: (productRatingRequest) => ({
-        url: "/product-ratings",
-        method: "post",
-        data: productRatingRequest,
-      }),
-      invalidatesTags: ["ProductRatingsById"],
-    }),
   }),
 });
 
 export const {
   useGetProductsQuery,
   useGetProductsByIdQuery,
-  useCreateProductRatingMutation,
   useGetProductRatingsByIdQuery,
 } = productsApi;

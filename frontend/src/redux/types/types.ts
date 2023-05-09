@@ -98,6 +98,7 @@ export type ProductRatingsEntity = {
   created: string;
   modified: string;
   product_id: string;
+  username: string;
 };
 
 export type ProductRatingsDto = {
@@ -133,7 +134,7 @@ export type ProductRatingsRequest = {
 export type ProductRatingsResponse = {
   message: string;
   status: string;
-  data: ProductRatingsEntity;
+  data: string;
 };
 
 export type ShoppingCartItem = {
@@ -307,4 +308,15 @@ export type OrdersByIdReponse = {
   status: string;
   message: string;
   data: OrdersByIdDto;
+};
+
+export type ProductRatingsByUser = {
+  rating_detail: ProductRatingsEntity;
+  product_detail: ProductsEntity;
+};
+
+export type ProductRatingsByUserResponse = {
+  status: string;
+  message: string;
+  data: ProductRatingsByUser[];
 };

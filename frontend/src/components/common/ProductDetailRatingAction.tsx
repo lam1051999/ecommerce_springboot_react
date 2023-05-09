@@ -1,22 +1,32 @@
 import { useState } from "react";
 import { MAX_NUM_STARS_RATING } from "../../constants/config";
-import { useCreateProductRatingMutation } from "../../redux/api/productsApi";
-import { ProductRatingsRequest } from "../../redux/types/types";
+import {
+  CustomBaseQueryError,
+  ProductRatingsRequest,
+} from "../../redux/types/types";
 import { formatDate } from "../../utils/helper";
-import { AiOutlineLoading } from "react-icons/ai";
+import { useCreateProductRatingsMutation } from "../../redux/api/userApi";
+import { Formik } from "formik";
+import { useAppDispatch } from "../../redux/hooks/hooks";
+import { productsApi } from "../../redux/api/productsApi";
+import SubmitButton from "./SubmitButton";
 
 type ProductDetailRatingActionProps = {
   product_id: string;
+};
+
+type ProductRatingFormikError = {
+  name?: string;
+  review?: string;
 };
 
 export default function ProductDetailRatingAction({
   product_id,
 }: ProductDetailRatingActionProps) {
   const [numStars, setNumStars] = useState(5);
-  const [name, setName] = useState("");
-  const [review, setReview] = useState("");
-  const [createProductRating, { isLoading, isError, isSuccess, data }] =
-    useCreateProductRatingMutation();
+  const dispatch = useAppDispatch();
+  const [createProductRatings, { isLoading, isError, isSuccess, error }] =
+    useCreateProductRatingsMutation();
 
   return (
     <div className="pt-4">
@@ -39,64 +49,108 @@ export default function ProductDetailRatingAction({
           ))}
         </div>
       </div>
-      <div>
-        <p className="text-sm font-semibold mb-2 mt-4">Tên của bạn</p>
-        <input
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          className="w-full p-3 text-base text-gray-900 border border-gray-300 rounded bg-white"
-        />
-      </div>
-      <div>
-        <p className="text-sm font-semibold mb-2 mt-4">
-          Đánh giá của bạn về sản phẩm*
-        </p>
-        <textarea
-          value={review}
-          onChange={(event) => setReview(event.target.value)}
-          className="w-full p-3 text-base text-gray-900 border border-gray-300 rounded bg-white"
-        />
-      </div>
-      <button
-        disabled={isLoading}
-        onClick={async () => {
-          if (name.length !== 0 && review.length !== 0) {
-            const rating: ProductRatingsRequest = {
-              person_name: name,
-              review: review,
-              num_stars: numStars,
-              created: formatDate(new Date()),
-              product_id: product_id,
-            };
-            const res = await createProductRating(rating).unwrap();
-            setNumStars(5);
-            setName("");
-            setReview("");
-          } else {
-            alert(
-              "Bạn cần thêm thông tin tên và nội dung đánh giá để có thể gửi đánh giá"
-            );
-          }
+
+      <Formik
+        initialValues={{
+          name: "",
+          review: "",
         }}
-        className={`rounded-lg px-16 text-white my-4 h-10 ${
-          isLoading ? "bg-blue-500" : "bg-blue-700 hover:bg-blue-500"
-        }`}
+        validate={(values) => {
+          const errors: ProductRatingFormikError = {};
+          if (!values.name) {
+            errors.name = "Trường bắt buộc.";
+          }
+          if (!values.review) {
+            errors.review = "Trường bắt buộc.";
+          }
+          return errors;
+        }}
+        onSubmit={async (values, { setSubmitting, resetForm }) => {
+          const rating: ProductRatingsRequest = {
+            person_name: values.name,
+            review: values.review,
+            num_stars: numStars,
+            created: formatDate(new Date()),
+            product_id: product_id,
+          };
+          await createProductRatings(rating)
+            .unwrap()
+            .then(() => {
+              resetForm();
+              dispatch(productsApi.util.invalidateTags(["ProductRatingsById"]));
+            })
+            .finally(() => {
+              setSubmitting(false);
+            });
+        }}
       >
-        {isLoading ? (
-          <AiOutlineLoading className="animate-spin" size={20} />
-        ) : (
-          <span>Gửi</span>
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          isSubmitting,
+        }) => (
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              handleSubmit(event);
+            }}
+          >
+            <div>
+              <p className="text-sm font-semibold mb-2 mt-4">Tên của bạn</p>
+              <input
+                value={values.name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                name="name"
+                className="w-full p-3 text-gray-900 border border-gray-300 rounded-lg"
+              />
+              <p className="text-xs text-red-500">
+                {errors.name && touched.name && errors.name}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm font-semibold mb-2 mt-4">
+                Đánh giá của bạn về sản phẩm*
+              </p>
+              <textarea
+                value={values.review}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                name="review"
+                className="w-full p-3 text-gray-900 border border-gray-300 rounded-lg"
+              />
+              <p className="text-xs text-red-500">
+                {errors.review && touched.review && errors.review}
+              </p>
+            </div>
+            <SubmitButton
+              isSubmitting={isSubmitting}
+              text="Gửi"
+              width="10rem"
+              isCenter={false}
+            />
+            {isLoading ? null : isSuccess ? (
+              <p className="text-xs text-[#28a745] font-semibold">
+                Bạn đã gửi đánh giá thành công
+              </p>
+            ) : isError ? (
+              (error as CustomBaseQueryError).status === 403 ? (
+                <p className="text-xs text-[#dc3545] font-semibold">
+                  Bạn chưa mua sản phẩm này, không thể gửi đánh giá
+                </p>
+              ) : (
+                <p className="text-xs text-[#dc3545] font-semibold">
+                  Đã có lỗi xảy ra, chưa gửi được đánh giá
+                </p>
+              )
+            ) : null}
+          </form>
         )}
-      </button>
-      {isLoading ? null : isSuccess ? (
-        <p className="text-xs text-[#28a745] font-semibold">
-          Bạn đã gửi đánh giá thành công
-        </p>
-      ) : isError ? (
-        <p className="text-xs text-[#dc3545] font-semibold">
-          Đã có lỗi xảy ra, chưa gửi được đánh giá
-        </p>
-      ) : null}
+      </Formik>
     </div>
   );
 }

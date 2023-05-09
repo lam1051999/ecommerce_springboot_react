@@ -49,4 +49,9 @@ public class ProductRatingsEntity {
     @Column(name = "product_id")
     @JsonProperty("product_id")
     private String productId;
+
+    @Basic
+    @Column(name = "username")
+    @JsonProperty("username")
+    private String username;
 }

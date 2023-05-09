@@ -2,15 +2,19 @@ package com.shopdunkclone.rest.controller.v1.user;
 
 import com.shopdunkclone.rest.dto.order.OrdersByIdDto;
 import com.shopdunkclone.rest.dto.order.OrdersRequest;
+import com.shopdunkclone.rest.dto.product.ProductRatingsRequest;
 import com.shopdunkclone.rest.dto.user.*;
 import com.shopdunkclone.rest.exception.InvalidRequestException;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
+import com.shopdunkclone.rest.exception.UserNotAllowedException;
 import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.model.order.OrdersEntity;
+import com.shopdunkclone.rest.model.product.ProductRatingsEntity;
 import com.shopdunkclone.rest.model.user.ShipAddressesEntity;
 import com.shopdunkclone.rest.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -162,6 +167,25 @@ public class UserController {
     ) throws NotFoundRecordException {
         ServiceResult<OrdersByIdDto> result = userService.getOrdersById(id, bearerToken);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Lấy đánh giá đơn hàng")
+    @GetMapping(value = "/customer-infos/ratings")
+    public ResponseEntity<ServiceResult<List<ProductRatingsByUser>>> getProductRatingsByUser(
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) {
+        ServiceResult<List<ProductRatingsByUser>> result = userService.getProductRatingsByUser(bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Đánh giá đơn hàng")
+    @PostMapping(value = "/customer-infos/ratings")
+    public ResponseEntity<ServiceResult<String>> createProductRatings(
+            @RequestBody @Valid ProductRatingsRequest request,
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) throws ParseException, UserNotAllowedException {
+        ServiceResult<String> result = userService.createProductRatings(request, bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     @InitBinder

@@ -4,20 +4,22 @@ type SubmitButtonProps = {
   isSubmitting: boolean;
   text: string;
   width: string;
+  isCenter?: boolean;
 };
 
 export default function SubmitButton({
   isSubmitting,
   text,
   width,
+  isCenter = true,
 }: SubmitButtonProps) {
   return (
     <button
       type="submit"
       disabled={isSubmitting}
-      className={`my-4 rounded-lg text-sm text-white h-[40px] mx-auto flex items-center justify-center ${
+      className={`my-4 rounded-lg text-sm text-white h-[40px] flex items-center justify-center ${
         isSubmitting ? "bg-blue-500" : "bg-blue-700 hover:bg-blue-500"
-      }`}
+      } ${isCenter ? "mx-auto" : ""}`}
       style={{
         width: width,
       }}

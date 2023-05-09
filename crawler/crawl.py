@@ -123,11 +123,11 @@ def process_crawl_data_remake(main_url_sub_type, product_type):
             set_products = get_products_objects(list_products, product_type)
             set_product_images = get_product_images_objects(list_products)
             set_product_infos = get_product_infos_objects(list_products)
-            set_product_ratings = get_product_rating_objects(list_products)
+            # set_product_ratings = get_product_rating_objects(list_products)
             upsert_data(connection, "`shopdunk`.`products`", set_products, "id")
             upsert_data(connection, "`shopdunk`.`product_images`", set_product_images, "id")
             upsert_data(connection, "`shopdunk`.`product_infos`", set_product_infos, "id")
-            upsert_data(connection, "`shopdunk`.`product_ratings`", set_product_ratings, "id")
+            # upsert_data(connection, "`shopdunk`.`product_ratings`", set_product_ratings, "id")
             print("Finish crawl data")
         except Exception as e:
             print(f"Program exit with exception {e}")

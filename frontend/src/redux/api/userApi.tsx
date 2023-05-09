@@ -2,6 +2,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { SHOPDUNK_BACKEND_BASE_URL } from "../../constants/config";
 import { axiosAuthBaseQuery } from "../custom/baseQuery";
 import {
+  CustomBaseQueryError,
   CustomerAvatarResponse,
   CustomerInfosRequest,
   CustomerInfosResponse,
@@ -12,6 +13,8 @@ import {
   OrdersRequest,
   OrdersResponse,
   PasswordChangeRequest,
+  ProductRatingsByUserResponse,
+  ProductRatingsRequest,
   SingleCustomerShipAddressesResponse,
 } from "../types/types";
 
@@ -141,6 +144,22 @@ export const userApi = createApi({
         method: "get",
       }),
     }),
+    createProductRatings: builder.mutation<
+      MessageResponse,
+      ProductRatingsRequest
+    >({
+      query: (productRatingsRequest) => ({
+        url: "/customer-infos/ratings",
+        method: "post",
+        data: productRatingsRequest,
+      }),
+    }),
+    getProductRatingsByUser: builder.query<ProductRatingsByUserResponse, void>({
+      query: () => ({
+        url: `/customer-infos/ratings`,
+        method: "get",
+      }),
+    }),
   }),
 });
 
@@ -159,4 +178,6 @@ export const {
   usePlaceOrdersMutation,
   useGetOrdersQuery,
   useGetOrdersByIdQuery,
+  useCreateProductRatingsMutation,
+  useGetProductRatingsByUserQuery,
 } = userApi;

@@ -1,26 +1,29 @@
 package com.shopdunkclone.rest.service.user;
 
 import com.shopdunkclone.rest.dto.order.*;
+import com.shopdunkclone.rest.dto.product.ProductRatingsRequest;
 import com.shopdunkclone.rest.dto.user.*;
 import com.shopdunkclone.rest.exception.InvalidRequestException;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
+import com.shopdunkclone.rest.exception.UserNotAllowedException;
 import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.model.order.OrdersEntity;
 import com.shopdunkclone.rest.model.order.OrdersStatus;
 import com.shopdunkclone.rest.model.order.PaymentStatus;
 import com.shopdunkclone.rest.model.order.ProductOrdersEntity;
+import com.shopdunkclone.rest.model.product.ProductRatingsEntity;
 import com.shopdunkclone.rest.model.product.ProductsEntity;
 import com.shopdunkclone.rest.model.product.StocksEntity;
 import com.shopdunkclone.rest.model.user.CustomersEntity;
 import com.shopdunkclone.rest.model.user.ShipAddressesEntity;
 import com.shopdunkclone.rest.repository.order.OrdersRepository;
 import com.shopdunkclone.rest.repository.order.ProductOrdersRepository;
+import com.shopdunkclone.rest.repository.product.ProductRatingsRepository;
 import com.shopdunkclone.rest.repository.product.ProductsRepository;
 import com.shopdunkclone.rest.repository.product.StocksRepository;
 import com.shopdunkclone.rest.repository.user.CustomersRepository;
 import com.shopdunkclone.rest.repository.user.ShipAddressesRepository;
 import com.shopdunkclone.rest.util.JwtService;
-import com.shopdunkclone.rest.util.TokenType;
 import com.shopdunkclone.rest.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +39,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -58,11 +62,13 @@ public class UserService {
     ProductOrdersRepository productOrdersRepository;
     @Autowired
     ProductsRepository productsRepository;
+    @Autowired
+    ProductRatingsRepository productRatingsRepository;
     @Value("${nginx_images_path}")
     private String NGINX_IMAGES_PATH;
 
     public ServiceResult<CustomerInfosDto> getCustomerInfos(String bearerToken) {
-        String username = getUsernameFromHeader(bearerToken);
+        String username = jwtService.getUsernameFromHeader(bearerToken);
         CustomerInfosDto customerInfosDto = new CustomerInfosDto();
         CustomersEntity customersEntity = customersRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         customerInfosDto.setName(customersEntity.getName());
@@ -75,7 +81,7 @@ public class UserService {
     }
 
     public ServiceResult<String> updateCustomerInfos(CustomerInfosRequest oldInfo, String bearerToken) {
-        String username = getUsernameFromHeader(bearerToken);
+        String username = jwtService.getUsernameFromHeader(bearerToken);
         customersRepository.updateCustomerInfos(
                 oldInfo.getName(),
                 oldInfo.getGender().toString(),
@@ -88,13 +94,13 @@ public class UserService {
     }
 
     public ServiceResult<List<ShipAddressesEntity>> getCustomerShipAddresses(String bearerToken) {
-        String username = getUsernameFromHeader(bearerToken);
+        String username = jwtService.getUsernameFromHeader(bearerToken);
         List<ShipAddressesEntity> shipAddressesEntityList = shipAddressesRepository.findAllByUsername(username);
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", shipAddressesEntityList);
     }
 
     public ServiceResult<String> createCustomerShipAddresses(ShipAddressesRequest request, String bearerToken) {
-        String username = getUsernameFromHeader(bearerToken);
+        String username = jwtService.getUsernameFromHeader(bearerToken);
         ShipAddressesEntity shipAddressesEntity = new ShipAddressesEntity();
         String hashId = Utils.getHashText(username + "_" + System.currentTimeMillis());
         shipAddressesEntity.setId(hashId);
@@ -109,27 +115,27 @@ public class UserService {
     }
 
     public ServiceResult<String> deleteCustomerShipAddresses(String id, String bearerToken) {
-        String username = getUsernameFromHeader(bearerToken);
+        String username = jwtService.getUsernameFromHeader(bearerToken);
         long deletedRecords = shipAddressesRepository.deleteByIdAndUsername(id, username);
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Xoá địa chỉ lấy hàng cho khách hàng " + username + " thành công");
     }
 
     public ServiceResult<ShipAddressesEntity> getCustomerShipAddressesById(String id, String bearerToken) throws NotFoundRecordException {
-        String username = getUsernameFromHeader(bearerToken);
+        String username = jwtService.getUsernameFromHeader(bearerToken);
         ShipAddressesEntity shipAddressesEntity = shipAddressesRepository.findByIdAndUsername(id, username).orElseThrow(() -> new NotFoundRecordException("Ship address not found"));
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", shipAddressesEntity);
     }
 
     public ServiceResult<String> updateCustomerShipAddressesById(String id, ShipAddressesRequest request, String bearerToken) {
-        String username = getUsernameFromHeader(bearerToken);
+        String username = jwtService.getUsernameFromHeader(bearerToken);
         shipAddressesRepository.updateCustomerShipAddressesById(id, request.getName(), request.getPhoneNumber(), request.getEmail(), request.getExactAddress(), request.getProvinceId(), username);
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Cập nhật địa chỉ lấy hàng cho khách hàng " + username + " thành công");
     }
 
     public ServiceResult<String> updateCustomerPassword(PasswordChangeRequest request, String bearerToken) throws InvalidRequestException {
-        String username = getUsernameFromHeader(bearerToken);
+        String username = jwtService.getUsernameFromHeader(bearerToken);
         CustomersEntity customersEntity = customersRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if(passwordEncoder.matches(request.getOldPassword(), customersEntity.getPassword())){
+        if (passwordEncoder.matches(request.getOldPassword(), customersEntity.getPassword())) {
             customersRepository.updatePassword(username, passwordEncoder.encode(request.getNewPassword()));
         } else {
             throw new InvalidRequestException("Password do not match");
@@ -138,10 +144,10 @@ public class UserService {
     }
 
     public ServiceResult<String> updateCustomerAvatar(MultipartFile file, String bearerToken) throws IOException {
-        String username = getUsernameFromHeader(bearerToken);
+        String username = jwtService.getUsernameFromHeader(bearerToken);
         String userAvatarPathStr = NGINX_IMAGES_PATH + "/customers_images/" + username;
         Path userAvatarPath = Paths.get(userAvatarPathStr);
-        if(!Files.exists(userAvatarPath)) {
+        if (!Files.exists(userAvatarPath)) {
             Files.createDirectories(userAvatarPath);
         }
         Path avatar = userAvatarPath.resolve(Objects.requireNonNull(file.getOriginalFilename()));
@@ -152,20 +158,20 @@ public class UserService {
     }
 
     public ServiceResult<String> deleteCustomerAvatar(String bearerToken) {
-        String username = getUsernameFromHeader(bearerToken);
+        String username = jwtService.getUsernameFromHeader(bearerToken);
         customersRepository.updateCustomerAvatar(username, null);
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Xoá avatar khách hàng " + username + " thành công");
     }
 
     public ServiceResult<CustomerAvatarDto> getCustomerAvatar(String bearerToken) {
-        String username = getUsernameFromHeader(bearerToken);
+        String username = jwtService.getUsernameFromHeader(bearerToken);
         String avatar = customersRepository.getCustomerAvatar(username);
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", new CustomerAvatarDto(avatar));
     }
 
     @Transactional
     public ServiceResult<String> placeOrders(OrdersRequest request, String bearerToken) throws InvalidRequestException {
-        String username = getUsernameFromHeader(bearerToken);
+        String username = jwtService.getUsernameFromHeader(bearerToken);
         List<StocksEntity> stocksEntities = stocksRepository.findByProductIdIn(request.getListProductsInOrder().stream().map(ShoppingCartItemNormalized::getProductId).toList());
         Map<String, ShoppingCartItemNormalized> shoppingCartItemMap = request.getListProductsInOrder().stream().collect(Collectors.toMap(ShoppingCartItemNormalized::getProductId, Function.identity()));
         Map<String, StocksEntity> stocksEntityMap = stocksEntities.stream().collect(Collectors.toMap(StocksEntity::getProductId, Function.identity()));
@@ -173,13 +179,13 @@ public class UserService {
         shoppingCartItemMap.keySet().forEach(key -> {
             ShoppingCartItemNormalized cartItem = shoppingCartItemMap.get(key);
             StocksEntity stocksItem = stocksEntityMap.get(key);
-            if(stocksItem != null) {
+            if (stocksItem != null) {
                 cartStockMapItems.add(new CartStockMapItem(key, cartItem.getName(), cartItem.getQuantity(), stocksItem.getQuantity()));
             } else {
                 cartStockMapItems.add(new CartStockMapItem(key, cartItem.getName(), cartItem.getQuantity(), 0));
             }
         });
-        if(cartStockMapItems.stream().allMatch(item -> item.getOrderQuantity() <= item.getStocksQuantity())) {
+        if (cartStockMapItems.stream().allMatch(item -> item.getOrderQuantity() <= item.getStocksQuantity())) {
             // prepare order
             Timestamp placedAt = new Timestamp(System.currentTimeMillis());
             String orderId = Utils.getHashText(username + "_" + System.currentTimeMillis());
@@ -219,13 +225,13 @@ public class UserService {
     }
 
     public ServiceResult<List<OrdersEntity>> getOrders(String bearerToken) {
-        String username = getUsernameFromHeader(bearerToken);
+        String username = jwtService.getUsernameFromHeader(bearerToken);
         List<OrdersEntity> ordersEntityList = ordersRepository.findAllByUsername(username);
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", ordersEntityList);
     }
 
     public ServiceResult<OrdersByIdDto> getOrdersById(String id, String bearerToken) throws NotFoundRecordException {
-        String username = getUsernameFromHeader(bearerToken);
+        String username = jwtService.getUsernameFromHeader(bearerToken);
         OrdersByIdDto ordersByIdDto = new OrdersByIdDto();
         OrdersEntity ordersEntity = ordersRepository.findByIdAndUsername(id, username).orElseThrow(() -> new NotFoundRecordException("Order not found"));
         ShipAddressesEntity shipAddressesEntity = shipAddressesRepository.findByIdAndUsername(ordersEntity.getShipAddressId(), username).orElseThrow(() -> new NotFoundRecordException("Ship address not found"));
@@ -243,8 +249,41 @@ public class UserService {
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", ordersByIdDto);
     }
 
-    public String getUsernameFromHeader(String bearerToken) {
-        String jwt = bearerToken.substring(7);
-        return jwtService.extractUsername(jwt, TokenType.TOKEN);
+    public ServiceResult<String> createProductRatings(ProductRatingsRequest request, String bearerToken) throws ParseException, UserNotAllowedException {
+        String username = jwtService.getUsernameFromHeader(bearerToken);
+        List<OrdersEntity> ordersEntityList = ordersRepository.findAllByUsername(username);
+        List<ProductOrdersEntity> productOrdersEntityList = new ArrayList<>();
+        ordersEntityList.forEach(item -> {
+            List<ProductOrdersEntity> items = productOrdersRepository.findAllByOrderId(item.getId());
+            productOrdersEntityList.addAll(items);
+        });
+        if (productOrdersEntityList.stream().noneMatch(item -> item.getProductId().equals(request.getProductId()))) {
+            throw new UserNotAllowedException("User " + username + " is not allowed to rate product " + request.getProductId());
+        } else {
+            ProductRatingsEntity productRatingsEntity = new ProductRatingsEntity();
+            String hashId = Utils.getHashText(request.getProductId() + "_" + username + "_" + request.getPersonName() + "_" + request.getCreated());
+            Timestamp createdTimestamp = Utils.getTimestampFromString(request.getCreated(), Utils.timestampFormat);
+            productRatingsEntity.setId(hashId);
+            productRatingsEntity.setPersonName(request.getPersonName());
+            productRatingsEntity.setReview(request.getReview());
+            productRatingsEntity.setNumStars(request.getNumStars());
+            productRatingsEntity.setProductId(request.getProductId());
+            productRatingsEntity.setCreated(createdTimestamp);
+            productRatingsEntity.setModified(createdTimestamp);
+            productRatingsEntity.setUsername(username);
+            productRatingsRepository.save(productRatingsEntity);
+            return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "User " + username + " tạo đánh giá cho sản phẩm " + request.getProductId() + " thành công");
+        }
+    }
+
+    public ServiceResult<List<ProductRatingsByUser>> getProductRatingsByUser(String bearerToken) {
+        String username = jwtService.getUsernameFromHeader(bearerToken);
+        List<ProductRatingsByUser> productRatingsByUserList = new ArrayList<>();
+        List<ProductRatingsEntity> productRatingsEntityList = productRatingsRepository.findAllByUsername(username);
+        productRatingsEntityList.forEach(item -> {
+            Optional<ProductsEntity> productsEntity = productsRepository.findProductsEntityByIdAndNameNotNull(item.getProductId());
+            productsEntity.ifPresent(entity -> productRatingsByUserList.add(new ProductRatingsByUser(item, entity)));
+        });
+        return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", productRatingsByUserList);
     }
 }

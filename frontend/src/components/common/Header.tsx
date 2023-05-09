@@ -124,9 +124,11 @@ export default function Header() {
           </div>
         </Link>
         <div className="group relative h-auto">
-          <div className="p-2 rounded-full hover:bg-gray-500 cursor-pointer">
-            <AiOutlineUser size={22} />
-          </div>
+          <Link to="/customer-infos/account">
+            <div className="p-2 rounded-full hover:bg-gray-500 cursor-pointer">
+              <AiOutlineUser size={22} />
+            </div>
+          </Link>
           <div className="text-black absolute hidden top-9 -right-4 w-[270px] group-hover:block bg-white rounded-lg shadow-[2px_2px_10px_rgba(0,0,0,0.08)]">
             {token ? (
               <div className="w-full">

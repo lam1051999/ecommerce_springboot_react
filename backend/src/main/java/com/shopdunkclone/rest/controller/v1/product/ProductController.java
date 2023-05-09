@@ -2,26 +2,22 @@ package com.shopdunkclone.rest.controller.v1.product;
 
 import com.shopdunkclone.rest.dto.product.ProductImagesDto;
 import com.shopdunkclone.rest.dto.product.ProductRatingsDto;
-import com.shopdunkclone.rest.dto.product.ProductRatingsRequest;
 import com.shopdunkclone.rest.dto.product.ProductsDto;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
 import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.model.product.ProductInfosEntity;
-import com.shopdunkclone.rest.model.product.ProductRatingsEntity;
 import com.shopdunkclone.rest.model.product.ProductType;
 import com.shopdunkclone.rest.model.product.ProductsEntity;
 import com.shopdunkclone.rest.service.product.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -79,15 +75,6 @@ public class ProductController {
     ) {
         ServiceResult<ProductRatingsDto> result = productService.getProductRatings(productId);
         return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    @Operation(summary = "Viết đánh giá sản phầm")
-    @PostMapping(value = "/product-ratings")
-    public ResponseEntity<ServiceResult<ProductRatingsEntity>> createProductRating(
-            @RequestBody @Valid ProductRatingsRequest rating
-    ) throws ParseException {
-        ServiceResult<ProductRatingsEntity> createdRating = productService.createProductRating(rating);
-        return new ResponseEntity<>(createdRating, HttpStatus.CREATED);
     }
 
     @InitBinder

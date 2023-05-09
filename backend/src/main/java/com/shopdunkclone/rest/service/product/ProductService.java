@@ -106,20 +106,5 @@ public class ProductService {
         );
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", productRatingsDto);
     }
-
-    public ServiceResult<ProductRatingsEntity> createProductRating(ProductRatingsRequest rating) throws ParseException {
-        ProductRatingsEntity productRatingsEntity = new ProductRatingsEntity();
-        String hashId = Utils.getHashText(rating.getProductId() + "_" + rating.getPersonName() + "_" + rating.getCreated());
-        Timestamp createdTimestamp = Utils.getTimestampFromString(rating.getCreated(), Utils.timestampFormat);
-        productRatingsEntity.setId(hashId);
-        productRatingsEntity.setPersonName(rating.getPersonName());
-        productRatingsEntity.setReview(rating.getReview());
-        productRatingsEntity.setNumStars(rating.getNumStars());
-        productRatingsEntity.setProductId(rating.getProductId());
-        productRatingsEntity.setCreated(createdTimestamp);
-        productRatingsEntity.setModified(createdTimestamp);
-        ProductRatingsEntity createdRating = productRatingsRepository.save(productRatingsEntity);
-        return new ServiceResult<>(ServiceResult.Status.SUCCESS, "Product rating is successfully created", createdRating);
-    }
 }
 

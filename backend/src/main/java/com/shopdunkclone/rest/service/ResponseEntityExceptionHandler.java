@@ -3,6 +3,7 @@ package com.shopdunkclone.rest.service;
 import com.shopdunkclone.rest.exception.InvalidRequestException;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
 import com.shopdunkclone.rest.exception.TokenExpiredException;
+import com.shopdunkclone.rest.exception.UserNotAllowedException;
 import com.shopdunkclone.rest.model.ServiceResult;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
@@ -113,6 +114,14 @@ public class ResponseEntityExceptionHandler {
                 ServiceResult.Status.FAILED,
                 ex.getMessage()
         ), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UserNotAllowedException.class)
+    public final ResponseEntity<ServiceResult<Object>> handleUserNotAllowed(UserNotAllowedException ex) {
+        return new ResponseEntity<>(getErrorServiceResult(
+                ServiceResult.Status.FAILED,
+                ex.getMessage()
+        ), HttpStatus.FORBIDDEN);
     }
 
     public ServiceResult<Object> getErrorServiceResult(ServiceResult.Status status, String message) {

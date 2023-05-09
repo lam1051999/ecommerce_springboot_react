@@ -90,4 +90,9 @@ public class JwtService {
         }
         return null;
     }
+
+    public String getUsernameFromHeader(String bearerToken) {
+        String jwt = bearerToken.substring(7);
+        return extractUsername(jwt, TokenType.TOKEN);
+    }
 }
