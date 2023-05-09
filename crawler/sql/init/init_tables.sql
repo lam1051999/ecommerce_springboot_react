@@ -103,7 +103,8 @@ CREATE TABLE IF NOT EXISTS `shopdunk`.`products` (
   `created` datetime DEFAULT CURRENT_TIMESTAMP,
   `modified` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `IDX_PRODUCT_TYPE` (`product_type`,`product_sub_type`)
+  KEY `IDX_PRODUCT_TYPE` (`product_type`,`product_sub_type`),
+  FULLTEXT KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `shopdunk`.`provinces` (

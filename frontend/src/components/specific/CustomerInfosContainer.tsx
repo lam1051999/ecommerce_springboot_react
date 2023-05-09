@@ -16,7 +16,7 @@ export default function CustomerInfosContainer({
     <PageContainer>
       <div className="w-full mt-4 flex justify-between mb-20">
         <div className="w-[30%] relative">
-          <ul className="w-full p-3 bg-white rounded-lg sticky top-[5rem]">
+          <ul className="w-full p-3 bg-white rounded-lg sticky top-20">
             {profileTabs.map((item) => (
               <li key={item.to} className="w-full">
                 <Link to={item.to}>

@@ -5,6 +5,7 @@ import {
   ProductImagesDtoResponse,
   ProductInfosEntityResponse,
   ProductRatingsDtoResponse,
+  ProductSearchQueryArgs,
   ProductsDtoResponse,
   ProductsEntityResponse,
   ProductsQueryArgs,
@@ -122,6 +123,16 @@ export const productsApi = createApi({
       }),
       providesTags: ["ProductRatingsById"],
     }),
+    getProductSearch: builder.query<
+      ProductsDtoResponse,
+      ProductSearchQueryArgs
+    >({
+      query: (args) => ({
+        url: "/product-search",
+        method: "get",
+        params: args,
+      }),
+    }),
   }),
 });
 
@@ -129,4 +140,6 @@ export const {
   useGetProductsQuery,
   useGetProductsByIdQuery,
   useGetProductRatingsByIdQuery,
+  useLazyGetProductSearchQuery,
+  useGetProductSearchQuery,
 } = productsApi;

@@ -24,6 +24,7 @@ import ProfileAvatarInfo from "../components/specific/ProfileAvatarInfo";
 import ProfileRatingHistoryInfo from "../components/specific/ProfileRatingHistoryInfo";
 import AddressesUpdateForm from "../components/specific/AddressesUpdateForm";
 import ProfileOrdersDetail from "../components/specific/ProfileOrdersDetail";
+import SearchResult from "../pages/SearchResult";
 
 export const ordinaryRoutes: PageRoute[] = [
   {
@@ -252,6 +253,16 @@ export const ordinaryRoutes: PageRoute[] = [
     listPath: [
       {
         title: "Thông tin tài khoản",
+        goTo: null,
+      },
+    ],
+  },
+  {
+    path: "/search",
+    element: <SearchResult />,
+    listPath: [
+      {
+        title: "Tìm kiếm",
         goTo: null,
       },
     ],

@@ -77,6 +77,18 @@ public class ProductController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @Operation(summary = "Lấy danh sách sản phẩm tìm kiếm")
+    @GetMapping(value = "/product-search")
+    public ResponseEntity<ServiceResult<ProductsDto>> getProductSearch(
+            @Parameter(example = "iphone", description = "search_text") @RequestParam(name = "search_text") String searchText,
+            @Parameter(example = "0") @RequestParam(name = "page") int page,
+            @Parameter(example = "10") @RequestParam(name = "size") int size,
+            @Parameter(example = "RANDOM", description = "sort_type") @RequestParam(name = "sort_type") String sortType
+    ) {
+        ServiceResult<ProductsDto> result = productService.getProductSearch(page, size, sortType, searchText);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         // This code protects Spring Core from a "Remote Code Execution" attack (dubbed "Spring4Shell").

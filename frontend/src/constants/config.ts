@@ -12,6 +12,8 @@ export const NUM_PRODUCTS_SHOWCASE = 12;
 
 export const NUM_PRODUCTS_SHOWCASE_PAGE_LIMIT = 4;
 
+export const NUM_PRODUCTS_RESULT_PAGE_LIMIT = 5;
+
 export const NUM_SLIDE_IMAGES_SKELETON = 5;
 
 export const MAX_NUM_STARS_RATING = 5;

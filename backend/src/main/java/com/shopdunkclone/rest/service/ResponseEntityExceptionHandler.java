@@ -13,6 +13,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -122,6 +123,14 @@ public class ResponseEntityExceptionHandler {
                 ServiceResult.Status.FAILED,
                 ex.getMessage()
         ), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public final ResponseEntity<ServiceResult<Object>> handleMissingRequestParameter(MissingServletRequestParameterException ex) {
+        return new ResponseEntity<>(getErrorServiceResult(
+                ServiceResult.Status.FAILED,
+                ex.getMessage()
+        ), HttpStatus.BAD_REQUEST);
     }
 
     public ServiceResult<Object> getErrorServiceResult(ServiceResult.Status status, String message) {

@@ -26,6 +26,13 @@ export type ProductsQueryArgs = {
   size: number;
 };
 
+export type ProductSearchQueryArgs = {
+  sort_type: string;
+  page: number;
+  size: number;
+  search_text: string;
+};
+
 export type ProductsDto = {
   total_pages: number;
   total_elements: number;

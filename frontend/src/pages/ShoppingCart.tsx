@@ -768,7 +768,7 @@ export default function ShoppingCart() {
                 </div>
               </div>
               <div className="w-[30%] relative">
-                <div className="w-full bg-white rounded-lg px-4 pt-6 pb-10 sticky top-[5rem]">
+                <div className="w-full bg-white rounded-lg px-4 pt-6 pb-10 sticky top-20">
                   <div className="relative">
                     <input
                       className="w-full p-3 pr-36 text-gray-900 border border-gray-300 rounded-lg bg-white"

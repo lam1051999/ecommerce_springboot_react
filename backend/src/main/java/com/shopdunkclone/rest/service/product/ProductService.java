@@ -31,6 +31,9 @@ public class ProductService {
     private static final Sort randomSort = Sort.by("id").descending();
     private static final Sort priceHighLowSort = Sort.by("actualPrice").descending();
     private static final Sort priceLowHighSort = Sort.by("actualPrice").ascending();
+
+    private static final Sort priceHighLowNativeSort = Sort.by("actual_price").descending();
+    private static final Sort priceLowHighNativeSort = Sort.by("actual_price").ascending();
     private static final Sort newestSort = Sort.by("created").descending();
     private static final Sort nameAZSort = Sort.by("name").ascending();
     private static final Sort nameZASort = Sort.by("name").descending();
@@ -105,6 +108,27 @@ public class ProductService {
                 numReviews, averageNumStars, num5Stars, num4Stars, num3Stars, num2Stars, num1Stars, productRatingsEntities
         );
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", productRatingsDto);
+    }
+
+    public ServiceResult<ProductsDto> getProductSearch(int page, int size, String sortType, String searchText) {
+        Sort targetSort = switch (sortType) {
+            case "PRICE_HIGH_LOW" -> priceHighLowNativeSort;
+            case "PRICE_LOW_HIGH" -> priceLowHighNativeSort;
+            case "NEWEST" -> newestSort;
+            case "NAME_A_Z" -> nameAZSort;
+            case "NAME_Z_A" -> nameZASort;
+            default -> randomSort;
+        };
+        Pageable paging = PageRequest.of(page, size, targetSort);
+        List<ProductsEntity> products = new ArrayList<>();
+        Page<ProductsEntity> currPage = productsRepository.searchProducts(searchText, paging);
+        int totalPages = currPage.getTotalPages();
+        long totalElements = currPage.getTotalElements();
+        if (!currPage.isEmpty()) {
+            products.addAll(currPage.getContent());
+        }
+        ProductsDto productsDto = new ProductsDto(totalPages, totalElements, products);
+        return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", productsDto);
     }
 }
 
