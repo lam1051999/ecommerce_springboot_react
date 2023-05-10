@@ -34,7 +34,7 @@ public class RegisterRequest {
     @JsonProperty("email")
     private String email;
 
-    @Length(max = 1000)
+    @Length(max = 255)
     @JsonProperty("username")
     private String username;
 

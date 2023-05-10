@@ -28,12 +28,12 @@ CREATE TABLE IF NOT EXISTS `shopdunk`.`orders` (
   `orders_status` enum('PROCESSING','APPROVED','REJECTED') COLLATE utf8mb3_unicode_ci DEFAULT 'PROCESSING',
   `payment_status` enum('PROCESSING','PAID','CANCELED') COLLATE utf8mb3_unicode_ci DEFAULT 'PROCESSING',
   `ship_address_id` char(32) COLLATE utf8mb3_unicode_ci NOT NULL,
-  `username` varchar(1000) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `username` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ship_address_id` (`ship_address_id`),
   KEY `username` (`username`),
   CONSTRAINT `orders_ibfk_3` FOREIGN KEY (`ship_address_id`) REFERENCES `ship_addresses` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `orders_ibfk_4` FOREIGN KEY (`username`) REFERENCES `customers` (`username`) ON DELETE CASCADE
+  CONSTRAINT `orders_ibfk_5` FOREIGN KEY (`username`) REFERENCES `customers` (`username`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `shopdunk`.`product_images` (
@@ -76,12 +76,12 @@ CREATE TABLE IF NOT EXISTS `shopdunk`.`product_ratings` (
   `created` datetime DEFAULT CURRENT_TIMESTAMP,
   `modified` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `product_id` char(32) COLLATE utf8mb3_unicode_ci NOT NULL,
-  `username` varchar(1000) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `username` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),
   KEY `username` (`username`),
-  CONSTRAINT `product_ratings_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `product_ratings_ibfk_2` FOREIGN KEY (`username`) REFERENCES `customers` (`username`) ON DELETE CASCADE
+  CONSTRAINT `product_ratings_ibfk_3` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `product_ratings_ibfk_4` FOREIGN KEY (`username`) REFERENCES `customers` (`username`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `shopdunk`.`products` (
@@ -121,12 +121,12 @@ CREATE TABLE IF NOT EXISTS `shopdunk`.`ship_addresses` (
   `email` varchar(255) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `exact_address` text COLLATE utf8mb3_unicode_ci,
   `province_id` char(32) COLLATE utf8mb3_unicode_ci NOT NULL,
-  `username` varchar(1000) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `username` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `province_id` (`province_id`),
   KEY `username` (`username`),
   CONSTRAINT `ship_addresses_ibfk_2` FOREIGN KEY (`province_id`) REFERENCES `provinces` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `ship_addresses_ibfk_3` FOREIGN KEY (`username`) REFERENCES `customers` (`username`) ON DELETE CASCADE
+  CONSTRAINT `ship_addresses_ibfk_4` FOREIGN KEY (`username`) REFERENCES `customers` (`username`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `shopdunk`.`shopdunk_shops` (
@@ -136,6 +136,16 @@ CREATE TABLE IF NOT EXISTS `shopdunk`.`shopdunk_shops` (
   PRIMARY KEY (`id`),
   KEY `province_id` (`province_id`),
   CONSTRAINT `shopdunk_shops_ibfk_1` FOREIGN KEY (`province_id`) REFERENCES `provinces` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `shopdunk`.`shopping_cart` (
+  `quantity` int unsigned NOT NULL DEFAULT '0',
+  `username` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `product_id` char(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  PRIMARY KEY (`username`,`product_id`),
+  KEY `shopping_carts_ibfk_2` (`product_id`),
+  CONSTRAINT `shopping_cart_ibfk_1` FOREIGN KEY (`username`) REFERENCES `customers` (`username`) ON DELETE CASCADE,
+  CONSTRAINT `shopping_cart_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `shopdunk`.`stocks` (

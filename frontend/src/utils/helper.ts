@@ -1,7 +1,12 @@
 import { ProductCardInfo } from "../components/common/types";
 import { SHOPDUNK_IMAGES_BASE_URL } from "../constants/config";
 import { PageRoute } from "../constants/type";
-import { ProductsDto } from "../redux/types/types";
+import {
+  OrdersStatus,
+  Payment,
+  PaymentStatus,
+  ProductsDto,
+} from "../redux/types/types";
 import { MapTitleChoices, MapTitlePreviewChoice } from "./types";
 
 const CURRENCY_FORMATTER = new Intl.NumberFormat("de-DE", {
@@ -105,11 +110,11 @@ export function getMatchedRoute(routes: PageRoute[], pathname: string) {
 
 export function getOrderStatusColor(status: string) {
   switch (status) {
-    case "PROCESSING":
+    case OrdersStatus.PROCESSING:
       return "#FDB700";
-    case "APPROVED":
+    case OrdersStatus.APPROVED:
       return "#28A745";
-    case "REJECTED":
+    case OrdersStatus.REJECTED:
       return "#FF4127";
     default:
       return "#FDB700";
@@ -117,11 +122,11 @@ export function getOrderStatusColor(status: string) {
 }
 export function getOrderStatusText(status: string) {
   switch (status) {
-    case "PROCESSING":
+    case OrdersStatus.PROCESSING:
       return "Đang xử lý";
-    case "APPROVED":
+    case OrdersStatus.APPROVED:
       return "Thành công";
-    case "REJECTED":
+    case OrdersStatus.REJECTED:
       return "Đã huỷ";
     default:
       return "Đang xử lý";
@@ -129,13 +134,13 @@ export function getOrderStatusText(status: string) {
 }
 export function getPaymentText(payment: string) {
   switch (payment) {
-    case "BANK":
+    case Payment.BANK:
       return "Chuyển khoản ngân hàng";
-    case "ONEPAY":
+    case Payment.ONEPAY:
       return "Thanh toán OnePay";
-    case "PAYOO":
+    case Payment.PAYOO:
       return "Thanh toán Payoo";
-    case "KREDIVO":
+    case Payment.KREDIVO:
       return "Thanh toán Kredivo";
     default:
       return "Chuyển khoản ngân hàng";
@@ -143,11 +148,11 @@ export function getPaymentText(payment: string) {
 }
 export function getPaymentStatusColor(status: string) {
   switch (status) {
-    case "PROCESSING":
+    case PaymentStatus.PROCESSING:
       return "#FDB700";
-    case "PAID":
+    case PaymentStatus.PAID:
       return "#28A745";
-    case "CANCELED":
+    case PaymentStatus.CANCELED:
       return "#FF4127";
     default:
       return "#FDB700";
@@ -155,11 +160,11 @@ export function getPaymentStatusColor(status: string) {
 }
 export function getPaymentStatusText(status: string) {
   switch (status) {
-    case "PROCESSING":
+    case PaymentStatus.PROCESSING:
       return "Đang chờ xử lý";
-    case "PAID":
+    case PaymentStatus.PAID:
       return "Đã thanh toán";
-    case "CANCELED":
+    case PaymentStatus.CANCELED:
       return "Đã huỷ";
     default:
       return "Đang chờ xử lý";

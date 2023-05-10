@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthenticationRequest {
-    @Length(max = 1000)
+    @Length(max = 255)
     @JsonProperty("username")
     private String username;
 

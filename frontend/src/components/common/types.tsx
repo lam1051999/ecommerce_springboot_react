@@ -1,3 +1,5 @@
+import { ProductType } from "../../redux/types/types";
+
 export type ProductCardInfo = {
   id: string;
   displayImage: string;
@@ -24,7 +26,7 @@ export type SlideItem = {
 
 export type ChoiceItem = {
   name: string;
-  productType: string;
+  productType: ProductType;
   productSubType: string | null;
   actionValue: string;
 };

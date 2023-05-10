@@ -8,40 +8,34 @@ import ProductDetailShowcaseImage from "../components/common/ProductDetailShowca
 import ProductDetailInfo from "../components/common/ProductDetailInfo";
 import ProductDetailRating from "../components/common/ProductDetailRating";
 import ProductDetailRatingOveral from "../components/common/ProductDetailRatingOveral";
-import { useAppDispatch } from "../redux/hooks/hooks";
-import { DetailProductsById, ProductsEntity } from "../redux/types/types";
-import { addCartProduct } from "../redux/slices/shoppingCartSlice";
+import { ShoppingCartChangeType } from "../redux/types/types";
 import PageContainer from "../components/common/PageContainer";
+import { useChangeShoppingCartQuantityMutation } from "../redux/api/userApi";
 
 export default function ProductDetail() {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const params = useParams();
   const { productId } = params;
   if (!productId) return null;
   const { data, error, isLoading } = useGetProductsByIdQuery(productId);
-  function handleAddToCart(detail: DetailProductsById) {
-    const productsEntity: ProductsEntity = {
-      id: detail.id,
-      name: detail.name,
-      extra_product_type: detail.extra_product_type,
-      extra_strap_type: detail.extra_strap_type,
-      extra_gpu_type: detail.extra_gpu_type,
-      extra_storage_type: detail.extra_storage_type,
-      extra_color_type: detail.extra_color_type,
-      extra_ram_type: detail.extra_ram_type,
-      extra_model_type: detail.extra_model_type,
-      extra_screen_size: detail.extra_screen_size,
-      actual_price: detail.actual_price,
-      old_price: detail.old_price,
-      showcase_image: detail.showcase_image,
-      product_type: detail.product_type,
-      product_sub_type: detail.product_sub_type,
-      created: detail.created,
-      modified: detail.modified,
-    };
-    dispatch(addCartProduct(productsEntity));
-    navigate("/shopping-cart");
+  const [
+    changeShoppingCart,
+    {
+      isError: changeShoppingCartIsError,
+      isSuccess: changeShoppingCartIsSuccess,
+      error: changeShoppingCartError,
+      data: changeShoppingCartData,
+    },
+  ] = useChangeShoppingCartQuantityMutation();
+
+  async function handleAddToCart(productId: string) {
+    await changeShoppingCart({
+      amount: 1,
+      product_id: productId,
+      type: ShoppingCartChangeType.MODIFY,
+    })
+      .unwrap()
+      .then(() => navigate("/shopping-cart"));
   }
 
   return (
@@ -110,11 +104,16 @@ export default function ProductDetail() {
                 <ProductDetailColors listColors={data.list_colors} />
               )}
               <button
-                onClick={() => handleAddToCart(data)}
+                onClick={() => handleAddToCart(data.id)}
                 className="rounded-lg w-full text-center py-3 text-white font-semibold bg-blue-700 hover:bg-blue-500"
               >
                 Mua ngay
               </button>
+              {changeShoppingCartIsError ? (
+                <p className="text-xs text-red-500">
+                  Đã có lỗi xảy ra, chưa thể thêm sản phẩm vào giỏ hàng
+                </p>
+              ) : null}
             </div>
           </div>
           <ProductDetailInfo detailInfo={data.specifications} />

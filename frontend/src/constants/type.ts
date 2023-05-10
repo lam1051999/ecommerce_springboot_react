@@ -1,4 +1,5 @@
 import React from "react";
+import { ProductType } from "../redux/types/types";
 
 export type PathLink = {
   title: string;
@@ -12,7 +13,7 @@ export type PageRoute = {
 };
 
 export type ProductTypePathLink = {
-  productType: string;
+  productType: ProductType;
   pathLink: PathLink;
 };
 

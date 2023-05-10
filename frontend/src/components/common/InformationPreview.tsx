@@ -19,7 +19,7 @@ export default function InformationPreview({
         <InformationGrid informationCardInfos={informationCardInfos} />
       </div>
       <div className="flex items-center justify-center w-full">
-        <Link to="/information">
+        <Link to="#">
           <OutlineBlueButton>
             <span>Xem tất cả Tin Tức</span>
             <AiOutlineRight size={20} />

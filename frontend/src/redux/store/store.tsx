@@ -15,7 +15,6 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import shoppingCartSlice from "../slices/shoppingCartSlice";
 import { addressApi } from "../api/addressApi";
 import { authenticationApi } from "../api/authenticationApi";
 import authenticationSlice from "../slices/authenticationSlice";
@@ -24,7 +23,7 @@ import { userApi } from "../api/userApi";
 const cartPersistConfig = {
   key: "persisted_state",
   storage: storage,
-  whitelist: [shoppingCartSlice.name, authenticationSlice.name],
+  whitelist: [authenticationSlice.name],
 };
 
 const rootReducer = combineReducers({
@@ -35,7 +34,6 @@ const rootReducer = combineReducers({
   choiceBar: choiceBarSlice.reducer,
   breadcrumb: breadcrumbSlice.reducer,
   productImages: productImagesSlice.reducer,
-  shoppingCart: shoppingCartSlice.reducer,
   authentication: authenticationSlice.reducer,
 });
 

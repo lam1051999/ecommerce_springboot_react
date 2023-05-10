@@ -5,17 +5,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@Repository
 public interface CustomersRepository extends JpaRepository<CustomersEntity, String> {
     Optional<CustomersEntity> findByUsername(String username);
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO `customers` (id, name, gender, dob, phone_number, email, username, password, role)\n" +
-            "VALUES (:id, :name, :gender, :dob, :phone_number, :email, :username, :password, :role) ;", nativeQuery = true)
+    @Query(value = """
+            INSERT INTO `customers` (id, name, gender, dob, phone_number, email, username, password, role)
+            VALUES (:id, :name, :gender, :dob, :phone_number, :email, :username, :password, :role) ;""", nativeQuery = true)
     void insert(@Param("id") String id,
                 @Param("name") String name,
                 @Param("gender") String gender,
@@ -28,8 +31,9 @@ public interface CustomersRepository extends JpaRepository<CustomersEntity, Stri
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE `customers` SET name=:name, gender=:gender, dob=:dob, phone_number=:phone_number, email=:email\n" +
-            "WHERE username=:username ;", nativeQuery = true)
+    @Query(value = """
+            UPDATE `customers` SET name=:name, gender=:gender, dob=:dob, phone_number=:phone_number, email=:email
+            WHERE username=:username ;""", nativeQuery = true)
     void updateCustomerInfos(
             @Param("name") String name,
             @Param("gender") String gender,

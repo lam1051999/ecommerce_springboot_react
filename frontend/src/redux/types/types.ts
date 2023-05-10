@@ -1,7 +1,16 @@
 import { PathLink } from "../../constants/type";
 
+export enum ProductType {
+  IPHONE = "IPHONE",
+  IPAD = "IPAD",
+  MAC = "MAC",
+  WATCH = "WATCH",
+  SOUND = "SOUND",
+  ACCESSORY = "ACCESSORY",
+}
+
 export type ChoiceBarState = {
-  productType: string;
+  productType: ProductType;
   productSubType: string | null;
   sortType: string;
   page: number;
@@ -20,7 +29,7 @@ export type ProductImagesState = {
 
 export type ProductsQueryArgs = {
   sort_type: string;
-  product_type: string;
+  product_type: ProductType;
   product_sub_type: string | null;
   page: number;
   size: number;
@@ -59,7 +68,7 @@ export type ProductsEntity = {
   actual_price: number;
   old_price: number;
   showcase_image: string;
-  product_type: string;
+  product_type: ProductType;
   product_sub_type: string;
   created: string;
   modified: string;
@@ -138,15 +147,27 @@ export type ProductRatingsRequest = {
   product_id: string;
 };
 
-export type ProductRatingsResponse = {
-  message: string;
-  status: string;
-  data: string;
-};
-
 export type ShoppingCartItem = {
   products_entity: ProductsEntity;
   quantity: number;
+};
+
+export type ShoppingCartResponse = {
+  message: string;
+  status: string;
+  data: ShoppingCartItem[];
+};
+
+export enum ShoppingCartChangeType {
+  MODIFY = "MODIFY",
+  REMOVE = "REMOVE",
+  RESET = "RESET",
+}
+
+export type ShoppingCartChangeRequest = {
+  product_id: string;
+  amount: number;
+  type: ShoppingCartChangeType;
 };
 
 export type ShoppingCart = {
@@ -181,9 +202,14 @@ export type AuthenticationResponse = {
   };
 };
 
+export enum Gender {
+  MALE = "MALE",
+  FEMALE = "FEMALE",
+}
+
 export type RegisterBody = {
   name: string;
-  gender: string;
+  gender: Gender;
   dob: string;
   phone_number: string;
   email: string;
@@ -203,7 +229,7 @@ export type AuthenticationState = {
 
 export type CustomerInfosRequest = {
   name: string;
-  gender: string;
+  gender: Gender;
   dob: string;
   phone_number: string;
   email: string;
@@ -276,8 +302,13 @@ export type ShoppingCartItemNormalized = {
   quantity: number;
 };
 
+export enum ReceiveType {
+  STORE = "STORE",
+  HOME = "HOME",
+}
+
 export type OrdersRequest = {
-  receive_type: string;
+  receive_type: ReceiveType;
   total_price: number;
   is_extract_receipt: number;
   payment: string;
@@ -285,16 +316,35 @@ export type OrdersRequest = {
   list_products_in_order: ShoppingCartItemNormalized[];
 };
 
+export enum OrdersStatus {
+  PROCESSING = "PROCESSING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+}
+
+export enum Payment {
+  BANK = "BANK",
+  ONEPAY = "ONEPAY",
+  PAYOO = "PAYOO",
+  KREDIVO = "KREDIVO",
+}
+
+export enum PaymentStatus {
+  PROCESSING = "PROCESSING",
+  PAID = "PAID",
+  CANCELED = "CANCELED",
+}
+
 export type OrdersEntity = {
   id: string;
   created: string;
   modified: string;
-  receive_type: string;
+  receive_type: ReceiveType;
   total_price: number;
   is_extract_receipt: number;
-  payment: string;
-  orders_status: string;
-  payment_status: string;
+  payment: Payment;
+  orders_status: OrdersStatus;
+  payment_status: PaymentStatus;
   username: string;
   ship_address_id: string;
 };

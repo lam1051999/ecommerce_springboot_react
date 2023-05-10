@@ -4,7 +4,7 @@ import signupBanner from "/images/authentication/signupBanner.jpeg";
 import { AiOutlineDown } from "react-icons/ai";
 import { Formik } from "formik";
 import { useRegisterMutation } from "../redux/api/authenticationApi";
-import { CustomBaseQueryError } from "../redux/types/types";
+import { CustomBaseQueryError, Gender } from "../redux/types/types";
 import SubmitButton from "../components/common/SubmitButton";
 import { useDispatch } from "react-redux";
 import { onRenewToken } from "../redux/slices/authenticationSlice";
@@ -12,7 +12,6 @@ import { onRenewToken } from "../redux/slices/authenticationSlice";
 export const DEFAULT_BOD_DATE = "Ngày";
 export const DEFAULT_BOD_MONTH = "Tháng";
 export const DEFAULT_BOD_YEAR = "Năm";
-export const DEFAULT_GENDER = "MALE";
 export const DATE_ARRAY = Array.from(Array(31)).map((item, index) =>
   `${index + 1}`.length < 2 ? `0${index + 1}` : `${index + 1}`
 );
@@ -51,7 +50,7 @@ export default function Signup() {
           <Formik
             initialValues={{
               name: "",
-              gender: DEFAULT_GENDER,
+              gender: Gender.MALE,
               dobDate: DEFAULT_BOD_DATE,
               dobMonth: DEFAULT_BOD_MONTH,
               dobYear: DEFAULT_BOD_YEAR,
@@ -178,9 +177,9 @@ export default function Signup() {
                   <p className="text-sm">Giới tính:</p>
                   <div className="flex items-center space-x-1">
                     <input
-                      checked={values.gender === "MALE"}
+                      checked={values.gender === Gender.MALE}
                       onChange={handleChange}
-                      value="MALE"
+                      value={Gender.MALE}
                       type="radio"
                       name="gender"
                     />
@@ -188,9 +187,9 @@ export default function Signup() {
                   </div>
                   <div className="flex items-center space-x-1">
                     <input
-                      checked={values.gender === "FEMALE"}
+                      checked={values.gender === Gender.FEMALE}
                       onChange={handleChange}
-                      value="FEMALE"
+                      value={Gender.FEMALE}
                       type="radio"
                       name="gender"
                     />

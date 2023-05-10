@@ -19,6 +19,7 @@ import {
   onChangeSortType,
 } from "../../redux/slices/choiceBarSlice";
 import PageContainer from "./PageContainer";
+import { ProductType } from "../../redux/types/types";
 
 type ProductShowcaseProps = {
   title: string;
@@ -26,7 +27,7 @@ type ProductShowcaseProps = {
   choices: ChoiceItem[];
   supportItems: ProductSupportItem[] | null;
   allDesc: ProductDescriptionItem[];
-  productType: string;
+  productType: ProductType;
 };
 
 export default function ProductShowcase({

@@ -15,6 +15,8 @@ import {
   PasswordChangeRequest,
   ProductRatingsByUserResponse,
   ProductRatingsRequest,
+  ShoppingCartChangeRequest,
+  ShoppingCartResponse,
   SingleCustomerShipAddressesResponse,
 } from "../types/types";
 
@@ -30,6 +32,7 @@ export const userApi = createApi({
     "CustomerShipAddressesById",
     "CustomerAvatar",
     "CustomerOrders",
+    "ShoppingCart",
   ],
   endpoints: (builder) => ({
     getCustomerInfos: builder.query<CustomerInfosResponse, void>({
@@ -160,6 +163,25 @@ export const userApi = createApi({
         method: "get",
       }),
     }),
+    getShoppingCartItems: builder.query<ShoppingCartResponse, void>({
+      query: () => ({
+        url: "/customer-infos/shopping-cart",
+        method: "get",
+        isNavigateToLogin: false,
+      }),
+      providesTags: ["ShoppingCart"],
+    }),
+    changeShoppingCartQuantity: builder.mutation<
+      MessageResponse,
+      ShoppingCartChangeRequest
+    >({
+      query: (request) => ({
+        url: "/customer-infos/shopping-cart",
+        method: "post",
+        data: request,
+      }),
+      invalidatesTags: ["ShoppingCart"],
+    }),
   }),
 });
 
@@ -180,4 +202,6 @@ export const {
   useGetOrdersByIdQuery,
   useCreateProductRatingsMutation,
   useGetProductRatingsByUserQuery,
+  useGetShoppingCartItemsQuery,
+  useChangeShoppingCartQuantityMutation,
 } = userApi;

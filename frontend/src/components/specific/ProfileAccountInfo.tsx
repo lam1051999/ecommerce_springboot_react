@@ -8,13 +8,14 @@ import {
   SignupFormikError,
   YEAR_ARRAY,
 } from "../../pages/Signup";
-import { AiOutlineDown, AiOutlineLoading } from "react-icons/ai";
+import { AiOutlineDown } from "react-icons/ai";
 import {
   useGetCustomerInfosQuery,
   useUpdateCustomerInfosMutation,
 } from "../../redux/api/userApi";
 import CustomerInfosContainer from "./CustomerInfosContainer";
 import SubmitButton from "../common/SubmitButton";
+import { Gender } from "../../redux/types/types";
 
 export default function ProfileAccountInfo() {
   const { data, error, isLoading } = useGetCustomerInfosQuery();
@@ -158,9 +159,9 @@ export default function ProfileAccountInfo() {
                       <div className="flex items-center space-x-10 grow">
                         <div className="flex items-center space-x-1">
                           <input
-                            checked={values.gender === "MALE"}
+                            checked={values.gender === Gender.MALE}
                             onChange={handleChange}
-                            value="MALE"
+                            value={Gender.MALE}
                             type="radio"
                             name="gender"
                           />
@@ -168,9 +169,9 @@ export default function ProfileAccountInfo() {
                         </div>
                         <div className="flex items-center space-x-1">
                           <input
-                            checked={values.gender === "FEMALE"}
+                            checked={values.gender === Gender.FEMALE}
                             onChange={handleChange}
-                            value="FEMALE"
+                            value={Gender.FEMALE}
                             type="radio"
                             name="gender"
                           />

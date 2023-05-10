@@ -5,11 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface ShipAddressesRepository extends JpaRepository<ShipAddressesEntity, String> {
     List<ShipAddressesEntity> findAllByUsername(String username);
     @Transactional
@@ -17,9 +19,10 @@ public interface ShipAddressesRepository extends JpaRepository<ShipAddressesEnti
     Optional<ShipAddressesEntity> findByIdAndUsername(String id, String username);
     @Modifying
     @Transactional
-    @Query(value = "UPDATE `ship_addresses` SET name=:name, phone_number=:phone_number, email=:email, " +
-            "exact_address=:exact_address, province_id=:province_id\n" +
-            "WHERE id=:id AND username=:username ;", nativeQuery = true)
+    @Query(value = """
+            UPDATE `ship_addresses` SET name=:name, phone_number=:phone_number, email=:email,
+            exact_address=:exact_address, province_id=:province_id
+            WHERE id=:id AND username=:username ;""", nativeQuery = true)
     void updateCustomerShipAddressesById(
             @Param("id") String id,
             @Param("name") String name,

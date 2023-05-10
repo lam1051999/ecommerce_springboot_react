@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ChoiceBarState } from "../types/types";
+import { ChoiceBarState, ProductType } from "../types/types";
 
 const initialState: ChoiceBarState = {
-  productType: "IPHONE",
+  productType: ProductType.IPHONE,
   productSubType: null,
   sortType: "RANDOM",
   page: 0,
@@ -14,10 +14,10 @@ export const choiceBarSlice = createSlice({
   initialState,
   reducers: {
     onChangeProductType: {
-      reducer: (state, action: PayloadAction<string>) => {
+      reducer: (state, action: PayloadAction<ProductType>) => {
         state.productType = action.payload;
       },
-      prepare: (actionData: string) => {
+      prepare: (actionData: ProductType) => {
         return { payload: actionData };
       },
     },

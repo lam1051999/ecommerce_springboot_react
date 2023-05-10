@@ -6,9 +6,6 @@ import Mac from "../pages/Mac";
 import AppleWatch from "../pages/AppleWatch";
 import Sound from "../pages/Sound";
 import Accessory from "../pages/Accessory";
-import Service from "../pages/Service";
-import Information from "../pages/Information";
-import Promotion from "../pages/Promotion";
 import ProductDetail from "../pages/ProductDetail";
 import NotFound from "../pages/NotFound";
 import ShoppingCart from "../pages/ShoppingCart";
@@ -25,6 +22,7 @@ import ProfileRatingHistoryInfo from "../components/specific/ProfileRatingHistor
 import AddressesUpdateForm from "../components/specific/AddressesUpdateForm";
 import ProfileOrdersDetail from "../components/specific/ProfileOrdersDetail";
 import SearchResult from "../pages/SearchResult";
+import { ProductType } from "../redux/types/types";
 
 export const ordinaryRoutes: PageRoute[] = [
   {
@@ -93,36 +91,6 @@ export const ordinaryRoutes: PageRoute[] = [
     listPath: [
       {
         title: "Phụ kiện",
-        goTo: null,
-      },
-    ],
-  },
-  {
-    path: "/service",
-    element: <Service />,
-    listPath: [
-      {
-        title: "Dịch vụ",
-        goTo: null,
-      },
-    ],
-  },
-  {
-    path: "/information",
-    element: <Information />,
-    listPath: [
-      {
-        title: "Tin tức",
-        goTo: null,
-      },
-    ],
-  },
-  {
-    path: "/promotion",
-    element: <Promotion />,
-    listPath: [
-      {
-        title: "Khuyến mại",
         goTo: null,
       },
     ],
@@ -284,42 +252,42 @@ export const specialRoutes: PageRoute[] = [
 
 export const mapProductTypePathLink: ProductTypePathLink[] = [
   {
-    productType: "IPHONE",
+    productType: ProductType.IPHONE,
     pathLink: {
       title: "iPhone",
       goTo: "/iphone",
     },
   },
   {
-    productType: "IPAD",
+    productType: ProductType.IPAD,
     pathLink: {
       title: "iPad",
       goTo: "/ipad",
     },
   },
   {
-    productType: "MAC",
+    productType: ProductType.MAC,
     pathLink: {
       title: "Mac",
       goTo: "/mac",
     },
   },
   {
-    productType: "WATCH",
+    productType: ProductType.WATCH,
     pathLink: {
       title: "Watch",
       goTo: "/apple-watch",
     },
   },
   {
-    productType: "SOUND",
+    productType: ProductType.SOUND,
     pathLink: {
       title: "Âm thanh",
       goTo: "/sound",
     },
   },
   {
-    productType: "ACCESSORY",
+    productType: ProductType.ACCESSORY,
     pathLink: {
       title: "Phụ kiện",
       goTo: "/accessory",

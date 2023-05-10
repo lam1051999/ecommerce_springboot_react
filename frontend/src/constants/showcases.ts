@@ -4,6 +4,6 @@ import showcase3 from "/images/showcases/showcase3.png";
 
 export const showcases = [
   { src: showcase1, to: "/sound" },
-  { src: showcase2, to: "/service" },
+  { src: showcase2, to: "/iphone" },
   { src: showcase3, to: "/sound" },
 ];

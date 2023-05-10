@@ -6,12 +6,19 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks/hooks";
 import { FaUserCircle } from "react-icons/fa";
 import { getFullPathImage, parseJwt } from "../../utils/helper";
 import { onResetToken } from "../../redux/slices/authenticationSlice";
-import { useGetCustomerAvatarQuery } from "../../redux/api/userApi";
+import {
+  useGetCustomerAvatarQuery,
+  useGetShoppingCartItemsQuery,
+} from "../../redux/api/userApi";
 import { useEffect, useState } from "react";
 import SearchContainer from "./SearchContainer";
 
 export default function Header() {
-  const { cartItems } = useAppSelector((state) => state.shoppingCart);
+  const {
+    data: shoppingCartData,
+    error: shoppingCartError,
+    isLoading: shoppingCartIsLoading,
+  } = useGetShoppingCartItemsQuery();
   const token = useAppSelector((state) => state.authentication.token);
   const {
     data: getAvatarData,
@@ -87,7 +94,7 @@ export default function Header() {
             </li>
             <li className="h-full">
               <Link
-                to="/service"
+                to="#"
                 className="hover:cursor-pointer flex items-center justify-center w-24 h-full hover:bg-gray-500"
               >
                 <span className="text-sm text-white">Dịch vụ</span>
@@ -95,7 +102,7 @@ export default function Header() {
             </li>
             <li className="h-full">
               <Link
-                to="/information"
+                to="#"
                 className="hover:cursor-pointer flex items-center justify-center w-24 h-full hover:bg-gray-500"
               >
                 <span className="text-sm text-white">Tin tức</span>
@@ -103,7 +110,7 @@ export default function Header() {
             </li>
             <li className="h-full">
               <Link
-                to="/promotion"
+                to="#"
                 className="hover:cursor-pointer flex items-center justify-center w-24 h-full hover:bg-gray-500"
               >
                 <span className="text-sm text-white">Khuyến mại</span>
@@ -125,9 +132,11 @@ export default function Header() {
                 <BsCart size={22} />
                 <div className="absolute bottom-0 right-0 rounded-full bg-white w-[18px] h-[18px] flex items-center justify-center">
                   <span className="text-black text-[10px]">
-                    {cartItems.reduce((total, item) => {
-                      return item.quantity + total;
-                    }, 0)}
+                    {shoppingCartData
+                      ? shoppingCartData.data.reduce((total, item) => {
+                          return item.quantity + total;
+                        }, 0)
+                      : 0}
                   </span>
                 </div>
               </div>

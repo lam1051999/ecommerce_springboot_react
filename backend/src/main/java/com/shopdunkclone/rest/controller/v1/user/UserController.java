@@ -2,6 +2,7 @@ package com.shopdunkclone.rest.controller.v1.user;
 
 import com.shopdunkclone.rest.dto.order.OrdersByIdDto;
 import com.shopdunkclone.rest.dto.order.OrdersRequest;
+import com.shopdunkclone.rest.dto.order.ShoppingCartItem;
 import com.shopdunkclone.rest.dto.product.ProductRatingsRequest;
 import com.shopdunkclone.rest.dto.user.*;
 import com.shopdunkclone.rest.exception.InvalidRequestException;
@@ -186,6 +187,25 @@ public class UserController {
     ) throws ParseException, UserNotAllowedException {
         ServiceResult<String> result = userService.createProductRatings(request, bearerToken);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Thay đổi số lượng sản phẩm trong giỏ hàng")
+    @PostMapping(value = "/customer-infos/shopping-cart")
+    public ResponseEntity<ServiceResult<String>> changeShoppingCartQuantity(
+            @RequestBody @Valid ShoppingCartChangeRequest request,
+            @RequestHeader(value = "Authorization") String bearerToken
+    ) throws InvalidRequestException {
+        ServiceResult<String> result = userService.changeShoppingCartQuantity(request, bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Lấy các sản phẩm trong giỏ hàng")
+    @GetMapping(value = "/customer-infos/shopping-cart")
+    public ResponseEntity<ServiceResult<List<ShoppingCartItem>>> getShoppingCartItems(
+            @RequestHeader(value = "Authorization") String bearerToken
+    ){
+        ServiceResult<List<ShoppingCartItem>> result = userService.getShoppingCartItems(bearerToken);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @InitBinder

@@ -16,6 +16,7 @@ import com.shopdunkclone.rest.model.product.ProductsEntity;
 import com.shopdunkclone.rest.model.product.StocksEntity;
 import com.shopdunkclone.rest.model.user.CustomersEntity;
 import com.shopdunkclone.rest.model.user.ShipAddressesEntity;
+import com.shopdunkclone.rest.model.user.ShoppingCartEntity;
 import com.shopdunkclone.rest.repository.order.OrdersRepository;
 import com.shopdunkclone.rest.repository.order.ProductOrdersRepository;
 import com.shopdunkclone.rest.repository.product.ProductRatingsRepository;
@@ -23,6 +24,7 @@ import com.shopdunkclone.rest.repository.product.ProductsRepository;
 import com.shopdunkclone.rest.repository.product.StocksRepository;
 import com.shopdunkclone.rest.repository.user.CustomersRepository;
 import com.shopdunkclone.rest.repository.user.ShipAddressesRepository;
+import com.shopdunkclone.rest.repository.user.ShoppingCartRepository;
 import com.shopdunkclone.rest.util.JwtService;
 import com.shopdunkclone.rest.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +66,8 @@ public class UserService {
     ProductsRepository productsRepository;
     @Autowired
     ProductRatingsRepository productRatingsRepository;
+    @Autowired
+    ShoppingCartRepository shoppingCartRepository;
     @Value("${nginx_images_path}")
     private String NGINX_IMAGES_PATH;
 
@@ -285,5 +289,46 @@ public class UserService {
             productsEntity.ifPresent(entity -> productRatingsByUserList.add(new ProductRatingsByUser(item, entity)));
         });
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", productRatingsByUserList);
+    }
+
+    public ServiceResult<String> changeShoppingCartQuantity(ShoppingCartChangeRequest request, String bearerToken) throws InvalidRequestException {
+        String username = jwtService.getUsernameFromHeader(bearerToken);
+        String productId = request.getProductId();
+        int amount = request.getAmount();
+        ShoppingCartChangeType type = request.getType();
+        if (type == ShoppingCartChangeType.MODIFY) {
+            Optional<ShoppingCartEntity> shoppingCartsEntity = shoppingCartRepository.findByUsernameAndProductId(username, productId);
+            if (shoppingCartsEntity.isPresent()) {
+                int currentQuantity = shoppingCartsEntity.get().getQuantity();
+                if (currentQuantity + request.getAmount() <= 0) {
+                    shoppingCartRepository.deleteByUsernameAndProductId(username, productId);
+                } else {
+                    shoppingCartRepository.updateCartItem(username, productId, amount);
+                }
+            } else {
+                if(amount > 0) {
+                    shoppingCartRepository.save(new ShoppingCartEntity(username, productId, amount));
+                } else {
+                    throw new InvalidRequestException("Cannot modify cart");
+                }
+            }
+        } else if(type == ShoppingCartChangeType.REMOVE) {
+            shoppingCartRepository.deleteByUsernameAndProductId(username, productId);
+        } else {
+            shoppingCartRepository.deleteByUsername(username);
+        }
+        return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Thay đổi giỏ hàng thành công");
+    }
+
+    public ServiceResult<List<ShoppingCartItem>> getShoppingCartItems(String bearerToken) {
+        String username = jwtService.getUsernameFromHeader(bearerToken);
+        List<ShoppingCartItem> shoppingCartItemList = new ArrayList<>();
+        List<ShoppingCartEntity> entities = shoppingCartRepository.findAllByUsername(username);
+        entities.forEach(item -> {
+            int quantity = item.getQuantity();
+            Optional<ProductsEntity> productsEntity = productsRepository.findProductsEntityByIdAndNameNotNull(item.getProductId());
+            productsEntity.ifPresent(entity -> shoppingCartItemList.add(new ShoppingCartItem(entity, quantity)));
+        });
+        return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", shoppingCartItemList);
     }
 }
