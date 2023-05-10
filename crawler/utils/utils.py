@@ -397,12 +397,13 @@ def scroll_to_top_then_wait(driver, wait_seconds):
     time.sleep(wait_seconds)
 
 
-def download_image(image_folder: str, image_url: str, backend_resource_static_folder: str):
-    os.system(f"mkdir -p {image_folder}")
+def download_image(image_folder: str, image_url: str, image_url_prefix: str, type: str):
+    typed_image_folder = f"{image_folder}/{type}"
+    os.system(f"mkdir -p {typed_image_folder}")
     image_url = image_url.strip()
     filename = image_url.split("/")[-1]
     img_data = requests.get(image_url).content
-    filepath = f"{image_folder}/{filename}"
+    filepath = f"{typed_image_folder}/{filename}"
     with open(filepath, "wb") as handler:
         handler.write(img_data)
-    return filepath.replace(backend_resource_static_folder, "")
+    return f"{image_url_prefix}/{type}/{filename}"
