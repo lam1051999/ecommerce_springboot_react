@@ -9,29 +9,29 @@ import { onResetToken } from "../../redux/slices/authenticationSlice";
 import {
   useGetCustomerAvatarQuery,
   useGetShoppingCartItemsQuery,
+  userApi,
 } from "../../redux/api/userApi";
 import { useEffect, useState } from "react";
 import SearchContainer from "./SearchContainer";
 
 export default function Header() {
+  const token = useAppSelector((state) => state.authentication.token);
   const {
     data: shoppingCartData,
     error: shoppingCartError,
     isLoading: shoppingCartIsLoading,
   } = useGetShoppingCartItemsQuery();
-  const token = useAppSelector((state) => state.authentication.token);
   const {
     data: getAvatarData,
     error: getAvatarError,
     isLoading: getAvatarIsLoading,
-    refetch: getAvatarRefetch,
   } = useGetCustomerAvatarQuery();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isOpenSearch, setIsOpenSearch] = useState(false);
 
   useEffect(() => {
-    getAvatarRefetch();
+    dispatch(userApi.util.invalidateTags(["CustomerAvatar", "ShoppingCart"]));
   }, [token]);
 
   return (
@@ -132,7 +132,9 @@ export default function Header() {
                 <BsCart size={22} />
                 <div className="absolute bottom-0 right-0 rounded-full bg-white w-[18px] h-[18px] flex items-center justify-center">
                   <span className="text-black text-[10px]">
-                    {shoppingCartData
+                    {shoppingCartError || shoppingCartIsLoading
+                      ? 0
+                      : shoppingCartData
                       ? shoppingCartData.data.reduce((total, item) => {
                           return item.quantity + total;
                         }, 0)

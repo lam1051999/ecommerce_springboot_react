@@ -2,7 +2,6 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { SHOPDUNK_BACKEND_BASE_URL } from "../../constants/config";
 import { axiosAuthBaseQuery } from "../custom/baseQuery";
 import {
-  CustomBaseQueryError,
   CustomerAvatarResponse,
   CustomerInfosRequest,
   CustomerInfosResponse,
@@ -203,5 +202,6 @@ export const {
   useCreateProductRatingsMutation,
   useGetProductRatingsByUserQuery,
   useGetShoppingCartItemsQuery,
+  useLazyGetShoppingCartItemsQuery,
   useChangeShoppingCartQuantityMutation,
 } = userApi;
