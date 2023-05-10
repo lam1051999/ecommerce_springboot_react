@@ -29,11 +29,12 @@ import {
 import { Formik } from "formik";
 import SubmitButton from "../components/common/SubmitButton";
 import { useState } from "react";
-
-export const DEFAULT_PROVINCE = "Chọn tỉnh, thành phố:";
-export const DEFAULT_DISTRICT = "Quận, huyện:";
-export const DEFAULT_SHOP = "Mời bạn chọn địa chỉ cửa hàng";
-export const DEFAULT_ADDRESS = "Địa chỉ mới";
+import {
+  DEFAULT_PROVINCE,
+  DEFAULT_DISTRICT,
+  DEFAULT_SHOP,
+  DEFAULT_ADDRESS,
+} from "../constants/config";
 
 type ShoppingCartFormikError = {
   name?: string;

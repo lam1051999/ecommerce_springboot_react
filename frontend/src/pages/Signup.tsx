@@ -8,20 +8,14 @@ import { CustomBaseQueryError, Gender } from "../redux/types/types";
 import SubmitButton from "../components/common/SubmitButton";
 import { useDispatch } from "react-redux";
 import { onRenewToken } from "../redux/slices/authenticationSlice";
-
-export const DEFAULT_BOD_DATE = "Ngày";
-export const DEFAULT_BOD_MONTH = "Tháng";
-export const DEFAULT_BOD_YEAR = "Năm";
-export const DATE_ARRAY = Array.from(Array(31)).map((item, index) =>
-  `${index + 1}`.length < 2 ? `0${index + 1}` : `${index + 1}`
-);
-export const MONTH_ARRAY = Array.from(Array(12)).map((item, index) =>
-  `${index + 1}`.length < 2 ? `0${index + 1}` : `${index + 1}`
-);
-export const NUM_YEARS = 110;
-export const YEAR_ARRAY = Array.from(Array(NUM_YEARS)).map(
-  (item, index) => `${new Date().getFullYear() - NUM_YEARS + index + 1}`
-);
+import {
+  DEFAULT_BOD_DATE,
+  DEFAULT_BOD_MONTH,
+  DEFAULT_BOD_YEAR,
+  DATE_ARRAY,
+  MONTH_ARRAY,
+  YEAR_ARRAY,
+} from "../constants/config";
 
 export type SignupFormikError = {
   name?: string;

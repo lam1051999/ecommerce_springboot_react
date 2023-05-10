@@ -9,7 +9,7 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import { FaTrashAlt } from "react-icons/fa";
 import AddressesCreateForm from "./AddressesCreateForm";
-import { DEFAULT_DISTRICT, DEFAULT_PROVINCE } from "../../pages/ShoppingCart";
+import { DEFAULT_DISTRICT, DEFAULT_PROVINCE } from "../../constants/config";
 import { Link } from "react-router-dom";
 
 export const formInitialValues = {

@@ -5,9 +5,8 @@ import {
   DEFAULT_BOD_MONTH,
   DEFAULT_BOD_YEAR,
   MONTH_ARRAY,
-  SignupFormikError,
   YEAR_ARRAY,
-} from "../../pages/Signup";
+} from "../../constants/config";
 import { AiOutlineDown } from "react-icons/ai";
 import {
   useGetCustomerInfosQuery,
@@ -16,6 +15,7 @@ import {
 import CustomerInfosContainer from "./CustomerInfosContainer";
 import SubmitButton from "../common/SubmitButton";
 import { Gender } from "../../redux/types/types";
+import { SignupFormikError } from "../../pages/Signup";
 
 export default function ProfileAccountInfo() {
   const { data, error, isLoading } = useGetCustomerInfosQuery();

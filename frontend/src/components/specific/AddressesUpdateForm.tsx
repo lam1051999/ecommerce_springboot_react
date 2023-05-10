@@ -1,5 +1,5 @@
 import { Formik } from "formik";
-import { DEFAULT_DISTRICT, DEFAULT_PROVINCE } from "../../pages/ShoppingCart";
+import { DEFAULT_DISTRICT, DEFAULT_PROVINCE } from "../../constants/config";
 import { AiOutlineDown, AiOutlineLoading } from "react-icons/ai";
 import { AddAddressFormikError } from "./ProfileAddressInfo";
 import { useGetProvincesAndShopsQuery } from "../../redux/api/addressApi";

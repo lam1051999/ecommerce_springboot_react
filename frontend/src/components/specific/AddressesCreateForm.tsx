@@ -1,7 +1,7 @@
 import { Formik } from "formik";
 import React from "react";
 import { BiArrowBack } from "react-icons/bi";
-import { DEFAULT_DISTRICT, DEFAULT_PROVINCE } from "../../pages/ShoppingCart";
+import { DEFAULT_DISTRICT, DEFAULT_PROVINCE } from "../../constants/config";
 import { AiOutlineDown } from "react-icons/ai";
 import { useCreateCustomerShipAddressesMutation } from "../../redux/api/userApi";
 import { ProvincesAndShopsResponse } from "../../redux/types/types";
