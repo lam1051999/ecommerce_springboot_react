@@ -83,9 +83,12 @@ export const productsApi = createApi({
                 specifications: fnProductInfosResponse.data,
               };
               const { product_type, name } = fnProductsResponse.data;
-              const matchedProductTypePathLink = mapProductTypePathLink.filter(
+              const found = mapProductTypePathLink.find(
                 (item) => item.productType === product_type
-              )[0].pathLink;
+              );
+              const matchedProductTypePathLink = found
+                ? found.pathLink
+                : mapProductTypePathLink[0].pathLink;
               const finalListPath: PathLink[] = [
                 matchedProductTypePathLink,
                 {

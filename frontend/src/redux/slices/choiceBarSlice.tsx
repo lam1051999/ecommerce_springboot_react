@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ChoiceBarState, ProductType } from "../types/types";
+import { ChoiceBarState, ProductType, SortType } from "../types/types";
 
 const initialState: ChoiceBarState = {
   productType: ProductType.IPHONE,
   productSubType: null,
-  sortType: "RANDOM",
+  sortType: SortType.RANDOM,
   page: 0,
   numPage: 16,
 };
@@ -30,10 +30,10 @@ export const choiceBarSlice = createSlice({
       },
     },
     onChangeSortType: {
-      reducer: (state, action: PayloadAction<string>) => {
+      reducer: (state, action: PayloadAction<SortType>) => {
         state.sortType = action.payload;
       },
-      prepare: (sortType: string) => {
+      prepare: (sortType: SortType) => {
         return { payload: sortType };
       },
     },

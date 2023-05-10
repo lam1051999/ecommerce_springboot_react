@@ -3,6 +3,7 @@ import { useLazyGetProductSearchQuery } from "../../redux/api/productsApi";
 import { AiOutlineLoading } from "react-icons/ai";
 import { getFullPathImage } from "../../utils/helper";
 import { useNavigate } from "react-router-dom";
+import { SortType } from "../../redux/types/types";
 
 type SearchContainerProps = {
   setIsOpenSearch: React.Dispatch<React.SetStateAction<boolean>>;
@@ -27,7 +28,7 @@ export default function SearchContainer({
           page: 0,
           size: 10,
           search_text: searchText,
-          sort_type: "RANDOM",
+          sort_type: SortType.RANDOM,
         })
           .unwrap()
           .then(() => {

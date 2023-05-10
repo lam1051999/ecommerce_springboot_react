@@ -170,3 +170,12 @@ export function getPaymentStatusText(status: string) {
       return "Đang chờ xử lý";
   }
 }
+export function getChosenOptionId<T>(
+  event: React.ChangeEvent<HTMLSelectElement>,
+  defaultValue: T
+): T {
+  const index = event.target.selectedIndex;
+  const el = event.target.children[index];
+  const id = el.getAttribute("id");
+  return id ? (id as T) : defaultValue;
+}

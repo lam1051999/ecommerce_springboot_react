@@ -1,9 +1,6 @@
 package com.shopdunkclone.rest.service.product;
 
-import com.shopdunkclone.rest.dto.product.ProductImagesDto;
-import com.shopdunkclone.rest.dto.product.ProductRatingsDto;
-import com.shopdunkclone.rest.dto.product.ProductRatingsRequest;
-import com.shopdunkclone.rest.dto.product.ProductsDto;
+import com.shopdunkclone.rest.dto.product.*;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
 import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.model.product.*;
@@ -11,7 +8,6 @@ import com.shopdunkclone.rest.repository.product.ProductImagesRepository;
 import com.shopdunkclone.rest.repository.product.ProductInfosRepository;
 import com.shopdunkclone.rest.repository.product.ProductRatingsRepository;
 import com.shopdunkclone.rest.repository.product.ProductsRepository;
-import com.shopdunkclone.rest.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,8 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,13 +41,13 @@ public class ProductService {
     @Autowired
     ProductRatingsRepository productRatingsRepository;
 
-    public ServiceResult<ProductsDto> getProducts(int page, int size, String sortType, ProductType productType, String productSubType) {
+    public ServiceResult<ProductsDto> getProducts(int page, int size, SortType sortType, ProductType productType, String productSubType) {
         Sort targetSort = switch (sortType) {
-            case "PRICE_HIGH_LOW" -> priceHighLowSort;
-            case "PRICE_LOW_HIGH" -> priceLowHighSort;
-            case "NEWEST" -> newestSort;
-            case "NAME_A_Z" -> nameAZSort;
-            case "NAME_Z_A" -> nameZASort;
+            case PRICE_HIGH_LOW -> priceHighLowSort;
+            case PRICE_LOW_HIGH -> priceLowHighSort;
+            case NEWEST -> newestSort;
+            case NAME_A_Z -> nameAZSort;
+            case NAME_Z_A -> nameZASort;
             default -> randomSort;
         };
         Pageable paging = PageRequest.of(page, size, targetSort);
@@ -110,13 +104,13 @@ public class ProductService {
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", productRatingsDto);
     }
 
-    public ServiceResult<ProductsDto> getProductSearch(int page, int size, String sortType, String searchText) {
+    public ServiceResult<ProductsDto> getProductSearch(int page, int size, SortType sortType, String searchText) {
         Sort targetSort = switch (sortType) {
-            case "PRICE_HIGH_LOW" -> priceHighLowNativeSort;
-            case "PRICE_LOW_HIGH" -> priceLowHighNativeSort;
-            case "NEWEST" -> newestSort;
-            case "NAME_A_Z" -> nameAZSort;
-            case "NAME_Z_A" -> nameZASort;
+            case PRICE_HIGH_LOW -> priceHighLowNativeSort;
+            case PRICE_LOW_HIGH -> priceLowHighNativeSort;
+            case NEWEST -> newestSort;
+            case NAME_A_Z -> nameAZSort;
+            case NAME_Z_A -> nameZASort;
             default -> randomSort;
         };
         Pageable paging = PageRequest.of(page, size, targetSort);

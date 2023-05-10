@@ -3,6 +3,7 @@ package com.shopdunkclone.rest.controller.v1.product;
 import com.shopdunkclone.rest.dto.product.ProductImagesDto;
 import com.shopdunkclone.rest.dto.product.ProductRatingsDto;
 import com.shopdunkclone.rest.dto.product.ProductsDto;
+import com.shopdunkclone.rest.dto.product.SortType;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
 import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.model.product.ProductInfosEntity;
@@ -12,6 +13,8 @@ import com.shopdunkclone.rest.service.product.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +33,7 @@ public class ProductController {
     @Operation(summary = "Lấy thông tin các sản phẩm dựa vào danh mục")
     @GetMapping(value = "/products")
     public ResponseEntity<ServiceResult<ProductsDto>> getProducts(
-            @Parameter(example = "RANDOM", description = "sort_type") @RequestParam(name = "sort_type") String sortType,
+            @Parameter(example = "RANDOM", description = "sort_type") @RequestParam(name = "sort_type") SortType sortType,
             @Parameter(example = "IPHONE", description = "product_type") @RequestParam(name = "product_type") ProductType productType,
             @Parameter(example = "IPHONE_SUB_TYPE_IPHONE_14_SERIES", description = "product_sub_type") @RequestParam(name = "product_sub_type", required = false) String productSubType,
             @Parameter(example = "0") @RequestParam(name = "page") int page,
@@ -83,7 +86,7 @@ public class ProductController {
             @Parameter(example = "iphone", description = "search_text") @RequestParam(name = "search_text") String searchText,
             @Parameter(example = "0") @RequestParam(name = "page") int page,
             @Parameter(example = "10") @RequestParam(name = "size") int size,
-            @Parameter(example = "RANDOM", description = "sort_type") @RequestParam(name = "sort_type") String sortType
+            @Parameter(example = "RANDOM", description = "sort_type") @RequestParam(name = "sort_type") SortType sortType
     ) {
         ServiceResult<ProductsDto> result = productService.getProductSearch(page, size, sortType, searchText);
         return new ResponseEntity<>(result, HttpStatus.OK);

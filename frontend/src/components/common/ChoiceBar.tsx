@@ -9,6 +9,8 @@ import {
   onChangeProductType,
   onChangeSortType,
 } from "../../redux/slices/choiceBarSlice";
+import { getChosenOptionId } from "../../utils/helper";
+import { SortType } from "../../redux/types/types";
 
 type ChoiceBarProps = {
   choices: ChoiceItem[];
@@ -19,26 +21,21 @@ export default function ChoiceBar({ choices }: ChoiceBarProps) {
   const productSubType = useAppSelector(
     (state) => state.choiceBar.productSubType
   );
-  const [isOpenDropdown, setIsOpenDropdown] = useState(false);
-  const sortType = useAppSelector((state) => state.choiceBar.sortType);
   const dispatch = useAppDispatch();
-
-  function getNameByActionValue(actionValue: string) {
-    return dropdownChoices.filter((item) => item.actionValue === actionValue)[0]
-      .name;
-  }
   function getChoiceByProductTypeAndProductSubType(
     productType: string,
     productSubType: string | null
   ) {
-    return choices.filter(
+    const found = choices.find(
       (item) =>
         item.productType === productType &&
         item.productSubType === productSubType
-    )[0];
+    );
+    return found ? found : choices[0];
   }
   function getChoiceByActionValue(actionValue: string) {
-    return choices.filter((item) => item.actionValue === actionValue)[0];
+    const found = choices.find((item) => item.actionValue === actionValue);
+    return found ? found : choices[0];
   }
 
   return (
@@ -71,33 +68,32 @@ export default function ChoiceBar({ choices }: ChoiceBarProps) {
         ))}
       </ul>
       <div className="relative w-1/6">
-        <button
-          className="text-gray-700 w-full flex items-center justify-between border border-gray-300 rounded bg-white px-6 py-2"
-          onClick={() => setIsOpenDropdown((prevState) => !prevState)}
-        >
-          <span className="pr-2">{getNameByActionValue(sortType)}</span>
-          <AiOutlineDown />
-        </button>
-        <div
-          className={`absolute z-10 bg-white rounded-lg shadow w-full ${
-            isOpenDropdown ? "block" : "hidden"
-          }`}
-        >
-          <ul className="py-2 text-sm text-gray-700">
+        <div className="relative text-gray-700 w-full">
+          <select
+            onChange={(event) => {
+              dispatch(
+                onChangeSortType(
+                  getChosenOptionId<SortType>(
+                    event,
+                    dropdownChoices[0].actionValue
+                  )
+                )
+              );
+              dispatch(onChangePage(0));
+            }}
+            name="sortTypeName"
+            className="appearance-none p-3 w-full border border-gray-300 rounded bg-white h-12 mt-2 mb-4"
+          >
             {dropdownChoices.map((item, index) => (
-              <li
-                className="cursor-pointer px-4 py-2 hover:bg-gray-600 hover:text-white"
-                key={index}
-                onClick={() => {
-                  dispatch(onChangeSortType(item.actionValue));
-                  dispatch(onChangePage(0));
-                  setIsOpenDropdown(false);
-                }}
-              >
+              <option key={index} id={item.actionValue}>
                 {item.name}
-              </li>
+              </option>
             ))}
-          </ul>
+          </select>
+          <AiOutlineDown
+            size={15}
+            className="absolute right-3 top-1/2 -translate-y-2"
+          />
         </div>
       </div>
     </div>

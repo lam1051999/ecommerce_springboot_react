@@ -1,4 +1,4 @@
-import { ProductType } from "../../redux/types/types";
+import { ProductType, SortType } from "../../redux/types/types";
 
 export type ProductCardInfo = {
   id: string;
@@ -33,7 +33,7 @@ export type ChoiceItem = {
 
 export type DropDownChoiceItem = {
   name: string;
-  actionValue: string;
+  actionValue: SortType;
 };
 
 export type ProductSupportItem = {

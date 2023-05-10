@@ -12,7 +12,7 @@ export enum ProductType {
 export type ChoiceBarState = {
   productType: ProductType;
   productSubType: string | null;
-  sortType: string;
+  sortType: SortType;
   page: number;
   numPage: number;
 };
@@ -27,8 +27,17 @@ export type ProductImagesState = {
   showcase_image: string;
 };
 
+export enum SortType {
+  RANDOM = "RANDOM",
+  PRICE_HIGH_LOW = "PRICE_HIGH_LOW",
+  PRICE_LOW_HIGH = "PRICE_LOW_HIGH",
+  NEWEST = "NEWEST",
+  NAME_A_Z = "NAME_A_Z",
+  NAME_Z_A = "NAME_Z_A",
+}
+
 export type ProductsQueryArgs = {
-  sort_type: string;
+  sort_type: SortType;
   product_type: ProductType;
   product_sub_type: string | null;
   page: number;
@@ -36,7 +45,7 @@ export type ProductsQueryArgs = {
 };
 
 export type ProductSearchQueryArgs = {
-  sort_type: string;
+  sort_type: SortType;
   page: number;
   size: number;
   search_text: string;

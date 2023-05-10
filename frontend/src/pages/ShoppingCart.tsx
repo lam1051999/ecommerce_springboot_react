@@ -3,7 +3,11 @@ import bankImage from "/images/payment/options/bank.jpeg";
 import kredivoImage from "/images/payment/options/kredivo.jpeg";
 import onepayImage from "/images/payment/options/onepay.png";
 import payooImage from "/images/payment/options/payoo.png";
-import { formatCurrency, getFullPathImage } from "../utils/helper";
+import {
+  formatCurrency,
+  getChosenOptionId,
+  getFullPathImage,
+} from "../utils/helper";
 import { RxTrash } from "react-icons/rx";
 import ProductsExtraCartProperty from "../components/common/ProductsExtraCartProperty";
 import { BsDashLg, BsPlusLg } from "react-icons/bs";
@@ -129,14 +133,6 @@ export default function ShoppingCart() {
       }
     }
     return addressComp.join(", ");
-  }
-  function getChosenOptionId(
-    event: React.ChangeEvent<HTMLSelectElement>
-  ): string {
-    const index = event.target.selectedIndex;
-    const el = event.target.children[index];
-    const id = el.getAttribute("id");
-    return id ? id : DEFAULT_ADDRESS;
   }
   function getTotalPrice(allItems: ShoppingCartItem[]) {
     return allItems.reduce((acc, item) => {
@@ -491,7 +487,9 @@ export default function ShoppingCart() {
                             <select
                               onChange={(event) => {
                                 handleChange(event);
-                                setAddedAddressId(getChosenOptionId(event));
+                                setAddedAddressId(
+                                  getChosenOptionId(event, DEFAULT_ADDRESS)
+                                );
                               }}
                               onBlur={handleBlur}
                               name="addedAddress"

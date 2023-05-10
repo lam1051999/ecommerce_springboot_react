@@ -9,7 +9,6 @@ import {
   ProductSupportItem,
   SlideItem,
 } from "./types";
-import ProductPageNavigation from "./ProductPageNavigation";
 import ProductGridWrapper from "./ProductGridWrapper";
 import { useAppDispatch } from "../../redux/hooks/hooks";
 import {
@@ -19,7 +18,7 @@ import {
   onChangeSortType,
 } from "../../redux/slices/choiceBarSlice";
 import PageContainer from "./PageContainer";
-import { ProductType } from "../../redux/types/types";
+import { ProductType, SortType } from "../../redux/types/types";
 
 type ProductShowcaseProps = {
   title: string;
@@ -42,7 +41,7 @@ export default function ProductShowcase({
   useEffect(() => {
     dispatch(onChangeProductType(productType));
     dispatch(onChangeProductSubType(null));
-    dispatch(onChangeSortType("RANDOM"));
+    dispatch(onChangeSortType(SortType.RANDOM));
     dispatch(onChangePage(0));
   }, []);
 

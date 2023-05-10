@@ -12,9 +12,8 @@ export default function ProductDetailInfo({
 }: ProductDetailInfoProps) {
   const [isExpan, setIsExpan] = useState(false);
   const [infoButtonId, setInfoButtonId] = useState(infoButtons[0].button_id);
-  const buttonKey = infoButtons.filter(
-    (item) => item.button_id === infoButtonId
-  )[0].key;
+  const found = infoButtons.find((item) => item.button_id === infoButtonId);
+  const buttonKey = found ? found.key : infoButtons[0].key;
 
   return (
     <div className="w-full mb-16">

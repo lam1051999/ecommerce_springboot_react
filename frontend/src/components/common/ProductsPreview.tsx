@@ -7,6 +7,7 @@ import { NUM_PRODUCTS_PREVIEW } from "../../constants/config";
 import { getProductCardInfosFromProductDto } from "../../utils/helper";
 import ProductCardSkeleton from "./ProductCardSkeleton";
 import { MapTitlePreviewChoice } from "../../utils/types";
+import { SortType } from "../../redux/types/types";
 
 type ProductsPreviewProps = {
   mapTitlePreviewChoice: MapTitlePreviewChoice;
@@ -18,7 +19,7 @@ export default function ProductsPreview({
   const { title, choice, goTo } = mapTitlePreviewChoice;
   const { productType, productSubType } = choice;
   const { data, error, isLoading } = useGetProductsQuery({
-    sort_type: "RANDOM",
+    sort_type: SortType.RANDOM,
     product_type: productType,
     product_sub_type: productSubType,
     page: 0,

@@ -5,12 +5,16 @@ import { useGetProductSearchQuery } from "../redux/api/productsApi";
 import { NUM_PRODUCTS_PREVIEW } from "../constants/config";
 import ProductCardSkeleton from "../components/common/ProductCardSkeleton";
 import ProductsGrid from "../components/common/ProductsGrid";
-import { getProductCardInfosFromProductDto } from "../utils/helper";
+import {
+  getChosenOptionId,
+  getProductCardInfosFromProductDto,
+} from "../utils/helper";
 import SearchResultNavigation from "../components/common/SearchResultNavigation";
 import { Formik } from "formik";
 import SubmitButton from "../components/common/SubmitButton";
 import { dropdownChoices } from "../constants/choices";
 import { AiOutlineDown } from "react-icons/ai";
+import { SortType } from "../redux/types/types";
 
 const DEFAULT_PAGE = 0;
 const DEFAULT_SIZE = "8";
@@ -20,7 +24,9 @@ export default function SearchResult() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchText = searchParams.get("q");
-  const [sortType, setSortType] = useState(dropdownChoices[0].name);
+  const [sortType, setSortType] = useState<SortType>(
+    dropdownChoices[0].actionValue
+  );
   const [page, setPage] = useState(DEFAULT_PAGE);
   const [size, setSize] = useState(DEFAULT_SIZE);
   const {
@@ -28,21 +34,16 @@ export default function SearchResult() {
     error: productSearchError,
     isLoading: productSearchIsLoading,
   } = useGetProductSearchQuery({
-    sort_type: getSortTypeCode(sortType),
+    sort_type: sortType,
     page: page,
     size: parseInt(size),
     search_text: searchText as string,
   });
 
-  function getSortTypeCode(name: string) {
-    const found = dropdownChoices.find((item) => item.name === name);
-    return found ? found.actionValue : "RANDOM";
-  }
-
   useEffect(() => {
     if (searchText === null) navigate("/");
     else {
-      setSortType(dropdownChoices[0].name);
+      setSortType(dropdownChoices[0].actionValue);
       setPage(DEFAULT_PAGE);
       setSize(DEFAULT_SIZE);
     }
@@ -115,12 +116,21 @@ export default function SearchResult() {
         <span className="text-sm">Sắp xếp theo</span>
         <div className="relative">
           <select
-            value={sortType}
-            onChange={(event) => setSortType(event.target.value)}
+            onChange={(event) =>
+              setSortType(
+                getChosenOptionId<SortType>(
+                  event,
+                  dropdownChoices[0].actionValue
+                )
+              )
+            }
+            name="sortTypeName"
             className="appearance-none pl-2 pr-8 py-1 border border-gray-300 rounded bg-white text-sm"
           >
-            {dropdownChoices.map((item) => (
-              <option key={item.actionValue}>{item.name}</option>
+            {dropdownChoices.map((item, index) => (
+              <option key={index} id={item.actionValue}>
+                {item.name}
+              </option>
             ))}
           </select>
           <AiOutlineDown

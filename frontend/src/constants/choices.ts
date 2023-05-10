@@ -1,5 +1,5 @@
 import { ChoiceItem, DropDownChoiceItem } from "../components/common/types";
-import { ProductType } from "../redux/types/types";
+import { ProductType, SortType } from "../redux/types/types";
 
 export const iphoneChoices: ChoiceItem[] = [
   {
@@ -310,26 +310,26 @@ export const accessoryChoices: ChoiceItem[] = [
 export const dropdownChoices: DropDownChoiceItem[] = [
   {
     name: "Thứ tự hiển thị",
-    actionValue: "RANDOM",
+    actionValue: SortType.RANDOM,
   },
   {
     name: "Giá cao đến thấp",
-    actionValue: "PRICE_HIGH_LOW",
+    actionValue: SortType.PRICE_HIGH_LOW,
   },
   {
     name: "Giá thấp đến cao",
-    actionValue: "PRICE_LOW_HIGH",
+    actionValue: SortType.PRICE_LOW_HIGH,
   },
   {
     name: "Mới nhất",
-    actionValue: "NEWEST",
+    actionValue: SortType.NEWEST,
   },
   {
     name: "Tên: A đến Z",
-    actionValue: "NAME_A_Z",
+    actionValue: SortType.NAME_A_Z,
   },
   {
     name: "Tên: Z đến A",
-    actionValue: "NAME_Z_A",
+    actionValue: SortType.NAME_Z_A,
   },
 ];
