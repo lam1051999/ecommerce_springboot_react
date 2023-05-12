@@ -29,7 +29,7 @@ export function getPreviewChoices(
 }
 
 export function getFullPathImage(imageUrl: string): string {
-  return `${SHOPDUNK_IMAGES_BASE_URL}${imageUrl}`;
+  return `${SHOPDUNK_IMAGES_BASE_URL}/static_files${imageUrl}`;
 }
 
 export function getProductCardInfosFromProductDto(

@@ -68,8 +68,8 @@ public class UserService {
     ProductRatingsRepository productRatingsRepository;
     @Autowired
     ShoppingCartRepository shoppingCartRepository;
-    @Value("${nginx_images_path}")
-    private String NGINX_IMAGES_PATH;
+    @Value("${files_upload_path}")
+    private String FILES_UPLOAD_PATH;
 
     public ServiceResult<CustomerInfosDto> getCustomerInfos(String bearerToken) {
         String username = jwtService.getUsernameFromHeader(bearerToken);
@@ -149,7 +149,7 @@ public class UserService {
 
     public ServiceResult<String> updateCustomerAvatar(MultipartFile file, String bearerToken) throws IOException {
         String username = jwtService.getUsernameFromHeader(bearerToken);
-        String userAvatarPathStr = NGINX_IMAGES_PATH + "/customers_images/" + username;
+        String userAvatarPathStr = FILES_UPLOAD_PATH + "/customers_images/" + username;
         Path userAvatarPath = Paths.get(userAvatarPathStr);
         if (!Files.exists(userAvatarPath)) {
             Files.createDirectories(userAvatarPath);

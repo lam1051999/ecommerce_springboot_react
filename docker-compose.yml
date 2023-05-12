@@ -1,0 +1,45 @@
+version: '3.9'
+
+x-database-variables: &database-variables
+  MYSQL_ROOT_PASSWORD: lamtt123456 
+  MYSQL_DATABASE: shopdunk
+  MYSQL_USER: lamtt
+  MYSQL_PASSWORD: lamtt123456
+
+services:
+  database:
+    container_name: database
+    image: mysql:8.0
+    volumes:
+      - ./database/data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    environment: *database-variables
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+  backend:
+    image: shopdunk_backend
+    container_name: backend
+    environment:
+      <<: *database-variables
+      APP_PORT: 8080
+      MYSQL_HOST: database
+      FILES_UPLOAD_PATH: /upload
+    volumes:
+      - ./upload:/upload
+    depends_on:
+      database:
+        condition: service_healthy
+  nginx:
+    image: shopdunk_nginx
+    container_name: nginx
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./nginx/images:/static_files/images
+      - ./upload/customers_images:/static_files/images/customers_images
+    depends_on:
+      - backend
