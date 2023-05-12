@@ -1,10 +1,10 @@
 version: '3.9'
 
 x-database-variables: &database-variables
-  MYSQL_ROOT_PASSWORD: lamtt123456 
-  MYSQL_DATABASE: shopdunk
-  MYSQL_USER: lamtt
-  MYSQL_PASSWORD: lamtt123456
+  MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} 
+  MYSQL_DATABASE: ${MYSQL_DATABASE}
+  MYSQL_USER: ${MYSQL_USER}
+  MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 
 services:
   database:
@@ -21,20 +21,20 @@ services:
       timeout: 2s
       retries: 20
   backend:
-    image: shopdunk_backend
+    image: ${DOCKER_USERNAME}/${DOCKER_IMAGE_BACKEND}
     container_name: backend
     environment:
       <<: *database-variables
-      APP_PORT: 8080
-      MYSQL_HOST: database
-      FILES_UPLOAD_PATH: /upload
+      APP_PORT: ${APP_PORT}
+      MYSQL_HOST: ${MYSQL_HOST}
+      FILES_UPLOAD_PATH: ${FILES_UPLOAD_PATH}
     volumes:
       - ./upload:/upload
     depends_on:
       database:
         condition: service_healthy
   nginx:
-    image: shopdunk_nginx
+    image: ${DOCKER_USERNAME}/${DOCKER_IMAGE_NGINX}
     container_name: nginx
     ports:
       - "80:8888"
