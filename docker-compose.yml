@@ -45,4 +45,4 @@ services:
       - backend
 
 volumes:
-  - page_data
+  page_data:
