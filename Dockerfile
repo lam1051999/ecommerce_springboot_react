@@ -16,6 +16,7 @@ CMD ["java", "-jar", "app.jar"]
 FROM node:16-alpine as frontend
 WORKDIR /opt/app
 COPY frontend .
+RUN yarn cache clean
 RUN yarn install
 RUN yarn run build
 
