@@ -11,7 +11,7 @@ services:
     container_name: database
     image: mysql:8.0
     volumes:
-      - ./database/data:/var/lib/mysql
+      - page_data:/var/lib/mysql
     ports:
       - "3307:3306"
     environment: *database-variables
@@ -43,3 +43,6 @@ services:
       - ./upload/customers_images:/static_files/images/customers_images
     depends_on:
       - backend
+
+volumes:
+  - page_data
