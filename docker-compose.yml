@@ -37,7 +37,7 @@ services:
     image: shopdunk_nginx
     container_name: nginx
     ports:
-      - "8888:8888"
+      - "80:8888"
     volumes:
       - ./nginx/images:/static_files/images
       - ./upload/customers_images:/static_files/images/customers_images
