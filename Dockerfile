@@ -16,8 +16,7 @@ CMD ["java", "-jar", "app.jar"]
 FROM node:16-alpine as frontend
 WORKDIR /opt/app
 COPY frontend .
-RUN yarn cache clean
-RUN yarn install
+RUN yarn install --network-timeout 1000000
 RUN yarn run build
 
 FROM nginx:1.23-alpine as nginx
