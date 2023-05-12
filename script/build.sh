@@ -10,8 +10,8 @@ else
     exit -1
 fi
 
-docker build -f Dockerfile -t shopdunk_backend --target backend .
-docker build -f Dockerfile -t shopdunk_nginx --target nginx .
+docker build -f Dockerfile -t shopdunk_backend --target backend --platform=linux/amd64 .
+docker build -f Dockerfile -t shopdunk_nginx --target nginx --platform=linux/amd64 .
 
 cat ./script/docker_password.txt | docker login ${DOCKER_REGISTRY} -u ${DOCKER_USERNAME} --password-stdin
 
