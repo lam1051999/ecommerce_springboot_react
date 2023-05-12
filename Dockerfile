@@ -7,11 +7,11 @@ RUN mvn clean package -Dmaven.test.skip
 
 FROM eclipse-temurin:17.0.5_8-jre as backend
 WORKDIR /opt/app
-RUN addgroup --system javauser && adduser --system javauser &&  adduser javauser javauser
+# RUN addgroup --system javauser && adduser --system javauser &&  adduser javauser javauser
 COPY --from=builder /build/target/rest-0.0.1-SNAPSHOT.jar app.jar
-RUN chown -R javauser:javauser .
-USER javauser
-CMD ["java", "-jar", "app.jar"]
+# RUN chown -R javauser:javauser .
+# USER javauser
+ENTRYPOINT ["java", "-jar", "app.jar"]
 
 FROM node:16-alpine as frontend
 WORKDIR /opt/app
