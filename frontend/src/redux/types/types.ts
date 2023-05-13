@@ -100,6 +100,11 @@ export type ProductImagesDtoResponse = {
   data: ProductImagesDto[];
 };
 
+export type ProductImagesByIdRequest = {
+  product_id: string;
+  main_showcase_image: string;
+};
+
 export type ProductInfosEntity = {
   id: string;
   product_desc: string;

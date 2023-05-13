@@ -14,6 +14,8 @@ import {
 } from "../../utils/helper";
 import { useGetProvincesAndShopsQuery } from "../../redux/api/addressApi";
 import ProductsExtraCartProperty from "../common/ProductsExtraCartProperty";
+import { CustomBaseQueryError } from "../../redux/types/types";
+import NotFoundId from "../common/NotFoundId";
 
 export default function ProfileOrdersDetail() {
   const params = useParams();
@@ -61,8 +63,22 @@ export default function ProfileOrdersDetail() {
         <BiArrowBack size={20} />
         <p className="text-[15px]">Trở lại</p>
       </Link>
-      {ordersByIdError || ordersByIdIsLoading ? (
+      {ordersByIdIsLoading ? (
         <Skeleton />
+      ) : ordersByIdError ? (
+        (ordersByIdError as CustomBaseQueryError).status === 404 ? (
+          <NotFoundId
+            to="/customer-infos/orders-history"
+            buttonText="Xem tất cả đơn hàng đã đặt"
+            title={
+              <p className="text-gray-500 mb-2">
+                Đơn hàng mã <strong>{orderId}</strong> không tồn tại
+              </p>
+            }
+          />
+        ) : (
+          <Skeleton />
+        )
       ) : ordersByIdData ? (
         <>
           <div className="mb-3 p-4 bg-white rounded-lg">

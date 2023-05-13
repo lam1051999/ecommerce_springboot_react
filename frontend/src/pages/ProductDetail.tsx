@@ -8,9 +8,13 @@ import ProductDetailShowcaseImage from "../components/common/ProductDetailShowca
 import ProductDetailInfo from "../components/common/ProductDetailInfo";
 import ProductDetailRating from "../components/common/ProductDetailRating";
 import ProductDetailRatingOveral from "../components/common/ProductDetailRatingOveral";
-import { ShoppingCartChangeType } from "../redux/types/types";
+import {
+  CustomBaseQueryError,
+  ShoppingCartChangeType,
+} from "../redux/types/types";
 import PageContainer from "../components/common/PageContainer";
 import { useChangeShoppingCartQuantityMutation } from "../redux/api/userApi";
+import NotFoundId from "../components/common/NotFoundId";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
@@ -40,8 +44,22 @@ export default function ProductDetail() {
 
   return (
     <PageContainer>
-      {error || isLoading ? (
+      {isLoading ? (
         <ProductDetailSkeletion />
+      ) : error ? (
+        (error as CustomBaseQueryError).status === 404 ? (
+          <NotFoundId
+            to="/"
+            buttonText="Trở về trang chủ"
+            title={
+              <p className="text-gray-500 mb-2">
+                Sản phẩm mã <strong>{productId}</strong> không tồn tại
+              </p>
+            }
+          />
+        ) : (
+          <ProductDetailSkeletion />
+        )
       ) : data ? (
         <div className="w-full">
           <div className="flex justify-between w-full">
@@ -50,61 +68,68 @@ export default function ProductDetail() {
             </div>
             <div style={{ width: "48.5%" }}>
               <h1 className="mb-6 text-2xl font-bold leading-none">
-                {data.name}
+                {data.data.name}
               </h1>
-              <ProductDetailRatingOveral product_id={data.id} />
+              <ProductDetailRatingOveral product_id={data.data.id} />
               <div className="w-full h-[0.3px] bg-gray-300 my-4" />
               <div className="w-full">
                 <div className="flex items-center">
                   <p className="tracking-tight mr-4 font-bold text-xl text-blue-700">
-                    {formatCurrency(data.actual_price)}
+                    {formatCurrency(data.data.actual_price)}
                   </p>
                   <p className="tracking-tight text-lg text-gray-500 line-through">
-                    {formatCurrency(data.old_price)}
+                    {formatCurrency(data.data.old_price)}
                   </p>
                 </div>
               </div>
-              {data.extra_product_type && (
+              {data.data.extra_product_type && (
                 <ProductExtraTypeInfo
                   title="Loại Sản Phẩm"
-                  value={data.extra_product_type}
+                  value={data.data.extra_product_type}
                 />
               )}
-              {data.extra_strap_type && (
+              {data.data.extra_strap_type && (
                 <ProductExtraTypeInfo
                   title="Loại Dây"
-                  value={data.extra_strap_type}
+                  value={data.data.extra_strap_type}
                 />
               )}
-              {data.extra_gpu_type && (
-                <ProductExtraTypeInfo title="GPU" value={data.extra_gpu_type} />
+              {data.data.extra_gpu_type && (
+                <ProductExtraTypeInfo
+                  title="GPU"
+                  value={data.data.extra_gpu_type}
+                />
               )}
-              {data.extra_storage_type && (
+              {data.data.extra_storage_type && (
                 <ProductExtraTypeInfo
                   title="Dung Lượng"
-                  value={data.extra_storage_type}
+                  value={data.data.extra_storage_type}
                 />
               )}
-              {data.extra_ram_type && (
-                <ProductExtraTypeInfo title="RAM" value={data.extra_ram_type} />
+              {data.data.extra_ram_type && (
+                <ProductExtraTypeInfo
+                  title="RAM"
+                  value={data.data.extra_ram_type}
+                />
               )}
-              {data.extra_model_type && (
+              {data.data.extra_model_type && (
                 <ProductExtraTypeInfo
                   title="Model"
-                  value={data.extra_model_type}
+                  value={data.data.extra_model_type}
                 />
               )}
-              {data.extra_screen_size && (
+              {data.data.extra_screen_size && (
                 <ProductExtraTypeInfo
                   title="Màn hình"
-                  value={data.extra_screen_size}
+                  value={data.data.extra_screen_size}
                 />
               )}
-              {data.list_colors.length > 0 && (
-                <ProductDetailColors listColors={data.list_colors} />
-              )}
+              <ProductDetailColors
+                productId={productId}
+                mainShowcaseImage={data.data.showcase_image}
+              />
               <button
-                onClick={() => handleAddToCart(data.id)}
+                onClick={() => handleAddToCart(data.data.id)}
                 className="rounded-lg w-full text-center py-3 text-white font-semibold bg-blue-700 hover:bg-blue-500"
               >
                 Mua ngay
@@ -116,8 +141,8 @@ export default function ProductDetail() {
               ) : null}
             </div>
           </div>
-          <ProductDetailInfo detailInfo={data.specifications} />
-          <ProductDetailRating product_id={data.id} />
+          <ProductDetailInfo productId={productId} />
+          <ProductDetailRating product_id={data.data.id} />
         </div>
       ) : (
         <ProductDetailSkeletion />

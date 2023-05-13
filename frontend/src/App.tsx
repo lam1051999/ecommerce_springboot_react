@@ -7,8 +7,6 @@ import Breadcrumb from "./components/common/Breadcrumb";
 import { routes } from "./constants/routes";
 
 function App() {
-  const location = useLocation();
-
   return (
     <div className="bg-gray-50">
       <ScrollToTop />

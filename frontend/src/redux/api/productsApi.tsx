@@ -1,7 +1,9 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { SHOPDUNK_BACKEND_BASE_URL } from "../../constants/config";
 import {
+  CustomBaseQueryError,
   DetailProductsById,
+  ProductImagesByIdRequest,
   ProductImagesDtoResponse,
   ProductInfosEntityResponse,
   ProductRatingsDtoResponse,
@@ -41,82 +43,75 @@ export const productsApi = createApi({
         return { url: "/products", method: "get", params: params };
       },
     }),
-    getProductsById: builder.query<DetailProductsById, string>({
+    getProductsById: builder.query<ProductsEntityResponse, string>({
       queryFn: async (product_id, { dispatch }, extraOptions, baseQuery) => {
-        const params = {
-          product_id,
-        };
-        const productsRequest = baseQuery({
+        const result = await baseQuery({
           url: `/products/${product_id}`,
           method: "get",
         });
-        const productImagesRequest = baseQuery({
+        if (result.data) {
+          const resolvedData = result.data as ProductsEntityResponse;
+          const { product_type, name } = resolvedData.data;
+          const found = mapProductTypePathLink.find(
+            (item) => item.productType === product_type
+          );
+          const matchedProductTypePathLink = found
+            ? found.pathLink
+            : mapProductTypePathLink[0].pathLink;
+          const finalListPath: PathLink[] = [
+            matchedProductTypePathLink,
+            {
+              title: name,
+              goTo: null,
+            },
+          ];
+          dispatch(onChangeListPath(finalListPath));
+          return { data: resolvedData as ProductsEntityResponse };
+        } else {
+          return { error: result.error as CustomBaseQueryError };
+        }
+      },
+    }),
+    getProductImagesById: builder.query<
+      ProductImagesDtoResponse,
+      ProductImagesByIdRequest
+    >({
+      queryFn: async (
+        { product_id, main_showcase_image },
+        { dispatch },
+        extraOptions,
+        baseQuery
+      ) => {
+        const result = await baseQuery({
           url: `/product-images`,
           method: "get",
-          params: params,
+          params: { product_id },
         });
-        const productInfosRequest = baseQuery({
-          url: `/product-infos`,
-          method: "get",
-          params: params,
-        });
-        return Promise.all([
-          productsRequest,
-          productImagesRequest,
-          productInfosRequest,
-        ])
-          .then(
-            ([
-              productsResponse,
-              productImagesResponse,
-              productInfosResponse,
-            ]) => {
-              const fnProductsResponse =
-                productsResponse.data as ProductsEntityResponse;
-              const fnProductImagesResponse =
-                productImagesResponse.data as ProductImagesDtoResponse;
-              const fnProductInfosResponse =
-                productInfosResponse.data as ProductInfosEntityResponse;
-              const resolvedData: DetailProductsById = {
-                ...fnProductsResponse.data,
-                list_colors: fnProductImagesResponse.data,
-                specifications: fnProductInfosResponse.data,
-              };
-              const { product_type, name } = fnProductsResponse.data;
-              const found = mapProductTypePathLink.find(
-                (item) => item.productType === product_type
-              );
-              const matchedProductTypePathLink = found
-                ? found.pathLink
-                : mapProductTypePathLink[0].pathLink;
-              const finalListPath: PathLink[] = [
-                matchedProductTypePathLink,
-                {
-                  title: name,
-                  goTo: null,
-                },
-              ];
-              dispatch(onChangeListPath(finalListPath));
-              if (fnProductImagesResponse.data.length > 0) {
-                dispatch(
-                  onChangeProductColor({
-                    ...fnProductImagesResponse.data[0],
-                    showcase_image:
-                      fnProductImagesResponse.data[0].list_images[0],
-                  })
-                );
-              } else {
-                dispatch(onResetProductImages());
-              }
-              return { data: resolvedData };
-            }
-          )
-          .catch((err) => {
-            return {
-              error: err,
-            };
-          });
+        if (result.data) {
+          const resolvedData = result.data as ProductImagesDtoResponse;
+          if (resolvedData.data.length > 0) {
+            dispatch(
+              onChangeProductColor({
+                ...resolvedData.data[0],
+                showcase_image: resolvedData.data[0].list_images[0],
+              })
+            );
+          } else {
+            dispatch(onResetProductImages(main_showcase_image));
+          }
+          return { data: resolvedData };
+        } else {
+          dispatch(onResetProductImages(main_showcase_image));
+          return { error: result.error as CustomBaseQueryError };
+        }
       },
+    }),
+    getProductInfosById: builder.query<ProductInfosEntityResponse, string>({
+      query: (product_id) => ({
+        url: "/product-infos",
+        method: "get",
+        params: { product_id },
+      }),
     }),
     getProductRatingsById: builder.query<ProductRatingsDtoResponse, string>({
       query: (product_id) => ({
@@ -145,4 +140,6 @@ export const {
   useGetProductRatingsByIdQuery,
   useLazyGetProductSearchQuery,
   useGetProductSearchQuery,
+  useGetProductImagesByIdQuery,
+  useGetProductInfosByIdQuery,
 } = productsApi;

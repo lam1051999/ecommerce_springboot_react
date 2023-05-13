@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ProductImagesState } from "../types/types";
 
 const initialState: ProductImagesState = {
-  color: "#fff",
+  color: "#64748b",
   list_images: [],
   showcase_image: "",
 };
@@ -29,10 +29,15 @@ export const productImagesSlice = createSlice({
         return { payload: actionData };
       },
     },
-    onResetProductImages: (state) => {
-      state.color = initialState.color;
-      state.list_images = initialState.list_images;
-      state.showcase_image = initialState.showcase_image;
+    onResetProductImages: {
+      reducer: (state, action: PayloadAction<string>) => {
+        state.color = initialState.color;
+        state.list_images = [action.payload];
+        state.showcase_image = action.payload;
+      },
+      prepare: (actionData: string) => {
+        return { payload: actionData };
+      },
     },
   },
 });
