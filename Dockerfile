@@ -12,8 +12,10 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
 FROM node:16-alpine as frontend
 WORKDIR /opt/app
-COPY frontend .
+COPY ./frontend/package.json .
+COPY ./frontend/yarn.lock .
 RUN yarn install --network-timeout 1000000
+COPY frontend .
 RUN yarn run build
 
 FROM nginx:1.23-alpine as nginx
