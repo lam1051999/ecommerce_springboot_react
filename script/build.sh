@@ -13,7 +13,7 @@ fi
 docker build -f Dockerfile -t ${DOCKER_USERNAME}/${DOCKER_IMAGE_BACKEND} --target backend .
 docker build -f Dockerfile -t ${DOCKER_USERNAME}/${DOCKER_IMAGE_NGINX} --target nginx .
 
-cat ./script/docker_password.txt | docker login ${DOCKER_REGISTRY} -u ${DOCKER_USERNAME} --password-stdin
+cat ./script/lock.txt | docker login ${DOCKER_REGISTRY} -u ${DOCKER_USERNAME} --password-stdin
 
 if [ ${TARGET_ENV} == "production" ]; then
     docker tag ${DOCKER_USERNAME}/${DOCKER_IMAGE_BACKEND}:${DOCKER_TAG} ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/${DOCKER_IMAGE_BACKEND}:${DOCKER_TAG}
