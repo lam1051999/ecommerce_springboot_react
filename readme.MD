@@ -10,6 +10,10 @@ A fullstack ecommerce website with ReactJs, Spring Boot, Nginx, Docker. Data is 
 
 ![Architecture](./images/shopdunk_flow.jpeg "Architecture")
 
+### Database design
+
+![Database](./images/database.png "Database")
+
 ### Installation
 
 1. Build docker images
