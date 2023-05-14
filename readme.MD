@@ -15,17 +15,17 @@ A fullstack ecommerce website with ReactJs, Spring Boot, Nginx, Docker. Data is 
 1. Build docker images
 
 ```bash
-sh make_build.sh production
+bash make_build.sh production
 ```
 
 2. Run containers
 
 ```bash
-sh make_run.sh production
+bash make_run.sh production
 ```
 
 3. Initialize database
 
 ```bash
-sh make_data.sh
+bash make_data.sh
 ```
