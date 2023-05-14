@@ -13,7 +13,7 @@ sh make_build.sh production
 ## 2.2. Run containers
 
 ```bash
-sh make_run.sh
+sh make_run.sh production
 ```
 
 ## 2.3. Initialize database
