@@ -41,6 +41,7 @@ services:
     volumes:
       - ./nginx/images:/static_files/images
       - ./upload/customers_images:/static_files/images/customers_images
+      - ./nginx/urls/urls.js:/www/build/urls.js
     depends_on:
       - backend
 
