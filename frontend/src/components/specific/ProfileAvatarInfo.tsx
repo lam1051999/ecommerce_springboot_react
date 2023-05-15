@@ -92,7 +92,7 @@ export default function ProfileAvatarInfo() {
           <button
             disabled={buttonIsLoading}
             onClick={uploadImage}
-            className={`block rounded-lg h-[40px] w-[200px] text-sm text-white bg-blue-700 hover:bg-blue-500 mb-3 ${
+            className={`block rounded-lg h-[40px] w-[200px] text-sm text-white flex items-center justify-center mb-3 ${
               buttonIsLoading ? "bg-blue-500" : "bg-blue-700 hover:bg-blue-500"
             }`}
           >
@@ -107,7 +107,7 @@ export default function ProfileAvatarInfo() {
               <button
                 disabled={buttonIsLoading}
                 onClick={deleteImage}
-                className="rounded-lg h-[40px] w-[200px] text-sm bg-transparent text-[#FA5B46] border border-[#FA5B46]"
+                className="rounded-lg h-[40px] w-[200px] text-sm bg-transparent text-[#FA5B46] border border-[#FA5B46] flex items-center justify-center"
               >
                 {buttonIsLoading ? (
                   <AiOutlineLoading className="animate-spin" size={25} />
