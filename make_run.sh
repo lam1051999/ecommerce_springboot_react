@@ -12,5 +12,4 @@ else
     exit -1
 fi
 
-source ./script/env.sh && \
-    docker-compose up -d
+docker-compose up -d
