@@ -38,7 +38,7 @@ Set up Github Actions secret to match your keys.
 
 Commit changes to main branch as it will trigger the Github Actions workflow to build the docker images.
 
-After finishing the build, run the following commands
+After finishing the build, run the following commands in your production server
 
 ```bash
 bash make_run.sh production
