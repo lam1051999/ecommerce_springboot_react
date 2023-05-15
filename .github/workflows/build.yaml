@@ -68,11 +68,9 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           port: ${{ secrets.EC2_PORT }}
           script: |
-            cd /home/${{ secrets.EC2_USERNAME }}
-            rm -rf ecommerce_springboot_react
-            git clone https://github.com/lam1051999/ecommerce_springboot_react.git
-            cd ecommerce_springboot_react
+            cd ${{ secrets.EC2_PROJECT_DIR }}
+            git pull origin main
             docker-compose stop
             docker-compose rm -f
             docker-compose pull   
-            docker-compose up -d
+            bash make_run.sh production
