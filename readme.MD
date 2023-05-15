@@ -17,7 +17,7 @@ A fullstack ecommerce website with ReactJs, Spring Boot, Nginx, Docker. Data is 
 #### Project overview
 
 - Backend
-  - Spring boot
+  - Spring Boot
 - Frontend
   - ReactJs (Typescript)
 - Database
