@@ -1,0 +1,11 @@
+name: shopdunk-clone
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
