@@ -32,11 +32,6 @@ A fullstack ecommerce website with ReactJs, Spring Boot, Nginx, Docker. Data is 
 
 ### How to deploy production
 
-```bash
-git clone https://github.com/lam1051999/ecommerce_springboot_react.git
-cd ecommerce_springboot_react
-```
-
 Edit `./nginx/urls/urls_production.js` with your production hosting server url.
 
 Set up Github Actions secret to match your keys.
