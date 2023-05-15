@@ -32,16 +32,17 @@ A fullstack ecommerce website with ReactJs, Spring Boot, Nginx, Docker. Data is 
 
 ### How to deploy production
 
-Edit `./nginx/urls/urls_production.js` with your production hosting server url.
+Clone project to the production server.
 
-Set up Github Actions secret to match your keys.
+Edit `./nginx/urls/urls_production.js` with your production hosting server URL.
 
-Commit changes to main branch as it will trigger the Github Actions workflow to build the docker images.
+Set up GitHub Actions secret to match your keys.
 
-After finishing the build, run the following commands in your production server
+Commit changes to the main branch as it will trigger the GitHub Actions workflow to build the docker images and restart docker-compose commands.
+
+If it is your first run, then initialize data by running
 
 ```bash
-bash make_run.sh production
 bash make_data.sh
 ```
 
