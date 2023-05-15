@@ -5,6 +5,7 @@ import com.shopdunkclone.rest.dto.product.ProductRatingsRequest;
 import com.shopdunkclone.rest.dto.user.*;
 import com.shopdunkclone.rest.exception.InvalidRequestException;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
+import com.shopdunkclone.rest.exception.RequestBodyTooLargeException;
 import com.shopdunkclone.rest.exception.UserNotAllowedException;
 import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.model.order.OrdersEntity;
@@ -70,6 +71,8 @@ public class UserService {
     ShoppingCartRepository shoppingCartRepository;
     @Value("${files_upload_path}")
     private String FILES_UPLOAD_PATH;
+    @Value("${files_upload_maximum_size}")
+    private long FILES_UPLOAD_MAXIMUM_SIZE;
 
     public ServiceResult<CustomerInfosDto> getCustomerInfos(String bearerToken) {
         String username = jwtService.getUsernameFromHeader(bearerToken);
@@ -147,8 +150,12 @@ public class UserService {
         return new ServiceResult<>(ServiceResult.Status.SUCCESS, "OK", "Cập nhật mật khẩu cho khách hàng " + username + " thành công");
     }
 
-    public ServiceResult<String> updateCustomerAvatar(MultipartFile file, String bearerToken) throws IOException {
+    public ServiceResult<String> updateCustomerAvatar(MultipartFile file, String bearerToken) throws IOException, RequestBodyTooLargeException {
         String username = jwtService.getUsernameFromHeader(bearerToken);
+        long fileSize = file.getSize();
+        if(fileSize > FILES_UPLOAD_MAXIMUM_SIZE) {
+            throw new RequestBodyTooLargeException("Avatar file too large");
+        }
         String userAvatarPathStr = FILES_UPLOAD_PATH + "/customers_images/" + username;
         Path userAvatarPath = Paths.get(userAvatarPathStr);
         if (!Files.exists(userAvatarPath)) {

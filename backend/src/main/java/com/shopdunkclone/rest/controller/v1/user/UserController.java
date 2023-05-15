@@ -7,6 +7,7 @@ import com.shopdunkclone.rest.dto.product.ProductRatingsRequest;
 import com.shopdunkclone.rest.dto.user.*;
 import com.shopdunkclone.rest.exception.InvalidRequestException;
 import com.shopdunkclone.rest.exception.NotFoundRecordException;
+import com.shopdunkclone.rest.exception.RequestBodyTooLargeException;
 import com.shopdunkclone.rest.exception.UserNotAllowedException;
 import com.shopdunkclone.rest.model.ServiceResult;
 import com.shopdunkclone.rest.model.order.OrdersEntity;
@@ -118,7 +119,7 @@ public class UserController {
     public ResponseEntity<ServiceResult<String>> updateCustomerAvatar(
             @RequestParam(value = "avatar_file") MultipartFile file,
             @RequestHeader(value = "Authorization") String bearerToken
-    ) throws IOException {
+    ) throws IOException, RequestBodyTooLargeException {
         ServiceResult<String> result = userService.updateCustomerAvatar(file, bearerToken);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }

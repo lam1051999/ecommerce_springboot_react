@@ -28,6 +28,7 @@ services:
       APP_PORT: ${APP_PORT}
       MYSQL_HOST: ${MYSQL_HOST}
       FILES_UPLOAD_PATH: ${FILES_UPLOAD_PATH}
+      FILES_UPLOAD_MAXIMUM_SIZE: ${FILES_UPLOAD_MAXIMUM_SIZE}
     volumes:
       - ./upload:/upload
     depends_on:

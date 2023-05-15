@@ -6,6 +6,7 @@ import {
   useDeleteCustomerAvatarMutation,
 } from "../../redux/api/userApi";
 import { getFullPathImage } from "../../utils/helper";
+import { CustomBaseQueryError } from "../../redux/types/types";
 
 export default function ProfileAvatarInfo() {
   const [avatarFile, setAvatarFile] = useState<File>();
@@ -44,8 +45,12 @@ export default function ProfileAvatarInfo() {
       .then(() => {
         alert("Tải ảnh đại diện thành công");
       })
-      .catch(() => {
-        alert("Đã có lỗi xảy ra, chưa tải được ảnh đại diện");
+      .catch((error) => {
+        if ((error as CustomBaseQueryError).status === 413) {
+          alert("Kích thước ảnh quá lớn, chưa tải được ảnh đại diện");
+        } else {
+          alert("Đã có lỗi xảy ra, chưa tải được ảnh đại diện");
+        }
       });
   }
   async function deleteImage() {
@@ -101,7 +106,8 @@ export default function ProfileAvatarInfo() {
         </div>
       </div>
       <p className="mt-5 text-xs bg-gray-200 p-3 rounded-lg mt-2">
-        Hình đại diện phải ở định dạng GIF, JPEG hoặc PNG
+        Hình đại diện phải ở định dạng GIF, JPEG hoặc PNG, kích thước không quá
+        500KB
       </p>
     </div>
   );

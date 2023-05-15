@@ -12,3 +12,4 @@ export MYSQL_PASSWORD=lamtt123456
 export APP_PORT=8080
 export MYSQL_HOST=database
 export FILES_UPLOAD_PATH=/upload
+export FILES_UPLOAD_MAXIMUM_SIZE=524288

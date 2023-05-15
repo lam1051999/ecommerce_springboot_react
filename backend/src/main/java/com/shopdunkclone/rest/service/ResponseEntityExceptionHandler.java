@@ -1,9 +1,6 @@
 package com.shopdunkclone.rest.service;
 
-import com.shopdunkclone.rest.exception.InvalidRequestException;
-import com.shopdunkclone.rest.exception.NotFoundRecordException;
-import com.shopdunkclone.rest.exception.TokenExpiredException;
-import com.shopdunkclone.rest.exception.UserNotAllowedException;
+import com.shopdunkclone.rest.exception.*;
 import com.shopdunkclone.rest.model.ServiceResult;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
@@ -131,6 +128,14 @@ public class ResponseEntityExceptionHandler {
                 ServiceResult.Status.FAILED,
                 ex.getMessage()
         ), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RequestBodyTooLargeException.class)
+    public final ResponseEntity<ServiceResult<Object>> handleTooLargeRequestBody(RequestBodyTooLargeException ex) {
+        return new ResponseEntity<>(getErrorServiceResult(
+                ServiceResult.Status.FAILED,
+                ex.getMessage()
+        ), HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
     public ServiceResult<Object> getErrorServiceResult(ServiceResult.Status status, String message) {
