@@ -7,6 +7,7 @@ import {
 } from "../../redux/api/userApi";
 import { getFullPathImage } from "../../utils/helper";
 import { CustomBaseQueryError } from "../../redux/types/types";
+import { AiOutlineLoading } from "react-icons/ai";
 
 export default function ProfileAvatarInfo() {
   const [avatarFile, setAvatarFile] = useState<File>();
@@ -31,6 +32,7 @@ export default function ProfileAvatarInfo() {
     error: getAvatarError,
     isLoading: getAvatarIsLoading,
   } = useGetCustomerAvatarQuery();
+  const buttonIsLoading = createAvatarIsLoading || deleteAvatarIsLoading;
 
   function selectImage(event: React.ChangeEvent<HTMLInputElement>) {
     const selectedFiles = event.target.files as FileList;
@@ -88,18 +90,30 @@ export default function ProfileAvatarInfo() {
         </div>
         <div className="flex-1">
           <button
+            disabled={buttonIsLoading}
             onClick={uploadImage}
-            className="block rounded-lg h-[40px] w-[200px] text-sm text-white bg-blue-700 hover:bg-blue-500 mb-3"
+            className={`block rounded-lg h-[40px] w-[200px] text-sm text-white bg-blue-700 hover:bg-blue-500 mb-3 ${
+              buttonIsLoading ? "bg-blue-500" : "bg-blue-700 hover:bg-blue-500"
+            }`}
           >
-            Tải lên
+            {buttonIsLoading ? (
+              <AiOutlineLoading className="animate-spin" size={25} />
+            ) : (
+              <span>Tải lên</span>
+            )}
           </button>
           {getAvatarError || getAvatarIsLoading ? null : getAvatarData ? (
             getAvatarData.data.avatar ? (
               <button
+                disabled={buttonIsLoading}
                 onClick={deleteImage}
                 className="rounded-lg h-[40px] w-[200px] text-sm bg-transparent text-[#FA5B46] border border-[#FA5B46]"
               >
-                Xoá ảnh
+                {buttonIsLoading ? (
+                  <AiOutlineLoading className="animate-spin" size={25} />
+                ) : (
+                  <span>Xoá ảnh</span>
+                )}
               </button>
             ) : null
           ) : null}
