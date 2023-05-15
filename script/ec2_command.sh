@@ -14,8 +14,3 @@ chmod +x /usr/local/bin/docker-compose
 
 # Install git in your EC2 instance
 yum install git -y
-
-# Clone and run the application
-cd ~
-git clone https://github.com/lam1051999/ecommerce_springboot_react.git
-cd ecommerce_springboot_react
