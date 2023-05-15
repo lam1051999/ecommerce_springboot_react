@@ -69,4 +69,5 @@ jobs:
           port: ${{ secrets.EC2_PORT }}
           script: |
             whoami
+            cd /home/ec2-user/ecommerce_springboot_react
             ls -al
