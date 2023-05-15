@@ -52,6 +52,7 @@ Edit `./script/env.sh` to match your keys
 ```bash
 source ./script/env.sh && bash ./script/build.sh development
 bash make_run.sh development
+bash make_data.sh
 ```
 
 Go to `http://localhost`
