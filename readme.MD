@@ -38,8 +38,11 @@ cd ecommerce_springboot_react
 ```
 
 Edit `./nginx/urls/urls_production.js` with your production hosting server url.
+
 Set up Github Actions secret to match your keys.
+
 Commit changes to main branch as it will trigger the Github Actions workflow to build the docker images.
+
 After finishing the build, run the following commands
 
 ```bash
