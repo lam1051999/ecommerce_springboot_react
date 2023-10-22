@@ -4,7 +4,10 @@
 
 A fullstack ecommerce website with ReactJs, Spring Boot, Nginx, Docker. Data is crawled with Selenium, from: https://shopdunk.com/.
 
-All licenses are under licenses/ folder
+All licenses are 
+- licenses/LICENSE.MIT
+- licenses/LICENSE.MPL
+
 ---
 
 ### Design architecture
